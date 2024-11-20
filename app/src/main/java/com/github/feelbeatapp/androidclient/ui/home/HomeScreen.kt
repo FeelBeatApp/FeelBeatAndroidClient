@@ -9,8 +9,6 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,8 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,7 +31,6 @@ import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
-import kotlin.math.exp
 
 @Composable
 fun HomeScreen(parentNavController: NavHostController, modifier: Modifier = Modifier) {
@@ -43,22 +38,12 @@ fun HomeScreen(parentNavController: NavHostController, modifier: Modifier = Modi
     val currentBackStack by navController.currentBackStackEntryAsState()
     val title = currentBackStack?.destination?.route ?: "FeelBeat"
 
-    Scaffold(
-        topBar = { HomeTopBar(title) },
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
+    Scaffold(topBar = { HomeTopBar(title) }) { innerPadding ->
+        Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             NavHost(navController, startDestination = HomeRoute.HOME.name) {
-                composable(route = HomeRoute.HOME.name) {
-                    Text("Here list of games")
-                }
+                composable(route = HomeRoute.HOME.name) { Text("Here list of games") }
 
-                composable(route = HomeRoute.CHOOSE_PLAYLIST.name) {
-                    Text("Here choose playlist")
-                }
+                composable(route = HomeRoute.CHOOSE_PLAYLIST.name) { Text("Here choose playlist") }
 
                 composable(route = HomeRoute.GAME_SETTINGS.name) {
                     Text("Here choose game settings")
@@ -66,9 +51,7 @@ fun HomeScreen(parentNavController: NavHostController, modifier: Modifier = Modi
             }
 
             Row {
-                Button(onClick = { navController.navigate(HomeRoute.HOME.name) }) {
-                    Text("Home")
-                }
+                Button(onClick = { navController.navigate(HomeRoute.HOME.name) }) { Text("Home") }
 
                 Button(onClick = { navController.navigate(HomeRoute.CHOOSE_PLAYLIST.name) }) {
                     Text("Playlists")
@@ -93,15 +76,16 @@ fun HomeScreen(parentNavController: NavHostController, modifier: Modifier = Modi
 fun HomeTopBar(title: String) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
-        ),
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.primary,
+            ),
         navigationIcon = {
             IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Outlined.Notifications,
-                    contentDescription = stringResource(R.string.notifications)
+                    contentDescription = stringResource(R.string.notifications),
                 )
             }
         },
@@ -109,10 +93,10 @@ fun HomeTopBar(title: String) {
             IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Outlined.Person,
-                    contentDescription = stringResource(R.string.account)
+                    contentDescription = stringResource(R.string.account),
                 )
             }
-        }
+        },
     )
 }
 

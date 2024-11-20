@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.github.feelbeatapp.androidclient.websocket.WebsocketClient
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -33,26 +32,9 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                launch {
-                    socket.connect(
-                        host = "10.0.2.2",
-                        port = 3000,
-                        path = "/ws"
-                    )
-                }
+                launch { socket.connect(host = "10.0.2.2", port = 3000, path = "/ws") }
 
-                launch {
-                    while (!socket.isConnected) {
-                        delay(10);
-                    }
-
-                    for (i in 1..10) {
-                        socket.sendMessage(String.format("Message nr %d from client", i))
-                        delay(1000)
-                    }
-                }
-
-                Log.d("test", "it's lanuched")
+                Log.d("test", "it's launched")
             }
         }
     }

@@ -4,5 +4,5 @@ enum class FeelBeatRoute {
     LOGIN,
     HOME,
     LOBBY,
-    GAME
+    GAME,
 }

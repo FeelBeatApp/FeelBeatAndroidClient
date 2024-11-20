@@ -12,24 +12,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
-fun GameScreen(
-    viewModel: GameViewModel = hiltViewModel<GameViewModel>()
-) {
+fun GameScreen(viewModel: GameViewModel = hiltViewModel<GameViewModel>()) {
     val uiState by viewModel.state.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         TextField(
             value = uiState.textInput,
             onValueChange = { text -> viewModel.setText(text) },
-            label = { Text("Synced input") }
+            label = { Text("Synced input") },
         )
     }
 }
@@ -37,7 +34,5 @@ fun GameScreen(
 @Preview
 @Composable
 fun GameScreenPreview() {
-    FeelBeatTheme {
-        GameScreen()
-    }
+    FeelBeatTheme { GameScreen() }
 }

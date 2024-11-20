@@ -14,11 +14,9 @@ fun LoginScreen(onLoggedIn: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         Text("Login screen")
-        Button(onClick = onLoggedIn) {
-            Text("Login with spotify")
-        }
+        Button(onClick = onLoggedIn) { Text("Login with spotify") }
     }
 }

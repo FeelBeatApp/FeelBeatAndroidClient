@@ -1,0 +1,32 @@
+config:
+  validation: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'
+
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    ignoreAnnotated:
+      - 'Preview'
+
+style:
+  WildcardImport:
+    excludeImports:
+      - "org.junit.Assert"
+
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+
+  UnusedPrivateMember:
+    ignoreAnnotated:
+      - 'Preview'
+
+empty-blocks:
+  EmptyClassBlock:
+    ignoreAnnotated:
+      - 'HiltAndroidApp'

@@ -14,12 +14,8 @@ class AppModule {
     @Provides
     @Singleton
     fun provideNetworkAgent(): NetworkAgent {
-        val wsClient = WebsocketClient();
-        wsClient.connect(
-            host = "10.0.2.2",
-            port = 3000,
-            path = "/ws"
-        )
+        val wsClient = WebsocketClient()
+        wsClient.connect(host = "10.0.2.2", port = 3000, path = "/ws")
 
         return wsClient
     }

@@ -4,17 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.network.NetworkAgent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-data class GameState(
-    val textInput: String,
-)
+data class GameState(val textInput: String)
 
 @HiltViewModel
 class GameViewModel @Inject constructor(private val socket: NetworkAgent) : ViewModel() {
@@ -23,21 +21,13 @@ class GameViewModel @Inject constructor(private val socket: NetworkAgent) : View
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            socket.incomingFlow().collect { msg ->
-                _state.update {
-                    GameState(msg)
-                }
-            }
+            socket.incomingFlow().collect { msg -> _state.update { GameState(msg) } }
         }
     }
 
     fun setText(string: String) {
-        _state.update {
-            GameState(string)
-        }
+        _state.update { GameState(string) }
 
-        viewModelScope.launch {
-            socket.sendMessage(string)
-        }
+        viewModelScope.launch { socket.sendMessage(string) }
     }
 }
