@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.game
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.network.NetworkAgent
@@ -21,7 +22,9 @@ class GameViewModel @Inject constructor(private val socket: NetworkAgent) : View
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            socket.incomingFlow().collect { msg -> _state.update { GameState(msg) } }
+            socket.incomingFlow().collect { msg ->
+                _state.update { GameState(msg) }
+            }
         }
     }
 

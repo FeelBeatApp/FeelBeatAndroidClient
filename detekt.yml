@@ -14,6 +14,8 @@ complexity:
       - 'Preview'
 
 style:
+  ForbiddenComment:
+    active: false
   WildcardImport:
     excludeImports:
       - "org.junit.Assert"

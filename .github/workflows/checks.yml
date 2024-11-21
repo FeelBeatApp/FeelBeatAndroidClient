@@ -13,6 +13,30 @@ jobs:
         with:
           args: --build-upon-default-config --config detekt.yml
 
+  unitTests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+
+      - name: Execute tests
+        run: chmod +x gradlew && ./gradlew testReleaseUnitTest
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/build/test-results/**/TEST-*.xml'
+
   instrumentedTests:
     runs-on: ubuntu-latest
     strategy:

@@ -25,7 +25,7 @@ class LoginScreenTests {
     }
 
     @Test
-    fun loginScreen_loggingIntoSpotify_TriggersOnLoggedIn() {
+    fun loginScreen_loggingIntoSpotify_triggersOnLoggedIn() {
         composeTestRule.onNodeWithStringId(R.string.login_with_spotify).performClick()
 
         verify() { onLoggedInMock() }

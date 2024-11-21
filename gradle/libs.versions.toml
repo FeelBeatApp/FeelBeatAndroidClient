@@ -14,6 +14,7 @@ hiltAndroid = "2.52"
 devtoolsKsp = "2.0.21-1.0.28"
 hiltNavigationCompose = "1.2.0"
 mockk = "1.13.13"
+coroutinesTest = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ io-ktor-client = { group = "io.ktor", name = "ktor-client-cio", version.ref = "k
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltAndroid" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref="coroutinesTest"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

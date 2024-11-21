@@ -12,7 +12,6 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,7 +20,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class WebsocketClient @Inject constructor() : NetworkAgent {
+// TODO: Implement stacking messages when offline, simplify whole implementation
+
+/** Websocket implementation of communication with FeelBeat server */
+class WebsocketClient : NetworkAgent {
     private val httpClient = HttpClient(CIO) { install(WebSockets) }
     var isConnected: Boolean = false
         private set
@@ -55,7 +57,9 @@ class WebsocketClient @Inject constructor() : NetworkAgent {
                     ) {
                         val session = this
                         runBlocking {
+                            // Handle incoming messages
                             launch { readLoop(session) }
+                            // Send queued outgoing messages
                             launch { writeLoop(session) }
                         }
                     }
