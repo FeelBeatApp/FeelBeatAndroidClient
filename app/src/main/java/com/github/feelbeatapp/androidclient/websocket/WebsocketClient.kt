@@ -62,7 +62,6 @@ class WebsocketClient(private val httpClient: HttpClient, private val serverUrl:
                             // Send stacked messages
                             launch {
                                 for (msg in offlineQueue) {
-                                    Log.d("websocket", "Resending $msg")
                                     tmp.send(msg)
                                 }
                                 offlineQueue.clear()

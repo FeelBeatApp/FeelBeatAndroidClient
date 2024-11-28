@@ -16,6 +16,14 @@ class FakeNetworkAgent : NetworkAgent {
         incoming.emit(text)
     }
 
+    override fun connect(path: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun disconnect() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun sendMessage(text: String) {
         _sentMessages.add(text)
     }
