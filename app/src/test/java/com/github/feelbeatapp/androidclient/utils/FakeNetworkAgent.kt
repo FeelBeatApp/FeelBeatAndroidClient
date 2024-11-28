@@ -20,7 +20,7 @@ class FakeNetworkAgent : NetworkAgent {
         _sentMessages.add(text)
     }
 
-    override fun incomingFlow(): SharedFlow<String> {
+    override fun receiveFlow(): SharedFlow<String> {
         return incoming.asSharedFlow()
     }
 }

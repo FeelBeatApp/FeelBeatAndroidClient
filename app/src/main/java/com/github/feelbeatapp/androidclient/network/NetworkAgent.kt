@@ -12,5 +12,5 @@ interface NetworkAgent {
     suspend fun sendMessage(text: String)
 
     /** Received messages from FeelBeat server */
-    fun incomingFlow(): SharedFlow<String>
+    fun receiveFlow(): SharedFlow<String>
 }
