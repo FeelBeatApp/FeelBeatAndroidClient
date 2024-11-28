@@ -4,6 +4,12 @@ import kotlinx.coroutines.flow.SharedFlow
 
 /** Implementation of communication with FeelBeat server */
 interface NetworkAgent {
+    /** Connects to FeelBeatServer */
+    fun connect(path: String)
+
+    /** Disconnects current connection */
+    suspend fun disconnect()
+
     /**
      * Sends message to FeelBeat server
      *
