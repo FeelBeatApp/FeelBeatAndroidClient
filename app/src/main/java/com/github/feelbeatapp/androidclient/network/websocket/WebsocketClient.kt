@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.websocket
+package com.github.feelbeatapp.androidclient.network.websocket
 
 import android.util.Log
 import com.github.feelbeatapp.androidclient.network.NetworkAgent
@@ -12,6 +12,10 @@ import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
+import java.net.ConnectException
+import java.util.ArrayDeque
+import java.util.Queue
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -21,16 +25,15 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.net.ConnectException
-import java.util.ArrayDeque
-import java.util.Queue
-import kotlin.time.Duration.Companion.milliseconds
-
-const val RECONNECT_DELAY_MS = 500
+import javax.inject.Inject
 
 /** Websocket implementation of communication with FeelBeat server */
-class WebsocketClient(private val httpClient: HttpClient, private val serverUrl: Url) :
+class WebsocketClient @Inject constructor(private val httpClient: HttpClient, private val serverUrl: Url) :
     NetworkAgent {
+    companion object {
+        private const val RECONNECT_DELAY_MS = 500
+    }
+
     private var session: WebSocketSession? = null
     private val receiveFlow = MutableSharedFlow<String>()
     private val offlineQueue: Queue<String> = ArrayDeque()
@@ -54,15 +57,14 @@ class WebsocketClient(private val httpClient: HttpClient, private val serverUrl:
                         port = serverUrl.port,
                         path = "${serverUrl.fullPath}${path}",
                     ) {
-                        val tmp = this // avoid being nullable when passing to receiveWorker
-                        session = tmp
+                        session = this
                         runBlocking {
-                            launch { receiveWorker(tmp.incoming) }
+                            launch { receiveWorker(checkNotNull(session).incoming) }
 
                             // Send stacked messages
                             launch {
                                 for (msg in offlineQueue) {
-                                    tmp.send(msg)
+                                    checkNotNull(session).send(msg)
                                 }
                                 offlineQueue.clear()
                             }

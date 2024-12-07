@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.window.size)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.browser)
     implementation(libs.io.ktor.client)
 
     // hilt
