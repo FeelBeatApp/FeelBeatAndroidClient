@@ -27,7 +27,7 @@ fun FeelBeatApp(
                 composable(route = FeelBeatRoute.LOGIN.name) { LoginScreen() }
 
                 composable(route = FeelBeatRoute.HOME.name) {
-                    HomeScreen(parentNavController = navController)
+                    //HomeScreen(parentNavController = navController)
                 }
 
                 composable(route = FeelBeatRoute.GAME.name) { GameScreen() }
