@@ -23,11 +23,53 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "SOCKET_URI", "\"ws://10.0.2.2\"")
+            buildConfigField("String", "SPOTIFY_CLIENT_ID", "\"0368b2bddb504887b517fc4e8fca9cc5\"")
+            buildConfigField("String", "SPOTIFY_REDIRECT_URI", "\"feelbeat://callback\"")
+            buildConfigField("String", "SPOTIFY_SCOPE", "\"user-read-private user-read-email\"")
+            buildConfigField(
+                "String",
+                "SPOTIFY_AUTHORIZE_URI",
+                "\"https://accounts.spotify.com/authorize\"",
+            )
+            buildConfigField(
+                "String",
+                "SPOTIFY_TOKEN_URI",
+                "\"https://accounts.spotify.com/api/token\"",
+            )
+            buildConfigField(
+                "String",
+                "SPOTIFY_REFRESH_URI",
+                "\"https://accounts.spotify.com/api/token\"",
+            )
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+            )
+
+            buildConfigField("String", "SOCKET_URI", "\"ws://10.0.2.2\"")
+            buildConfigField("String", "SPOTIFY_CLIENT_ID", "\"0368b2bddb504887b517fc4e8fca9cc5\"")
+            buildConfigField("String", "SPOTIFY_REDIRECT_URI", "\"feelbeat://callback\"")
+            buildConfigField("String", "SPOTIFY_SCOPE", "\"user-read-private user-read-email\"")
+            buildConfigField(
+                "String",
+                "SPOTIFY_AUTHORIZE_URI",
+                "\"https://accounts.spotify.com/authorize\"",
+            )
+            buildConfigField(
+                "String",
+                "SPOTIFY_TOKEN_URI",
+                "\"https://accounts.spotify.com/api/token\"",
+            )
+            buildConfigField(
+                "String",
+                "SPOTIFY_REFRESH_URI",
+                "\"https://accounts.spotify.com/api/token\"",
             )
         }
     }
@@ -36,7 +78,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 
     packaging {
         resources.excludes.add("META-INF/LICENSE.md")

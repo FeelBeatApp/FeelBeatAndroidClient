@@ -1,6 +1,6 @@
 package com.github.feelbeatapp.androidclient.di
 
-import com.github.feelbeatapp.androidclient.SocketConfig
+import com.github.feelbeatapp.androidclient.BuildConfig
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.auth.OauthConfig
 import com.github.feelbeatapp.androidclient.auth.spotify.SpotifyAuthManager
@@ -10,7 +10,6 @@ import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
 import com.github.feelbeatapp.androidclient.network.fullduplex.WebsocketClient
 import com.github.feelbeatapp.androidclient.network.spotify.KtorSpotifyAPI
 import com.github.feelbeatapp.androidclient.network.spotify.SpotifyAPI
-import com.github.feelbeatapp.androidclient.spotifyOAuthConfig
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -44,13 +43,20 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideNetworkAgent(): NetworkAgent {
-            return WebsocketClient(httpClient, Url(SocketConfig.SOCKET_URL))
+            return WebsocketClient(httpClient, Url(BuildConfig.SOCKET_URI))
         }
 
         @Provides
         @Singleton
         fun provideOAuthConfig(): OauthConfig {
-            return spotifyOAuthConfig
+            return OauthConfig(
+                clientId = BuildConfig.SPOTIFY_CLIENT_ID,
+                redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI,
+                scope = BuildConfig.SPOTIFY_SCOPE,
+                authorizeUri = BuildConfig.SPOTIFY_AUTHORIZE_URI,
+                tokenUri = BuildConfig.SPOTIFY_TOKEN_URI,
+                refreshUri = BuildConfig.SPOTIFY_REFRESH_URI,
+            )
         }
     }
 

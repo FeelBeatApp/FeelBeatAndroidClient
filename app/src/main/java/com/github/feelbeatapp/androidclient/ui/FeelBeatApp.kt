@@ -24,9 +24,7 @@ fun FeelBeatApp(
 
         Box(modifier = modifier) {
             NavHost(navController, startDestination = startRoute.name) {
-                composable(route = FeelBeatRoute.LOGIN.name) {
-                    LoginScreen(onLoggedIn = { navController.navigate(FeelBeatRoute.HOME.name) })
-                }
+                composable(route = FeelBeatRoute.LOGIN.name) { LoginScreen() }
 
                 composable(route = FeelBeatRoute.HOME.name) {
                     HomeScreen(parentNavController = navController)
