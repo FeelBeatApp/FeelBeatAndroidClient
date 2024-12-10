@@ -8,4 +8,6 @@ data class OauthConfig(
     val authorizeUri: String,
     /** Uri to exchange code for token */
     val tokenUri: String,
+    /** Uri to refresh access token */
+    val refreshUri: String,
 )

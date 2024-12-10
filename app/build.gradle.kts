@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -13,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.feelbeatapp.androidclient"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -55,7 +56,17 @@ dependencies {
     implementation(libs.androidx.window.size)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.browser)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.security.crypto)
+
+    // Async image
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
+
+    // ktor
     implementation(libs.io.ktor.client)
+    implementation(libs.io.ktor.content.negotiation)
+    implementation(libs.io.ktor.json.serialization)
 
     // hilt
     implementation(libs.hilt)

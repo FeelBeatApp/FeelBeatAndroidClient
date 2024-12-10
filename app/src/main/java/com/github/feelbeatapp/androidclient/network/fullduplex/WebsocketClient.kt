@@ -1,7 +1,6 @@
-package com.github.feelbeatapp.androidclient.network.websocket
+package com.github.feelbeatapp.androidclient.network.fullduplex
 
 import android.util.Log
-import com.github.feelbeatapp.androidclient.network.NetworkAgent
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.http.HttpMethod
@@ -15,6 +14,7 @@ import io.ktor.websocket.send
 import java.net.ConnectException
 import java.util.ArrayDeque
 import java.util.Queue
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 /** Websocket implementation of communication with FeelBeat server */
-class WebsocketClient @Inject constructor(private val httpClient: HttpClient, private val serverUrl: Url) :
-    NetworkAgent {
+class WebsocketClient
+@Inject
+constructor(private val httpClient: HttpClient, private val serverUrl: Url) : NetworkAgent {
     companion object {
         private const val RECONNECT_DELAY_MS = 500
     }
@@ -42,7 +42,7 @@ class WebsocketClient @Inject constructor(private val httpClient: HttpClient, pr
         incomingChannel.consumeAsFlow().collect { frame ->
             when (frame) {
                 is Frame.Text -> receiveFlow.emit(frame.readText())
-                else -> Log.d("unidentified message", frame.data.toString())
+                else -> Log.w("unidentified message", frame.data.toString())
             }
         }
     }
@@ -85,7 +85,6 @@ class WebsocketClient @Inject constructor(private val httpClient: HttpClient, pr
 
     override suspend fun sendMessage(text: String) {
         if (session == null) {
-            Log.d("websocket", "Watch stacking $text")
             offlineQueue.offer(text)
         } else {
             session?.send(text)

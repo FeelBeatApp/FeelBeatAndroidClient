@@ -15,7 +15,6 @@ import com.github.feelbeatapp.androidclient.R
 
 @Composable
 fun LoginScreen(
-    onLoggedIn: () -> Unit,
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>(),
 ) {
