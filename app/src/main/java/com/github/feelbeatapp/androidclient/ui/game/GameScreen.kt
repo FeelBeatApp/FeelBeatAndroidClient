@@ -12,11 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
 fun GameScreen(viewModel: GameViewModel = hiltViewModel<GameViewModel>()) {
-    val uiState by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
         verticalArrangement = Arrangement.Center,

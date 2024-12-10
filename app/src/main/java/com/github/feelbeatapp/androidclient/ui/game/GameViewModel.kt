@@ -1,9 +1,8 @@
 package com.github.feelbeatapp.androidclient.ui.game
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.feelbeatapp.androidclient.network.NetworkAgent
+import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers

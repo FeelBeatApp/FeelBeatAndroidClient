@@ -1,6 +1,6 @@
 package com.github.feelbeatapp.androidclient.utils
 
-import com.github.feelbeatapp.androidclient.network.NetworkAgent
+import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

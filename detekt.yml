@@ -28,6 +28,9 @@ style:
     ignoreAnnotated:
       - 'Preview'
 
+  ReturnCount:
+    excludeGuardClauses: true
+
 empty-blocks:
   EmptyClassBlock:
     ignoreAnnotated:

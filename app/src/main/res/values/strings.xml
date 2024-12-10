@@ -4,5 +4,4 @@
     <string name="notifications">Notifications</string>
     <string name="account">Account</string>
     <string name="login_with_spotify">Login with spotify</string>
-    <string name="socket_url">ws://10.0.2.2:3000/</string>
 </resources>

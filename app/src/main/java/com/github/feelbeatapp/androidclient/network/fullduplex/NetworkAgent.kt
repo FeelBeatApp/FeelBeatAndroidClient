@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.network
+package com.github.feelbeatapp.androidclient.network.fullduplex
 
 import kotlinx.coroutines.flow.SharedFlow
 
