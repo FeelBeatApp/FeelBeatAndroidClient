@@ -9,10 +9,10 @@ import androidx.activity.enableEdgeToEdge
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.ui.login.AuthLoadingScreen
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
@@ -33,7 +33,7 @@ class AuthActivity : ComponentActivity() {
 
         val activity = this
         CoroutineScope(Dispatchers.IO).launch {
-            authManager.fetchAccessToken(checkNotNull(code))
+            authManager.fetchAccessToken(code)
             activity.startActivity(
                 Intent(activity, MainActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

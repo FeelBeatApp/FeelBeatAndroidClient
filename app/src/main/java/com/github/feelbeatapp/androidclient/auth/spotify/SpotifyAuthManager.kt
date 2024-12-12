@@ -10,14 +10,17 @@ import com.github.feelbeatapp.androidclient.auth.AuthState
 import com.github.feelbeatapp.androidclient.auth.OauthConfig
 import com.github.feelbeatapp.androidclient.auth.PKCEUtils
 import com.github.feelbeatapp.androidclient.auth.storage.AuthStorage
+import com.github.feelbeatapp.androidclient.error.ErrorCode
+import com.github.feelbeatapp.androidclient.error.FeelBeatException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.parameters
+import io.ktor.serialization.JsonConvertException
+import io.ktor.util.network.UnresolvedAddressException
+import java.io.IOException
 import java.time.Instant
 import javax.inject.Inject
-
-// TODO: Improve error handling
 
 class SpotifyAuthManager
 @Inject
@@ -70,19 +73,34 @@ constructor(
 
     override suspend fun fetchAccessToken(code: String) {
         val response =
-            httpClient.submitForm(
-                oauthConfig.tokenUri,
-                formParameters =
-                    parameters {
-                        append("grant_type", "authorization_code")
-                        append("code", code)
-                        append("redirect_uri", oauthConfig.redirectUri)
-                        append("client_id", oauthConfig.clientId)
-                        append("code_verifier", checkNotNull(currentCodeVerifier))
-                    },
-            ) {}
+            try {
+                httpClient.submitForm(
+                    oauthConfig.tokenUri,
+                    formParameters =
+                        parameters {
+                            append("grant_type", "authorization_code")
+                            append("code", code)
+                            append("redirect_uri", oauthConfig.redirectUri)
+                            append("client_id", oauthConfig.clientId)
+                            append("code_verifier", checkNotNull(currentCodeVerifier))
+                        },
+                ) {}
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException,
+                    is UnresolvedAddressException ->
+                        throw FeelBeatException(ErrorCode.AUTHORIZATION_SERVER_UNREACHABLE, e)
+                    else -> throw e
+                }
+            }
 
-        val tokenResponse = response.body<TokenResponse>()
+        val tokenResponse =
+            try {
+                response.body<TokenResponse>()
+            } catch (e: JsonConvertException) {
+                throw FeelBeatException(ErrorCode.AUTHORIZATION_ACCESS_TOKEN_ERROR, e)
+            }
+
         val newAuthData = tokenResponseToAuthData(tokenResponse)
         authStorage.storeAuthData(newAuthData)
         authData = newAuthData
@@ -112,22 +130,39 @@ constructor(
     }
 
     private suspend fun refreshAccessToken() {
+        Log.i("SpotifyAuth", "refreshing access token")
         val auth = checkNotNull(authData, { "Not authenticated" })
 
         val response =
-            httpClient.submitForm(
-                oauthConfig.refreshUri,
-                parameters {
-                    append("grant_type", "refresh_token")
-                    append("refresh_token", auth.refreshToken)
-                    append("client_id", oauthConfig.clientId)
-                },
-            ) {}
+            try {
+                httpClient.submitForm(
+                    oauthConfig.refreshUri,
+                    parameters {
+                        append("grant_type", "refresh_token")
+                        append("refresh_token", auth.refreshToken)
+                        append("client_id", oauthConfig.clientId)
+                    },
+                ) {}
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException,
+                    is UnresolvedAddressException ->
+                        throw FeelBeatException(ErrorCode.AUTHORIZATION_SERVER_UNREACHABLE, e)
 
-        val tokenResponse = response.body<TokenResponse>()
+                    else -> throw e
+                }
+            }
+
+        val tokenResponse =
+            try {
+                response.body<TokenResponse>()
+            } catch (e: JsonConvertException) {
+                throw FeelBeatException(ErrorCode.AUTHORIZATION_REFRESH_TOKEN_ERROR, e)
+            }
         val newAuthData = tokenResponseToAuthData(tokenResponse)
         authStorage.storeAuthData(newAuthData)
         authData = newAuthData
+        Log.i("SpotifyAuth", "access token refreshed successfully")
     }
 
     private fun tokenResponseToAuthData(tokenResponse: TokenResponse): AuthData {

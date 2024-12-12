@@ -7,6 +7,8 @@ naming:
       - 'Composable'
 
 complexity:
+  LongMethod:
+    active: false
   LongParameterList:
     ignoreDefaultParameters: true
   TooManyFunctions:
@@ -14,6 +16,8 @@ complexity:
       - 'Preview'
 
 style:
+  ThrowsCount:
+    active: false
   ForbiddenComment:
     active: false
   WildcardImport:
@@ -35,3 +39,7 @@ empty-blocks:
   EmptyClassBlock:
     ignoreAnnotated:
       - 'HiltAndroidApp'
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false

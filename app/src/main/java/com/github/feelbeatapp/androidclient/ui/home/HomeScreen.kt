@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.error.errorCodeToStringResource
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
@@ -52,6 +54,7 @@ fun HomeScreen(
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val profile by homeViewModel.profile.collectAsState()
+    val profileErr by homeViewModel.error.collectAsState()
     val title = currentBackStack?.destination?.route ?: "FeelBeat"
 
     LaunchedEffect(Unit) { homeViewModel.triggerProfileLoading() }
@@ -92,13 +95,15 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp),
             ) {
-                if (profile == null) {
+                if (profile == null && profileErr == null) {
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.secondary,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         strokeWidth = 8.dp,
                         modifier = Modifier.width(50.dp).height(50.dp),
                     )
+                } else if (profileErr != null) {
+                    Text(errorCodeToStringResource(LocalContext.current, checkNotNull(profileErr)))
                 } else {
                     Text(profile?.displayName ?: "")
                     Text(profile?.email ?: "")

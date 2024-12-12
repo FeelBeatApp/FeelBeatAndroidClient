@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        socket.connect("/ws")
+//        socket.connect("/ws")
 
         val startRoute =
             if (authManager.isAuthenticated()) FeelBeatRoute.HOME
