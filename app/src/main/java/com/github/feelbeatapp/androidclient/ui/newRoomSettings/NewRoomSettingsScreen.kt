@@ -31,10 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    parentNavController: NavHostController,
     viewModel: NewRoomSettingsViewModel = NewRoomSettingsViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -157,6 +160,6 @@ fun SettingSlider(
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
 fun PreviewSettingsScreen() {
-
-    SettingsScreen()
+    val navController = rememberNavController()
+    SettingsScreen(parentNavController = navController)
 }
