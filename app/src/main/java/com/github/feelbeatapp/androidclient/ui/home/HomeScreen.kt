@@ -39,6 +39,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import androidx.compose.foundation.lazy.items
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.github.feelbeatapp.androidclient.ui.newRoomSettings.PreviewSettingsScreen
+import androidx.navigation.compose.rememberNavController
+import com.github.feelbeatapp.androidclient.ui.acceptGame.AcceptScreen
+import com.github.feelbeatapp.androidclient.ui.newRoomSettings.SettingsScreen
 
 
 @Composable
@@ -47,12 +53,13 @@ fun HomeScreen(parentNavController: NavHostController,
                modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
-    val title = currentBackStack?.destination?.route ?: "FeelBeat"
+    val title = "FeelBeat"
 
     val rooms by viewModel.rooms.collectAsState()
     val selectedRoom by viewModel.selectedRoom.collectAsState()
 
     Scaffold(topBar = { HomeTopBar(title) }) { innerPadding ->
+
         Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Text(
                 text = "Aktualne rozgrywki",
@@ -75,38 +82,26 @@ fun HomeScreen(parentNavController: NavHostController,
                 }
             }
 
-//            NavHost(navController, startDestination = HomeRoute.HOME.name) {
-//                composable(route = HomeRoute.HOME.name) { Text("Here list of games") }
-//
-//                composable(route = HomeRoute.CHOOSE_PLAYLIST.name) { Text("Here choose playlist") }
-//
-//                composable(route = HomeRoute.GAME_SETTINGS.name) {
+            NavHost(navController, startDestination = HomeRoute.HOME.name) {
+                composable(route = HomeRoute.HOME.name) { Text("Here list of games") }
+
+                composable(route = HomeRoute.ACCEPT_SCREEN.name) {
+                    AcceptScreen(parentNavController = navController)
+                }
+//                composable(route = HomeRoute.ACCOUNT_SETTINGS.name) {
 //                    Text("Here choose game settings")
 //                }
-//            }
-
-//            Row {
-//                Button(onClick = { navController.navigate(HomeRoute.HOME.name) }) { Text("Home") }
-//
-//                Button(onClick = { navController.navigate(HomeRoute.CHOOSE_PLAYLIST.name) }) {
-//                    Text("Playlists")
-//                }
-//
-//                Button(onClick = { navController.navigate(HomeRoute.GAME_SETTINGS.name) }) {
-//                    Text("Settings")
-//                }
-//            }
-//
-//            Button(onClick = { parentNavController.navigate(FeelBeatRoute.GAME.name) }) {
-//                Text("Game")
-//            }
+                composable(route = HomeRoute.NEW_ROOM_SETTINGS.name) {
+                    SettingsScreen(parentNavController = navController)
+                }
+            }
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
             ) {
-                Button(onClick = { /*TODO new room settings*/},
+                Button(onClick = { navController.navigate(HomeRoute.NEW_ROOM_SETTINGS.name)},
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .offset(x = (-15).dp, y = (-120).dp)
@@ -116,7 +111,7 @@ fun HomeScreen(parentNavController: NavHostController,
                     Text("+", style = MaterialTheme.typography.headlineMedium)
                 }
                 Button(
-                    onClick = { /* TODO accept screen */ },
+                    onClick = { navController.navigate(HomeRoute.ACCEPT_SCREEN.name)},
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth(0.8f)
