@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,15 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -34,158 +34,113 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import androidx.compose.foundation.lazy.items
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.github.feelbeatapp.androidclient.ui.newRoomSettings.PreviewSettingsScreen
-import androidx.navigation.compose.rememberNavController
-import com.github.feelbeatapp.androidclient.ui.acceptGame.AcceptScreen
-import com.github.feelbeatapp.androidclient.ui.newRoomSettings.SettingsScreen
-
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 
 @Composable
-fun HomeScreen(parentNavController: NavHostController,
-               viewModel: HomeViewModel = HomeViewModel(),
-               modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val title = "FeelBeat"
+fun HomeScreen(
+    viewModel: HomeViewModel = HomeViewModel(),
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+  val title = stringResource(R.string.feel_beat)
+  val rooms by viewModel.rooms.collectAsState()
+  val selectedRoom by viewModel.selectedRoom.collectAsState()
 
-    val rooms by viewModel.rooms.collectAsState()
-    val selectedRoom by viewModel.selectedRoom.collectAsState()
-
-    Scaffold(topBar = { HomeTopBar(title) }) { innerPadding ->
-
-        Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            Text(
-                text = "Aktualne rozgrywki",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(rooms) { room ->
-                    RoomItem(
-                        room = room,
-                        isSelected = room == selectedRoom,
-                        onClick = { viewModel.selectRoom(room) }
-                    )
-                }
+  Scaffold(topBar = { HomeTopBar(title, navController) }) { innerPadding ->
+    Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+      Text(
+          text = stringResource(R.string.current_games),
+          style = MaterialTheme.typography.titleMedium,
+          modifier = Modifier.padding(16.dp))
+      LazyColumn(
+          modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(rooms) { room ->
+              RoomItem(
+                  room = room,
+                  isSelected = room == selectedRoom,
+                  onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) })
             }
+          }
 
-            NavHost(navController, startDestination = HomeRoute.HOME.name) {
-                composable(route = HomeRoute.HOME.name) { Text("Here list of games") }
-
-                composable(route = HomeRoute.ACCEPT_SCREEN.name) {
-                    AcceptScreen(parentNavController = navController)
-                }
-//                composable(route = HomeRoute.ACCOUNT_SETTINGS.name) {
-//                    Text("Here choose game settings")
-//                }
-                composable(route = HomeRoute.NEW_ROOM_SETTINGS.name) {
-                    SettingsScreen(parentNavController = navController)
-                }
+      Box(modifier = Modifier.fillMaxWidth().padding(bottom = 80.dp, start = 16.dp, end = 16.dp)) {
+        Box(
+            modifier =
+                Modifier.align(Alignment.BottomEnd)
+                    .offset(x = (-15).dp)
+                    .size(60.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.medium)) {
+              IconButton(
+                  onClick = { navController.navigate(FeelBeatRoute.NEW_ROOM_SETTINGS.name) },
+                  modifier = Modifier.fillMaxSize()) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        modifier = Modifier.size(36.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary)
+                  }
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
-            ) {
-                Button(onClick = { navController.navigate(HomeRoute.NEW_ROOM_SETTINGS.name)},
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset(x = (-15).dp, y = (-120).dp)
-                        .size(60.dp),
-                ) {
-                    //KUBA JA NIE WIEM CZEMU PLUSIK NIE JEST NA ŚRODKU, JAK SIĘ DA MINUSA TO JEST, RATUNKU :((((
-                    Text("+", style = MaterialTheme.typography.headlineMedium)
-                }
-                Button(
-                    onClick = { navController.navigate(HomeRoute.ACCEPT_SCREEN.name)},
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth(0.8f)
-                        .height(60.dp),
-                    enabled = selectedRoom != null
-                ) {
-                    Text("NEXT", style = MaterialTheme.typography.headlineMedium)
-                }
-            }
-        }
+        // TODO wywalic next -> po kliknieciu na playliste -> accept screen, w którym admin może
+        // jeszcze raz edytowac ustawieina, accept screen pasek na dole albo widok pokoju albo
+        // ustawienia?
+      }
     }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(title: String) {
-    CenterAlignedTopAppBar(
-        title = { Text(title) },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
-        actions = {
-            IconButton(onClick = {/*TODO account settings*/}) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = stringResource(R.string.account),
-                )
-            }
-        },
-    )
+fun HomeTopBar(title: String, navController: NavController) {
+  CenterAlignedTopAppBar(
+      title = { Text(title) },
+      colors =
+          TopAppBarDefaults.topAppBarColors(
+              containerColor = MaterialTheme.colorScheme.primaryContainer,
+              titleContentColor = MaterialTheme.colorScheme.primary,
+          ),
+      actions = {
+        IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCOUNT_SETTINGS.name) }) {
+          Icon(
+              imageVector = Icons.Outlined.Person,
+              contentDescription = stringResource(R.string.account),
+          )
+        }
+      },
+  )
 }
 
 @Composable
-fun RoomItem(
-    room: Room,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = MaterialTheme.shapes.medium
-            )
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = room.name,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = { /* TODO Edit room */ }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit Room")
-            }
+fun RoomItem(room: Room, isSelected: Boolean, onClick: () -> Unit) {
+  Card(
+      onClick = onClick,
+      colors =
+          CardDefaults.cardColors(
+              containerColor =
+                  if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                  else MaterialTheme.colorScheme.surface),
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(8.dp)
+              .border(
+                  width = 1.dp,
+                  color = MaterialTheme.colorScheme.outline,
+                  shape = MaterialTheme.shapes.medium)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
+          Text(
+              text = room.name,
+              style = MaterialTheme.typography.bodyLarge,
+              modifier = Modifier.weight(1f))
         }
-    }
+      }
 }
-
 
 @Preview
 @Composable
 fun HomePreview() {
-    val nav = rememberNavController()
-    HomeScreen(nav)
+  val navController = rememberNavController()
+  HomeScreen(navController = navController)
 }

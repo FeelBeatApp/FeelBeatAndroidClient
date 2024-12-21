@@ -16,6 +16,8 @@ data class Song(val id: Int, val title: String)
 data class Player(val name: String, val image: Int)
 data class Playlist(val name: String, val songs: List<Song>)
 
+//klasa mająca wszystkie stany -> jedno mutable state flow
+
 class AcceptViewModel : ViewModel() {
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val rooms: StateFlow<List<Song>> = _songs.asStateFlow()
@@ -48,6 +50,7 @@ class AcceptViewModel : ViewModel() {
                 Player("User789", R.drawable.userimage)
             )
             _players.value = examplePlayers
+            //update zamiast value
         }
     }
 

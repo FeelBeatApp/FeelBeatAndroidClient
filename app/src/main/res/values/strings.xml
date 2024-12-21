@@ -4,6 +4,26 @@
     <string name="settings">Settings</string>
     <string name="account">Account</string>
     <string name="login_with_spotify">Login with spotify</string>
-
+    <string name="current_games">Current games</string>
+    <string name="edit_room">Edit room</string>
+    <string name="feel_beat">Feel Beat</string>
+    <string name="back">Back</string>
+    <string name="play">PLAY</string>
+    <string name="player_image">Player Image</string>
+    <string name="snippet_duration_val">Snippet Duration: %1$d seconds</string>
+    <string name="points_to_win_val">Points to Win: %1$d</string>
+    <string name="playlist_name">Playlist: %1$s</string>
+    <string name="new_room">New room</string>
+    <string name="number_of_players">Number of players</string>
+    <string name="snippet_duration">Snippet Duration</string>
+    <string name="points_to_win">Points to Win</string>
+    <string name="playlist_link">Playlist link</string>
+    <string name="enter_playlist_link">Enter playlist link</string>
+    <string name="create_room">Create room</string>
+    <string name="login_screen">Login screen</string>
+    <string name="guess_the_song">Guess the song</string>
+    <string name="player_avatar">Player Avatar</string>
+    <string name="music_control">Music Control</string>
+    <string name="search">Search</string>
     <string name="authorization_server_unreachable">Authorization server is unreachable</string>
 </resources>

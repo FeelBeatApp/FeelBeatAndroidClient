@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.guessSong
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
@@ -8,8 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-//Zmienic status na enuma?
-data class Player1(val name: String, val image: Int, val status: String)
+// dodatkowa klasa na wszystko,
+data class Player1(val name: String, val image: Int, val status: ResultStatus)
 data class Song(val id: Int, val name: String, val artist: String)
 data class Result(val isCorrect: Boolean, val points: Int)
 
@@ -19,6 +20,9 @@ class GuessSongViewModel : ViewModel() {
 
     private val _playlist = MutableStateFlow<List<Song>>(emptyList())
     val playlist: StateFlow<List<Song>> = _playlist
+
+    private val _searchQuery = MutableStateFlow(TextFieldValue(""))
+    val searchQuery: StateFlow<TextFieldValue> = _searchQuery
 
     private val _currentSong = MutableStateFlow<Song?>(null)
     val currentSong: StateFlow<Song?> = _currentSong
@@ -34,9 +38,9 @@ class GuessSongViewModel : ViewModel() {
     private fun loadPlayers() {
         viewModelScope.launch {
             val examplePlayers = listOf(
-                Player1("User123", R.drawable.userimage, "WRONG"),
-                Player1("User456", R.drawable.userimage, "CORRECT"),
-                Player1("User789", R.drawable.userimage, "WRONG")
+                Player1("User123", R.drawable.userimage, ResultStatus.CORRECT),
+                Player1("User456", R.drawable.userimage, ResultStatus.WRONG),
+                Player1("User789", R.drawable.userimage, ResultStatus.NORESPONSE)
             )
             _players.value = examplePlayers
         }
@@ -54,6 +58,10 @@ class GuessSongViewModel : ViewModel() {
             )
             _playlist.value = examplePlaylist
         }
+    }
+
+    fun updateSearchQuery(newQuery: TextFieldValue) {
+        _searchQuery.value = newQuery
     }
 
     fun submitAnswer(isCorrect: Boolean) {

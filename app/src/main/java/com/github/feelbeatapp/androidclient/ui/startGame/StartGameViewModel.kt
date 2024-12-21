@@ -11,21 +11,21 @@ import kotlinx.coroutines.launch
 data class Player(val name: String, val image: Int)
 
 class StartGameViewModel : ViewModel() {
-    private val _players = MutableStateFlow<List<Player>>(emptyList())
-    val players: StateFlow<List<Player>> = _players.asStateFlow()
+  private val _players = MutableStateFlow<List<Player>>(emptyList())
+  val players: StateFlow<List<Player>> = _players.asStateFlow()
 
-    init {
-        loadPlayers()
-    }
+  init {
+    loadPlayers()
+  }
 
-    private fun loadPlayers() {
-        viewModelScope.launch {
-            val examplePlayers = listOf(
-                Player("User123", R.drawable.userimage),
-                Player("User456", R.drawable.userimage),
-                Player("User789", R.drawable.userimage)
-            )
-            _players.value = examplePlayers
-        }
+  private fun loadPlayers() {
+    viewModelScope.launch {
+      val examplePlayers =
+          listOf(
+              Player("User123", R.drawable.userimage),
+              Player("User456", R.drawable.userimage),
+              Player("User789", R.drawable.userimage))
+      _players.value = examplePlayers
     }
+  }
 }
