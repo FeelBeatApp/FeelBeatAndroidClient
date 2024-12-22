@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,20 +20,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 
 @Composable
 fun GuessResultScreen(
     navController: NavController,
     viewModel: GuessSongViewModel = GuessSongViewModel()
 ) {
-  val players by viewModel.players.collectAsState()
-  val currentSong by viewModel.currentSong.collectAsState()
-  val result by viewModel.result.collectAsState()
+  val guessState by viewModel.guessState.collectAsState()
 
   Column(
       modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -44,37 +46,42 @@ fun GuessResultScreen(
               Row(
                   horizontalArrangement = Arrangement.SpaceEvenly,
                   modifier = Modifier.fillMaxWidth()) {
-                    players.forEach { player ->
+                    guessState.players.forEach { playerWithResult ->
                       PlayerStatusIcon(
-                          image = player.image, isCorrect = (player.status == ResultStatus.CORRECT))
+                          image = playerWithResult.player.image,
+                          isCorrect = (playerWithResult.resultStatus == ResultStatus.CORRECT))
                     }
                   }
-              currentSong?.let { song ->
+
+              guessState.currentSong?.let { song ->
                 Box(
                     modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth(),
                     contentAlignment = Alignment.Center) {
-                      SongInfo(songName = song.name, artistName = song.artist)
+                      SongInfo(songTitle = song.title)
                     }
               }
             }
 
-        result?.let {
-          Text(
-              text = if (it.isCorrect) "You guessed the song correctly!" else "You guessed wrong!",
-              style = MaterialTheme.typography.headlineLarge,
-              fontWeight = FontWeight.Bold,
-              color =
-                  if (it.isCorrect) MaterialTheme.colorScheme.primary
-                  else MaterialTheme.colorScheme.error,
-              modifier = Modifier.padding(top = 16.dp))
-        }
+        Text(
+            text =
+                if (guessState.players.any { it.resultStatus == ResultStatus.CORRECT }) {
+                  stringResource(R.string.you_guessed_song_correctly)
+                } else {
+                  stringResource(R.string.ups_that_s_not_correct)
+                },
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 16.dp))
 
-        result?.let {
-          Text(
-              text = "Points: ${it.points}",
-              style = MaterialTheme.typography.headlineMedium,
-              fontWeight = FontWeight.Bold,
-              modifier = Modifier.padding(bottom = 32.dp))
+        Text(
+            text = "Points: ${guessState.players.sumOf { it.points }}",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 32.dp))
+
+        Button(onClick = { navController.navigate(FeelBeatRoute.GUESS_SONG.name) }) {
+          Text(text = "NEXT")
         }
       }
 }
@@ -96,24 +103,15 @@ fun PlayerStatusIcon(image: Int, isCorrect: Boolean) {
 }
 
 @Composable
-fun SongInfo(songName: String, artistName: String) {
+fun SongInfo(songTitle: String) {
   Row(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        //        Image(
-        //            painter = painterResource(id = R.drawable.ic_playlist_image), // Replace with
-        // song image resource
-        //            contentDescription = "Song Image",
-        //            modifier = Modifier
-        //                .size(50.dp)
-        //                .clip(CircleShape)
-        //        )
         Column {
           Text(
-              text = songName,
+              text = songTitle,
               style = MaterialTheme.typography.bodyLarge,
               fontWeight = FontWeight.Bold)
-          Text(text = "By $artistName", style = MaterialTheme.typography.bodySmall)
         }
       }
 }

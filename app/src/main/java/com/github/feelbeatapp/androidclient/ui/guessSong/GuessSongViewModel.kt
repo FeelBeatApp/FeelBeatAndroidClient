@@ -4,31 +4,35 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.ui.acceptGame.Playlist
+import com.github.feelbeatapp.androidclient.ui.acceptGame.Song
+import com.github.feelbeatapp.androidclient.ui.home.Room
 import com.github.feelbeatapp.androidclient.ui.startGame.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// dodatkowa klasa na wszystko,
-data class Player1(val name: String, val image: Int, val status: ResultStatus)
-data class Song(val id: Int, val name: String, val artist: String)
-data class Result(val isCorrect: Boolean, val points: Int)
+data class PlayerWithResult(
+    val player: Player,
+    val resultStatus: ResultStatus,
+    val points: Int
+)
+
+data class GuessState(
+    val players: List<PlayerWithResult> = emptyList(),
+    val songs: List<Song> = emptyList(),
+    val selectedRoom: Room? = null,
+    val playlist: Playlist = Playlist(name = "Playlist #1", songs = emptyList()),
+    val snippetDuration: Int = 30,
+    val pointsToWin: Int = 10,
+    val searchQuery: TextFieldValue = TextFieldValue(""),
+    val currentSong: Song? = null,
+)
 
 class GuessSongViewModel : ViewModel() {
-    private val _players = MutableStateFlow<List<Player1>>(emptyList())
-    val players: StateFlow<List<Player1>> = _players
-
-    private val _playlist = MutableStateFlow<List<Song>>(emptyList())
-    val playlist: StateFlow<List<Song>> = _playlist
-
-    private val _searchQuery = MutableStateFlow(TextFieldValue(""))
-    val searchQuery: StateFlow<TextFieldValue> = _searchQuery
-
-    private val _currentSong = MutableStateFlow<Song?>(null)
-    val currentSong: StateFlow<Song?> = _currentSong
-
-    private val _result = MutableStateFlow<Result?>(null)
-    val result: StateFlow<Result?> = _result
+    private val _guessState = MutableStateFlow(GuessState())
+    val guessState: StateFlow<GuessState> = _guessState.asStateFlow()
 
     init {
         loadPlayers()
@@ -38,36 +42,50 @@ class GuessSongViewModel : ViewModel() {
     private fun loadPlayers() {
         viewModelScope.launch {
             val examplePlayers = listOf(
-                Player1("User123", R.drawable.userimage, ResultStatus.CORRECT),
-                Player1("User456", R.drawable.userimage, ResultStatus.WRONG),
-                Player1("User789", R.drawable.userimage, ResultStatus.NORESPONSE)
+                PlayerWithResult(Player("User123", R.drawable.userimage), ResultStatus.CORRECT, 0),
+                PlayerWithResult(Player("User456", R.drawable.userimage), ResultStatus.WRONG, 0),
+                PlayerWithResult(Player("User789", R.drawable.userimage), ResultStatus.NORESPONSE, 0)
             )
-            _players.value = examplePlayers
+            _guessState.value = _guessState.value.copy(players = examplePlayers)
         }
     }
 
     private fun loadPlaylist() {
         viewModelScope.launch {
             val examplePlaylist = listOf(
-                Song(1, "Song 1", "artist1"),
-                Song(2, "Song 2", "artist1"),
-                Song(3, "Song 3", "artist1"),
-                Song(4, "Song 4", "artist1"),
-                Song(5, "Song 5", "artist1"),
-                Song(6, "Song 6", "artist1")
+                Song(1, "Song 1"),
+                Song(2, "Song 2"),
+                Song(3, "Song 3"),
+                Song(4, "Song 4"),
+                Song(5, "Song 5"),
+                Song(6, "Song 6")
             )
-            _playlist.value = examplePlaylist
+            _guessState.value = _guessState.value.copy(songs = examplePlaylist, currentSong = examplePlaylist[0])
         }
     }
 
     fun updateSearchQuery(newQuery: TextFieldValue) {
-        _searchQuery.value = newQuery
+        _guessState.value = _guessState.value.copy(searchQuery = newQuery)
     }
 
-    fun submitAnswer(isCorrect: Boolean) {
+    fun submitAnswer(playerName: String, isCorrect: Boolean) {
         viewModelScope.launch {
-            val points = if (isCorrect) 10 else 0
-            _result.value = Result(isCorrect = isCorrect, points = points)
+            val updatedPlayers = _guessState.value.players.map { playerWithResult ->
+                if (playerWithResult.player.name == playerName) {
+                    val newPoints = playerWithResult.points + if (isCorrect) 1 else 0
+                    playerWithResult.copy(
+                        resultStatus = if (isCorrect) ResultStatus.CORRECT else ResultStatus.WRONG,
+                        points = newPoints
+                    )
+                } else {
+                    playerWithResult
+                }
+            }
+            _guessState.value = _guessState.value.copy(players = updatedPlayers)
         }
+    }
+
+    fun setCurrentSong(song: Song) {
+        _guessState.value = _guessState.value.copy(currentSong = song)
     }
 }

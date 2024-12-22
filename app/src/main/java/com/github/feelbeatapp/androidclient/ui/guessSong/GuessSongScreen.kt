@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,8 +26,12 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +45,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
+import com.github.feelbeatapp.androidclient.ui.acceptGame.Song
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,69 +54,89 @@ fun GuessSongScreen(
     navController: NavController,
     viewModel: GuessSongViewModel = GuessSongViewModel()
 ) {
-  val players by viewModel.players.collectAsState()
-  val playlist by viewModel.playlist.collectAsState()
-  val searchQuery by viewModel.searchQuery.collectAsState()
+  val guessState by viewModel.guessState.collectAsState()
+  var timeLeft by remember { mutableIntStateOf(guessState.snippetDuration) }
 
-  Scaffold(topBar = { TopAppBar(title = { Text("Playlist#1") }) }) { paddingValues ->
-    Column(
-        modifier = Modifier.padding(paddingValues).fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)) {
-          Row(
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier.fillMaxWidth()) {
-                players.forEach { player -> PlayerStatusIcon(player = player) }
-              }
-
-          MusicControlSlider()
-
-          Column {
-            Text(
-                text = stringResource(R.string.guess_the_song),
-                style = MaterialTheme.typography.bodyMedium)
-            SearchBar(
-                searchQuery = searchQuery,
-                onSearchQueryChange = { viewModel.updateSearchQuery(it) })
-          }
-
-          LazyColumn(
-              verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
-                items(playlist.size) { index ->
-                  SongItem(
-                      song = playlist[index],
-                      onClick = { navController.navigate(FeelBeatRoute.GUESS_RESULT.name) })
-                }
-              }
-        }
+  LaunchedEffect(key1 = timeLeft) {
+    if (timeLeft > 0) {
+      delay(timeMillis = 1000)
+      timeLeft -= 1
+    } else {
+      navController.navigate(FeelBeatRoute.GUESS_RESULT.name)
+    }
   }
+
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = { Text(guessState.playlist.name) },
+            actions = {
+              Text(
+                  text = timeLeft.toString(),
+                  style = MaterialTheme.typography.bodyLarge,
+                  modifier = Modifier.padding(end = 16.dp))
+            })
+      }) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues).fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
+              Row(
+                  horizontalArrangement = Arrangement.spacedBy(8.dp),
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.fillMaxWidth()) {
+                    guessState.players.forEach { playerWithResult ->
+                      PlayerStatusIcon(player = playerWithResult)
+                    }
+                  }
+
+              MusicControlSlider()
+
+              Column {
+                Text(
+                    text = stringResource(R.string.guess_the_song),
+                    style = MaterialTheme.typography.bodyMedium)
+                SearchBar(
+                    searchQuery = guessState.searchQuery,
+                    onSearchQueryChange = { viewModel.updateSearchQuery(it) })
+              }
+
+              LazyColumn(
+                  verticalArrangement = Arrangement.spacedBy(8.dp),
+                  modifier = Modifier.fillMaxSize()) {
+                    items(guessState.songs.size) { index ->
+                      SongItem(
+                          song = guessState.songs[index],
+                          onClick = { navController.navigate(FeelBeatRoute.GUESS_RESULT.name) })
+                    }
+                  }
+            }
+      }
 }
 
 @Composable
-fun PlayerStatusIcon(player: Player1) {
+fun PlayerStatusIcon(player: PlayerWithResult) {
   val icon =
-      when (player.status) {
-        // PlayerStatus.CORRECT -> Icons.Outlined.CheckCircle
-        // PlayerStatus.WRONG -> Icons.Outlined.Error
+      when (player.resultStatus) {
+        ResultStatus.CORRECT -> Icons.Outlined.Done
+        ResultStatus.WRONG -> Icons.Outlined.Close
         ResultStatus.NORESPONSE -> null
-        else -> null
       }
   val color =
-      when (player.status) {
-        //        PlayerStatus.CORRECT -> Color.Green
-        //        PlayerStatus.WRONG -> Color.Red
-        //        PlayerStatus.UNANSWERED -> Color.Gray
-        else -> null
+      when (player.resultStatus) {
+        ResultStatus.CORRECT -> Color.Green
+        ResultStatus.WRONG -> Color.Red
+        ResultStatus.NORESPONSE -> Color.Gray
       }
 
   Box(modifier = Modifier.size(48.dp)) {
     Image(
-        painter = painterResource(id = player.image),
+        painter = painterResource(id = player.player.image),
         contentDescription = stringResource(R.string.player_avatar),
         modifier = Modifier.size(48.dp).clip(CircleShape))
     icon?.let {
       Icon(
           imageVector = it,
+          tint = color,
           contentDescription = null,
           modifier = Modifier.align(Alignment.BottomEnd).size(16.dp))
     }
@@ -150,12 +178,7 @@ fun SongItem(song: Song, onClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically) {
-          Column { Text(song.name, style = MaterialTheme.typography.bodyLarge) }
-          //            Image(
-          //                painter = painterResource(id = song.image),
-          //                contentDescription = null,
-          //                modifier = Modifier.size(48.dp)
-          //            )
+          Column { Text(song.title, style = MaterialTheme.typography.bodyLarge) }
         }
   }
 }

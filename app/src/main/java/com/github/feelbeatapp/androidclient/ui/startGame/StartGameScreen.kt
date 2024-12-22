@@ -38,11 +38,11 @@ fun StartGameScreen(
     navController: NavController
 ) {
   val players by viewModel.players.collectAsState()
-  var countdown by remember { mutableIntStateOf(3) }
+  var countdown by remember { mutableIntStateOf(value = 3) }
 
   LaunchedEffect(key1 = countdown) {
     if (countdown > 0) {
-      kotlinx.coroutines.delay(1000)
+      kotlinx.coroutines.delay(timeMillis = 1000)
       countdown -= 1
     } else {
       navController.navigate(FeelBeatRoute.GUESS_SONG.name)

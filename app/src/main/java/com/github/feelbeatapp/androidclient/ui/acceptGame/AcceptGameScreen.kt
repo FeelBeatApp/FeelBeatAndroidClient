@@ -1,8 +1,8 @@
 package com.github.feelbeatapp.androidclient.ui.acceptGame
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,23 +10,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,86 +34,102 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
-import com.github.feelbeatapp.androidclient.ui.startGame.Player
 import com.github.feelbeatapp.androidclient.ui.startGame.PlayerCard
 
 @Composable
-fun AcceptGameScreen(viewModel: AcceptViewModel = AcceptViewModel(), navController: NavController) {
-  val players = viewModel.players.collectAsState().value
-  val playlist = viewModel.playlist.collectAsState().value
-  val snippetDuration = viewModel.snippetDuration.collectAsState().value
-  val pointsToWin = viewModel.pointsToWin.collectAsState().value
+fun AcceptGameScreen(
+    viewModel: AcceptGameViewModel = AcceptGameViewModel(),
+    navController: NavController,
+    // isRoomCreator: Boolean = false
+    isRoomCreator: Boolean = true
+) {
+  val gameState = viewModel.gameState.collectAsState().value
 
-  Column(
-      modifier = Modifier.fillMaxSize().padding(16.dp),
-      horizontalAlignment = Alignment.CenterHorizontally,
-  ) {
-    IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) }) {
-      Icon(
-          Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-          contentDescription = stringResource(R.string.back))
-    }
+  Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(
+        modifier =
+            Modifier.fillMaxSize().padding(bottom = 56.dp).verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+          IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) }) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = stringResource(R.string.back))
+          }
 
-    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-      players.forEach { player -> PlayerCard(player = player) }
-    }
+          Row(
+              horizontalArrangement = Arrangement.spacedBy(16.dp),
+              modifier = Modifier.fillMaxWidth().padding(16.dp),
+              verticalAlignment = Alignment.CenterVertically) {
+                gameState.players.forEach { player -> PlayerCard(player = player) }
+              }
 
-    Spacer(modifier = Modifier.height(32.dp))
+          Spacer(modifier = Modifier.height(32.dp))
 
-    Column(horizontalAlignment = Alignment.Start) {
-      Text(
-          text = stringResource(id = R.string.snippet_duration_val, snippetDuration),
-          style = MaterialTheme.typography.bodyMedium)
-      Text(
-          text = stringResource(id = R.string.points_to_win_val, pointsToWin),
-          style = MaterialTheme.typography.bodyMedium)
-    }
+          Column(
+              horizontalAlignment = Alignment.Start,
+              modifier = Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    text =
+                        stringResource(
+                            id = R.string.snippet_duration_val, gameState.snippetDuration),
+                    style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = stringResource(id = R.string.points_to_win_val, gameState.pointsToWin),
+                    style = MaterialTheme.typography.bodyMedium)
+              }
 
-    Spacer(modifier = Modifier.height(32.dp))
+          Spacer(modifier = Modifier.height(32.dp))
 
-    Text(
-        text = stringResource(id = R.string.playlist_name, playlist.name),
-        style = MaterialTheme.typography.titleLarge)
+          Text(
+              text = stringResource(id = R.string.playlist_name, gameState.playlist.name),
+              style = MaterialTheme.typography.titleLarge,
+              modifier = Modifier.padding(horizontal = 16.dp))
 
-    Spacer(modifier = Modifier.height(8.dp))
+          gameState.playlist.songs.forEach { song -> SongItem(song = song) }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxWidth()) {
-      playlist.songs.forEach { song -> SongItem(song = song) }
-    }
+          Spacer(modifier = Modifier.height(32.dp))
 
-    Spacer(modifier = Modifier.height(32.dp))
-
-    Button(
-        onClick = { navController.navigate(FeelBeatRoute.START_GAME.name) },
-        modifier = Modifier.fillMaxWidth(),
-        shape = CircleShape) {
-          Text(stringResource(R.string.play), style = MaterialTheme.typography.headlineMedium)
+          Button(
+              onClick = { navController.navigate(FeelBeatRoute.START_GAME.name) },
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                Text(stringResource(R.string.play), style = MaterialTheme.typography.headlineMedium)
+              }
         }
+
+    if (isRoomCreator) {
+      BottomNavigationBar(
+          navController = navController, modifier = Modifier.align(Alignment.BottomCenter))
+    }
   }
 }
 
 @Composable
-fun PlayerCard(player: Player) {
-  Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
-    Image(
-        painter = painterResource(id = player.image),
-        contentDescription = stringResource(R.string.player_image),
-        modifier =
-            Modifier.size(20.dp)
-                .clip(CircleShape)
-                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape))
-    Text(
-        text = player.name,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(top = 10.dp))
-  }
+fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
+  NavigationBar(
+      modifier = modifier,
+      containerColor = MaterialTheme.colorScheme.surface,
+      contentColor = MaterialTheme.colorScheme.primary) {
+        NavigationBarItem(
+            icon = {
+              Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.selected_room))
+            },
+            label = { Text(stringResource(R.string.selected_room)) },
+            selected = false,
+            onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) })
+        NavigationBarItem(
+            icon = {
+              Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings))
+            },
+            label = { Text(stringResource(R.string.settings)) },
+            selected = false,
+            onClick = { navController.navigate(FeelBeatRoute.ROOM_SETTINGS.name) })
+      }
 }
 
 @Composable
 fun SongItem(song: Song) {
   Row(
-      modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+      modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
       verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = song.title,

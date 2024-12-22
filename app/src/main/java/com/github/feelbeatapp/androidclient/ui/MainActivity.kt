@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.github.feelbeatapp.androidclient.auth.AuthManager
-import com.github.feelbeatapp.androidclient.auth.AuthState
 import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,11 +20,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-//        socket.connect("/ws")
+        //        socket.connect("/ws")
 
         val startRoute =
-            if (authManager.isAuthenticated()) FeelBeatRoute.HOME
-            else FeelBeatRoute.LOGIN
+            if (authManager.isAuthenticated()) FeelBeatRoute.HOME else FeelBeatRoute.LOGIN
 
         setContent {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass

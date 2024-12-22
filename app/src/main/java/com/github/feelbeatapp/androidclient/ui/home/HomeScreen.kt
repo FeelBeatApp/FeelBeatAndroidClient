@@ -84,9 +84,6 @@ fun HomeScreen(
                         tint = MaterialTheme.colorScheme.onPrimary)
                   }
             }
-        // TODO wywalic next -> po kliknieciu na playliste -> accept screen, w którym admin może
-        // jeszcze raz edytowac ustawieina, accept screen pasek na dole albo widok pokoju albo
-        // ustawienia?
       }
     }
   }

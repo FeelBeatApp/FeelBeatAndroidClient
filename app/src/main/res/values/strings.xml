@@ -25,5 +25,11 @@
     <string name="player_avatar">Player Avatar</string>
     <string name="music_control">Music Control</string>
     <string name="search">Search</string>
+    <string name="selected_room">Selected Room</string>
+    <string name="save_settings">Save Settings</string>
+    <string name="room_settings">Room Settings</string>
+    <string name="you_guessed_song_correctly">You guessed song correctly!</string>
+    <string name="ups_that_s_not_correct">Ups, that\'s not correct</string>
+    <string name="time_left">time left</string>
     <string name="authorization_server_unreachable">Authorization server is unreachable</string>
 </resources>

@@ -1,11 +1,12 @@
-package com.github.feelbeatapp.androidclient.ui.newRoomSettings
+package com.github.feelbeatapp.androidclient.ui.roomSettings
 
 import androidx.lifecycle.ViewModel
+import com.github.feelbeatapp.androidclient.ui.home.Room
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class NewRoomSettingsViewModel : ViewModel() {
+class RoomSettingsViewModel : ViewModel() {
 
   private val _maxPlayers = MutableStateFlow(0)
   val maxPlayers: StateFlow<Int> = _maxPlayers.asStateFlow()
@@ -19,6 +20,13 @@ class NewRoomSettingsViewModel : ViewModel() {
   private val _playlistLink = MutableStateFlow("")
   val playlistLink: StateFlow<String>
     get() = _playlistLink.asStateFlow()
+
+  fun loadRoomSettings(room: Room) {
+    _maxPlayers.value = room.maxPlayers
+    _snippetDuration.value = room.snippetDuration
+    _pointsToWin.value = room.pointsToWin
+    _playlistLink.value = room.playlistLink
+  }
 
   fun setMaxPlayers(value: Int) {
     _maxPlayers.value = value
