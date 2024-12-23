@@ -22,15 +22,16 @@ import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 @Composable
 fun FeelBeatApp(
     @Suppress("UnusedParameter") widthSizeClass: WindowWidthSizeClass,
+    startScreen: FeelBeatRoute,
     modifier: Modifier = Modifier,
 ) {
     FeelBeatTheme {
         val navController = rememberNavController()
 
         Box(modifier = modifier) {
-            NavHost(navController, startDestination = FeelBeatRoute.LOGIN.name) {
+            NavHost(navController, startDestination = startScreen.name) {
                 composable(route = FeelBeatRoute.LOGIN.name) {
-                    LoginScreen(onLoggedIn = { navController.navigate(FeelBeatRoute.HOME.name) })
+                    LoginScreen()
                 }
                 composable(route = FeelBeatRoute.HOME.name) {
                     HomeScreen(navController = navController)
@@ -67,5 +68,5 @@ fun FeelBeatApp(
 @Preview
 @Composable
 fun AppPreview() {
-    FeelBeatApp(WindowWidthSizeClass.Compact)
+    FeelBeatApp(WindowWidthSizeClass.Compact, FeelBeatRoute.LOGIN)
 }

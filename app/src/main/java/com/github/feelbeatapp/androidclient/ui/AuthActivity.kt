@@ -27,6 +27,7 @@ class AuthActivity : ComponentActivity() {
         val code = intentUri.getQueryParameter("code")
 
         if (error != null || code == null) {
+            authManager.cancelLoginFlow()
             startActivity(Intent(this, MainActivity::class.java))
             return
         }

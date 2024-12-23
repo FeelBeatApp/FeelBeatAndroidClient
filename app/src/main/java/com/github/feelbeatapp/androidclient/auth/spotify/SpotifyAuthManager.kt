@@ -107,6 +107,10 @@ constructor(
         onAuthenticated()
     }
 
+    override fun cancelLoginFlow() {
+        state = AuthState.NOT_AUTHENTICATED
+    }
+
     override suspend fun getAccessToken(): String {
         var auth = checkNotNull(authData) { "Not authenticated" }
         if (hasExpired(auth.expires)) {

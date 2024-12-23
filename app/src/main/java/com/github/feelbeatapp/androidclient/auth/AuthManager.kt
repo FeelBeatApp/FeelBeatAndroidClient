@@ -13,5 +13,7 @@ interface AuthManager {
 
     suspend fun fetchAccessToken(code: String)
 
+    fun cancelLoginFlow()
+
     suspend fun getAccessToken(): String
 }

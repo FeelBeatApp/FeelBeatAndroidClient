@@ -8,17 +8,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.feelbeatapp.androidclient.R
 
 @Composable
-fun LoginScreen(onLoggedIn: () -> Unit, modifier: Modifier = Modifier) {
+fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), modifier: Modifier = Modifier) {
+    val ctx = LocalContext.current
+
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize(),
     ) {
         Text(stringResource(R.string.login_screen))
-        Button(onClick = onLoggedIn) { Text(stringResource(R.string.login_with_spotify)) }
+        Button(onClick = { loginViewModel.login(ctx) }) {
+            Text(stringResource(R.string.login_with_spotify))
+        }
     }
 }
