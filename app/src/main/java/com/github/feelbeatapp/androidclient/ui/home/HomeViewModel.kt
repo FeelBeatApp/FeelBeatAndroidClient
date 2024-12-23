@@ -28,6 +28,7 @@ class HomeViewModel : ViewModel() {
         loadRooms()
     }
 
+    @SuppressWarnings("MagicNumber")
     private fun loadRooms() {
         viewModelScope.launch {
             val exampleRooms =

@@ -30,9 +30,7 @@ fun FeelBeatApp(
 
         Box(modifier = modifier) {
             NavHost(navController, startDestination = startScreen.name) {
-                composable(route = FeelBeatRoute.LOGIN.name) {
-                    LoginScreen()
-                }
+                composable(route = FeelBeatRoute.LOGIN.name) { LoginScreen() }
                 composable(route = FeelBeatRoute.HOME.name) {
                     HomeScreen(navController = navController)
                 }

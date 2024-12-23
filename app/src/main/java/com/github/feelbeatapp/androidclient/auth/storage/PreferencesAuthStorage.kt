@@ -1,13 +1,11 @@
 package com.github.feelbeatapp.androidclient.auth.storage
 
 import android.content.Context
-import android.content.Intent
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.github.feelbeatapp.androidclient.auth.AuthData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.Instant
-import java.time.LocalDate
 import javax.inject.Inject
 
 class PreferencesAuthStorage @Inject constructor(@ApplicationContext ctx: Context) : AuthStorage {

@@ -46,6 +46,7 @@ class AcceptGameViewModel : ViewModel() {
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     private fun loadSongs() {
         viewModelScope.launch {
             val exampleSongs =

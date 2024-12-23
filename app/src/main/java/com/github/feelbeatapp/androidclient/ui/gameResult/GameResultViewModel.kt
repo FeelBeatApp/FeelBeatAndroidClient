@@ -19,6 +19,7 @@ class GameResultViewModel : ViewModel() {
         fetchGameResults()
     }
 
+    @SuppressWarnings("MagicNumber")
     private fun fetchGameResults() {
         viewModelScope.launch {
             val results =

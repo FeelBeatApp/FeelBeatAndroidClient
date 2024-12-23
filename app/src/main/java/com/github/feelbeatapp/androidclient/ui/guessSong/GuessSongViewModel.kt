@@ -59,6 +59,7 @@ class GuessSongViewModel : ViewModel() {
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     private fun loadPlaylist() {
         viewModelScope.launch {
             val examplePlaylist =

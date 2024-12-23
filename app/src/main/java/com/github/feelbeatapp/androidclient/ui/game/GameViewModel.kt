@@ -21,9 +21,7 @@ class GameViewModel @Inject constructor(private val socket: NetworkAgent) : View
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            socket.receiveFlow().collect { msg ->
-                _state.update { GameState(msg) }
-            }
+            socket.receiveFlow().collect { msg -> _state.update { GameState(msg) } }
         }
     }
 
