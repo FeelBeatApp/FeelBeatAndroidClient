@@ -45,99 +45,114 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-  val title = stringResource(R.string.feel_beat)
-  val rooms by viewModel.rooms.collectAsState()
-  val selectedRoom by viewModel.selectedRoom.collectAsState()
+    val title = stringResource(R.string.feel_beat)
+    val rooms by viewModel.rooms.collectAsState()
+    val selectedRoom by viewModel.selectedRoom.collectAsState()
 
-  Scaffold(topBar = { HomeTopBar(title, navController) }) { innerPadding ->
-    Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-      Text(
-          text = stringResource(R.string.current_games),
-          style = MaterialTheme.typography.titleMedium,
-          modifier = Modifier.padding(16.dp))
-      LazyColumn(
-          modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(rooms) { room ->
-              RoomItem(
-                  room = room,
-                  isSelected = room == selectedRoom,
-                  onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) })
+    Scaffold(topBar = { HomeTopBar(title, navController) }) { innerPadding ->
+        Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+            Text(
+                text = stringResource(R.string.current_games),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp),
+            )
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(rooms) { room ->
+                    RoomItem(
+                        room = room,
+                        isSelected = room == selectedRoom,
+                        onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) },
+                    )
+                }
             }
-          }
 
-      Box(modifier = Modifier.fillMaxWidth().padding(bottom = 80.dp, start = 16.dp, end = 16.dp)) {
-        Box(
-            modifier =
-                Modifier.align(Alignment.BottomEnd)
-                    .offset(x = (-15).dp)
-                    .size(60.dp)
-                    .background(
-                        MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.medium)) {
-              IconButton(
-                  onClick = { navController.navigate(FeelBeatRoute.NEW_ROOM_SETTINGS.name) },
-                  modifier = Modifier.fillMaxSize()) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(36.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary)
-                  }
+            Box(
+                modifier =
+                    Modifier.fillMaxWidth().padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
+            ) {
+                Box(
+                    modifier =
+                        Modifier.align(Alignment.BottomEnd)
+                            .offset(x = (-15).dp)
+                            .size(60.dp)
+                            .background(
+                                MaterialTheme.colorScheme.primary,
+                                shape = MaterialTheme.shapes.medium,
+                            )
+                ) {
+                    IconButton(
+                        onClick = { navController.navigate(FeelBeatRoute.NEW_ROOM_SETTINGS.name) },
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add",
+                            modifier = Modifier.size(36.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
             }
-      }
+        }
     }
-  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(title: String, navController: NavController) {
-  CenterAlignedTopAppBar(
-      title = { Text(title) },
-      colors =
-          TopAppBarDefaults.topAppBarColors(
-              containerColor = MaterialTheme.colorScheme.primaryContainer,
-              titleContentColor = MaterialTheme.colorScheme.primary,
-          ),
-      actions = {
-        IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCOUNT_SETTINGS.name) }) {
-          Icon(
-              imageVector = Icons.Outlined.Person,
-              contentDescription = stringResource(R.string.account),
-          )
-        }
-      },
-  )
+    CenterAlignedTopAppBar(
+        title = { Text(title) },
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.primary,
+            ),
+        actions = {
+            IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCOUNT_SETTINGS.name) }) {
+                Icon(
+                    imageVector = Icons.Outlined.Person,
+                    contentDescription = stringResource(R.string.account),
+                )
+            }
+        },
+    )
 }
 
 @Composable
 fun RoomItem(room: Room, isSelected: Boolean, onClick: () -> Unit) {
-  Card(
-      onClick = onClick,
-      colors =
-          CardDefaults.cardColors(
-              containerColor =
-                  if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                  else MaterialTheme.colorScheme.surface),
-      modifier =
-          Modifier.fillMaxWidth()
-              .padding(8.dp)
-              .border(
-                  width = 1.dp,
-                  color = MaterialTheme.colorScheme.outline,
-                  shape = MaterialTheme.shapes.medium)) {
+    Card(
+        onClick = onClick,
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surface
+            ),
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(8.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = MaterialTheme.shapes.medium,
+                ),
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
-          Text(
-              text = room.name,
-              style = MaterialTheme.typography.bodyLarge,
-              modifier = Modifier.weight(1f))
+            Text(
+                text = room.name,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f),
+            )
         }
-      }
+    }
 }
 
 @Preview
 @Composable
 fun HomePreview() {
-  val navController = rememberNavController()
-  HomeScreen(navController = navController)
+    val navController = rememberNavController()
+    HomeScreen(navController = navController)
 }

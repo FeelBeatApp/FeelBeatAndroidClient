@@ -13,12 +13,12 @@ import com.github.feelbeatapp.androidclient.R
 
 @Composable
 fun LoginScreen(onLoggedIn: () -> Unit, modifier: Modifier = Modifier) {
-  Column(
-      verticalArrangement = Arrangement.SpaceEvenly,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier.fillMaxSize(),
-  ) {
-    Text(stringResource(R.string.login_screen))
-    Button(onClick = onLoggedIn) { Text(stringResource(R.string.login_with_spotify)) }
-  }
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        Text(stringResource(R.string.login_screen))
+        Button(onClick = onLoggedIn) { Text(stringResource(R.string.login_with_spotify)) }
+    }
 }

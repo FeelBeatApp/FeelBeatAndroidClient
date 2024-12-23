@@ -24,46 +24,48 @@ fun FeelBeatApp(
     @Suppress("UnusedParameter") widthSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
-  FeelBeatTheme {
-    val navController = rememberNavController()
+    FeelBeatTheme {
+        val navController = rememberNavController()
 
-    Box(modifier = modifier) {
-      NavHost(navController, startDestination = FeelBeatRoute.LOGIN.name) {
-        composable(route = FeelBeatRoute.LOGIN.name) {
-          LoginScreen(onLoggedIn = { navController.navigate(FeelBeatRoute.HOME.name) })
+        Box(modifier = modifier) {
+            NavHost(navController, startDestination = FeelBeatRoute.LOGIN.name) {
+                composable(route = FeelBeatRoute.LOGIN.name) {
+                    LoginScreen(onLoggedIn = { navController.navigate(FeelBeatRoute.HOME.name) })
+                }
+                composable(route = FeelBeatRoute.HOME.name) {
+                    HomeScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.NEW_ROOM_SETTINGS.name) {
+                    NewRoomSettingsScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.ROOM_SETTINGS.name) {
+                    RoomSettingsScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
+                    AcceptGameScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.ACCOUNT_SETTINGS.name) {
+                    // AccountSettingsScreen(parentNavController = navController)
+                }
+                composable(route = FeelBeatRoute.GAME_RESULT.name) {
+                    GameResultScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.GUESS_SONG.name) {
+                    GuessSongScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.GUESS_RESULT.name) {
+                    GuessResultScreen(navController = navController)
+                }
+                composable(route = FeelBeatRoute.START_GAME.name) {
+                    StartGameScreen(navController = navController)
+                }
+            }
         }
-        composable(route = FeelBeatRoute.HOME.name) { HomeScreen(navController = navController) }
-        composable(route = FeelBeatRoute.NEW_ROOM_SETTINGS.name) {
-          NewRoomSettingsScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.ROOM_SETTINGS.name) {
-          RoomSettingsScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
-          AcceptGameScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.ACCOUNT_SETTINGS.name) {
-          // AccountSettingsScreen(parentNavController = navController)
-        }
-        composable(route = FeelBeatRoute.GAME_RESULT.name) {
-          GameResultScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.GUESS_SONG.name) {
-          GuessSongScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.GUESS_RESULT.name) {
-          GuessResultScreen(navController = navController)
-        }
-        composable(route = FeelBeatRoute.START_GAME.name) {
-          StartGameScreen(navController = navController)
-        }
-      }
     }
-  }
 }
 
 @Preview
 @Composable
 fun AppPreview() {
-  FeelBeatApp(WindowWidthSizeClass.Compact)
+    FeelBeatApp(WindowWidthSizeClass.Compact)
 }

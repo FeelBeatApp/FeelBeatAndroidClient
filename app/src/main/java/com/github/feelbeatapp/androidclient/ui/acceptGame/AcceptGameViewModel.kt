@@ -8,6 +8,7 @@ import com.github.feelbeatapp.androidclient.ui.startGame.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class Song(val id: Int, val title: String)
@@ -20,39 +21,42 @@ data class GameState(
     val selectedRoom: Room? = null,
     val playlist: Playlist = Playlist(name = "Playlist #1", songs = emptyList()),
     val snippetDuration: Int = 30,
-    val pointsToWin: Int = 10
+    val pointsToWin: Int = 10,
 )
 
 class AcceptGameViewModel : ViewModel() {
-  private val _gameState = MutableStateFlow(GameState())
-  val gameState: StateFlow<GameState> = _gameState.asStateFlow()
+    private val _gameState = MutableStateFlow(GameState())
+    val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
-  init {
-    loadPlayers()
-    loadSongs()
-  }
-
-  private fun loadPlayers() {
-    viewModelScope.launch {
-      val examplePlayers =
-          listOf(
-              Player("User123", R.drawable.userimage),
-              Player("User456", R.drawable.userimage),
-              Player("User789", R.drawable.userimage))
-      _gameState.emit(_gameState.value.copy(players = examplePlayers))
+    init {
+        loadPlayers()
+        loadSongs()
     }
-  }
 
-  private fun loadSongs() {
-    viewModelScope.launch {
-      val exampleSongs =
-          listOf(
-              Song(1, "Song 1"),
-              Song(2, "Song 2"),
-              Song(3, "Song 3"),
-              Song(4, "Song 4"),
-              Song(5, "Song 5"))
-      _gameState.emit(_gameState.value.copy(songs = exampleSongs))
+    private fun loadPlayers() {
+        viewModelScope.launch {
+            val examplePlayers =
+                listOf(
+                    Player("User123", R.drawable.userimage),
+                    Player("User456", R.drawable.userimage),
+                    Player("User789", R.drawable.userimage),
+                )
+
+            _gameState.update { it.copy(players = examplePlayers) }
+        }
     }
-  }
+
+    private fun loadSongs() {
+        viewModelScope.launch {
+            val exampleSongs =
+                listOf(
+                    Song(1, "Song 1"),
+                    Song(2, "Song 2"),
+                    Song(3, "Song 3"),
+                    Song(4, "Song 4"),
+                    Song(5, "Song 5"),
+                )
+            _gameState.update { it.copy(songs = exampleSongs) }
+        }
+    }
 }

@@ -35,56 +35,60 @@ import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 @Composable
 fun StartGameScreen(
     viewModel: StartGameViewModel = StartGameViewModel(),
-    navController: NavController
+    navController: NavController,
 ) {
-  val players by viewModel.players.collectAsState()
-  var countdown by remember { mutableIntStateOf(value = 3) }
+    val players by viewModel.players.collectAsState()
+    var countdown by remember { mutableIntStateOf(value = 3) }
 
-  LaunchedEffect(key1 = countdown) {
-    if (countdown > 0) {
-      kotlinx.coroutines.delay(timeMillis = 1000)
-      countdown -= 1
-    } else {
-      navController.navigate(FeelBeatRoute.GUESS_SONG.name)
+    LaunchedEffect(key1 = countdown) {
+        if (countdown > 0) {
+            kotlinx.coroutines.delay(timeMillis = 1000)
+            countdown -= 1
+        } else {
+            navController.navigate(FeelBeatRoute.GUESS_SONG.name)
+        }
     }
-  }
 
-  Column(
-      modifier =
-          Modifier.fillMaxSize().padding(16.dp).background(MaterialTheme.colorScheme.background),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.SpaceEvenly) {
+    Column(
+        modifier =
+            Modifier.fillMaxSize().padding(16.dp).background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+    ) {
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-          players.forEach { player -> PlayerCard(player = player) }
+            players.forEach { player -> PlayerCard(player = player) }
         }
         Text(
             text = countdown.toString(),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(top = 32.dp))
-      }
+            modifier = Modifier.padding(top = 32.dp),
+        )
+    }
 }
 
 @Composable
 fun PlayerCard(player: Player) {
-  Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
-    Image(
-        painter = painterResource(id = player.image),
-        contentDescription = stringResource(R.string.player_image),
-        modifier =
-            Modifier.size(80.dp)
-                .clip(CircleShape)
-                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape))
-    Text(
-        text = player.name,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(top = 10.dp))
-  }
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
+        Image(
+            painter = painterResource(id = player.image),
+            contentDescription = stringResource(R.string.player_image),
+            modifier =
+                Modifier.size(80.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+        )
+        Text(
+            text = player.name,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(top = 10.dp),
+        )
+    }
 }
 
 @Preview
 @Composable
 fun StartGamePreview() {
-  val navController = rememberNavController()
-  StartGameScreen(navController = navController)
+    val navController = rememberNavController()
+    StartGameScreen(navController = navController)
 }

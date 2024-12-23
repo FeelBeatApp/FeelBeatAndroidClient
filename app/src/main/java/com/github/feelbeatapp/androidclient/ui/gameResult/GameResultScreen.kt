@@ -36,55 +36,61 @@ import com.github.feelbeatapp.androidclient.ui.guessSong.PlayerWithResult
 @Composable
 fun GameResultScreen(
     navController: NavController,
-    viewModel: GameResultViewModel = GameResultViewModel()
+    viewModel: GameResultViewModel = GameResultViewModel(),
 ) {
-  val players by viewModel.players.collectAsState()
+    val players by viewModel.players.collectAsState()
 
-  Column(
-      modifier = Modifier.fillMaxSize().padding(16.dp),
-      verticalArrangement = Arrangement.SpaceBetween,
-      horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(
             text = "Game Results",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold)
+            fontWeight = FontWeight.Bold,
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)) {
-              items(players) { player -> PlayerScoreItem(player = player) }
-            }
+            contentPadding = PaddingValues(8.dp),
+        ) {
+            items(players) { player -> PlayerScoreItem(player = player) }
+        }
 
         Button(
             onClick = { navController.navigate(FeelBeatRoute.HOME) },
-            modifier = Modifier.padding(vertical = 16.dp)) {
-              Text(text = "CLOSE")
-            }
-      }
+            modifier = Modifier.padding(vertical = 16.dp),
+        ) {
+            Text(text = "CLOSE")
+        }
+    }
 }
 
 @Composable
 fun PlayerScoreItem(player: PlayerWithResult) {
-  Box(modifier = Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-      Image(
-          painter = painterResource(R.drawable.userimage),
-          contentDescription = "Player Avatar",
-          modifier = Modifier.size(48.dp).clip(CircleShape))
-      Text(
-          text = "${player.player.name}: ${player.points} points",
-          style = MaterialTheme.typography.bodyLarge,
-          fontWeight = FontWeight.Bold,
-          color = Color.Black,
-          modifier = Modifier.padding(start = 16.dp))
+    Box(modifier = Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(R.drawable.userimage),
+                contentDescription = "Player Avatar",
+                modifier = Modifier.size(48.dp).clip(CircleShape),
+            )
+            Text(
+                text = "${player.player.name}: ${player.points} points",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 16.dp),
+            )
+        }
     }
-  }
 }
 
 @Preview
 @Composable
 fun GameResultPreview() {
-  val navController = rememberNavController()
-  GameResultScreen(navController = navController)
+    val navController = rememberNavController()
+    GameResultScreen(navController = navController)
 }

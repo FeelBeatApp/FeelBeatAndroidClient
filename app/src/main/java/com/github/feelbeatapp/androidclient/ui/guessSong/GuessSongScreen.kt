@@ -52,140 +52,155 @@ import kotlinx.coroutines.delay
 @Composable
 fun GuessSongScreen(
     navController: NavController,
-    viewModel: GuessSongViewModel = GuessSongViewModel()
+    viewModel: GuessSongViewModel = GuessSongViewModel(),
 ) {
-  val guessState by viewModel.guessState.collectAsState()
-  var timeLeft by remember { mutableIntStateOf(guessState.snippetDuration) }
+    val guessState by viewModel.guessState.collectAsState()
+    var timeLeft by remember { mutableIntStateOf(guessState.snippetDuration) }
 
-  LaunchedEffect(key1 = timeLeft) {
-    if (timeLeft > 0) {
-      delay(timeMillis = 1000)
-      timeLeft -= 1
-    } else {
-      navController.navigate(FeelBeatRoute.GUESS_RESULT.name)
+    LaunchedEffect(key1 = timeLeft) {
+        if (timeLeft > 0) {
+            delay(timeMillis = 1000)
+            timeLeft -= 1
+        } else {
+            navController.navigate(FeelBeatRoute.GUESS_RESULT.name)
+        }
     }
-  }
 
-  Scaffold(
-      topBar = {
-        TopAppBar(
-            title = { Text(guessState.playlist.name) },
-            actions = {
-              Text(
-                  text = timeLeft.toString(),
-                  style = MaterialTheme.typography.bodyLarge,
-                  modifier = Modifier.padding(end = 16.dp))
-            })
-      }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(guessState.playlist.name) },
+                actions = {
+                    Text(
+                        text = timeLeft.toString(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(end = 16.dp),
+                    )
+                },
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues).fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
-              Row(
-                  horizontalArrangement = Arrangement.spacedBy(8.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-                  modifier = Modifier.fillMaxWidth()) {
-                    guessState.players.forEach { playerWithResult ->
-                      PlayerStatusIcon(player = playerWithResult)
-                    }
-                  }
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                guessState.players.forEach { playerWithResult ->
+                    PlayerStatusIcon(player = playerWithResult)
+                }
+            }
 
-              MusicControlSlider()
+            MusicControlSlider()
 
-              Column {
+            Column {
                 Text(
                     text = stringResource(R.string.guess_the_song),
-                    style = MaterialTheme.typography.bodyMedium)
+                    style = MaterialTheme.typography.bodyMedium,
+                )
                 SearchBar(
                     searchQuery = guessState.searchQuery,
-                    onSearchQueryChange = { viewModel.updateSearchQuery(it) })
-              }
-
-              LazyColumn(
-                  verticalArrangement = Arrangement.spacedBy(8.dp),
-                  modifier = Modifier.fillMaxSize()) {
-                    items(guessState.songs.size) { index ->
-                      SongItem(
-                          song = guessState.songs[index],
-                          onClick = { navController.navigate(FeelBeatRoute.GUESS_RESULT.name) })
-                    }
-                  }
+                    onSearchQueryChange = { viewModel.updateSearchQuery(it) },
+                )
             }
-      }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(guessState.songs.size) { index ->
+                    SongItem(
+                        song = guessState.songs[index],
+                        onClick = { navController.navigate(FeelBeatRoute.GUESS_RESULT.name) },
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun PlayerStatusIcon(player: PlayerWithResult) {
-  val icon =
-      when (player.resultStatus) {
-        ResultStatus.CORRECT -> Icons.Outlined.Done
-        ResultStatus.WRONG -> Icons.Outlined.Close
-        ResultStatus.NORESPONSE -> null
-      }
-  val color =
-      when (player.resultStatus) {
-        ResultStatus.CORRECT -> Color.Green
-        ResultStatus.WRONG -> Color.Red
-        ResultStatus.NORESPONSE -> Color.Gray
-      }
+    val icon =
+        when (player.resultStatus) {
+            ResultStatus.CORRECT -> Icons.Outlined.Done
+            ResultStatus.WRONG -> Icons.Outlined.Close
+            ResultStatus.NORESPONSE -> null
+        }
+    val color =
+        when (player.resultStatus) {
+            ResultStatus.CORRECT -> Color.Green
+            ResultStatus.WRONG -> Color.Red
+            ResultStatus.NORESPONSE -> Color.Gray
+        }
 
-  Box(modifier = Modifier.size(48.dp)) {
-    Image(
-        painter = painterResource(id = player.player.image),
-        contentDescription = stringResource(R.string.player_avatar),
-        modifier = Modifier.size(48.dp).clip(CircleShape))
-    icon?.let {
-      Icon(
-          imageVector = it,
-          tint = color,
-          contentDescription = null,
-          modifier = Modifier.align(Alignment.BottomEnd).size(16.dp))
+    Box(modifier = Modifier.size(48.dp)) {
+        Image(
+            painter = painterResource(id = player.player.image),
+            contentDescription = stringResource(R.string.player_avatar),
+            modifier = Modifier.size(48.dp).clip(CircleShape),
+        )
+        icon?.let {
+            Icon(
+                imageVector = it,
+                tint = color,
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.BottomEnd).size(16.dp),
+            )
+        }
     }
-  }
 }
 
 @Composable
 fun MusicControlSlider() {
-  Column {
-    Text(stringResource(R.string.music_control), style = MaterialTheme.typography.bodyMedium)
-    Slider(
-        value = 0.5f,
-        onValueChange = { /* TODO Handle slider change */ },
-        modifier = Modifier.fillMaxWidth())
-  }
+    Column {
+        Text(stringResource(R.string.music_control), style = MaterialTheme.typography.bodyMedium)
+        Slider(
+            value = 0.5f,
+            onValueChange = { /* TODO Handle slider change */ },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @Composable
 fun SearchBar(searchQuery: TextFieldValue, onSearchQueryChange: (TextFieldValue) -> Unit) {
-  Row(
-      modifier =
-          Modifier.fillMaxWidth()
-              .border(1.dp, Color.Gray, MaterialTheme.shapes.small)
-              .padding(8.dp),
-      verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(1.dp, Color.Gray, MaterialTheme.shapes.small)
+                .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         BasicTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
             singleLine = true,
-            modifier = Modifier.weight(1f))
+            modifier = Modifier.weight(1f),
+        )
         Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
-      }
+    }
 }
 
 @Composable
 fun SongItem(song: Song, onClick: () -> Unit) {
-  Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
-          Column { Text(song.title, style = MaterialTheme.typography.bodyLarge) }
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column { Text(song.title, style = MaterialTheme.typography.bodyLarge) }
         }
-  }
+    }
 }
 
 @Preview
 @Composable
 fun GuessSongPreview() {
-  val nav = rememberNavController()
-  GuessSongScreen(navController = nav)
+    val nav = rememberNavController()
+    GuessSongScreen(navController = nav)
 }
