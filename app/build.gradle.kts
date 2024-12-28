@@ -112,6 +112,7 @@ dependencies {
     implementation(libs.io.ktor.client)
     implementation(libs.io.ktor.content.negotiation)
     implementation(libs.io.ktor.json.serialization)
+    implementation(libs.fuzzywuzzy)
 
     // hilt
     implementation(libs.hilt)

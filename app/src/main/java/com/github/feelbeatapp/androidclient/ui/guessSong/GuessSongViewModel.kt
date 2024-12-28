@@ -12,12 +12,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.xdrop.fuzzywuzzy.FuzzySearch
 
 data class PlayerWithResult(val player: Player, val resultStatus: ResultStatus, val points: Int)
 
 data class GuessState(
     val players: List<PlayerWithResult> = emptyList(),
     val songs: List<Song> = emptyList(),
+    val filteredSongs: List<Song> = emptyList(),
     val selectedRoom: Room? = null,
     val playlist: Playlist = Playlist(name = "Playlist #1", songs = emptyList()),
     val snippetDuration: Int = 30,
@@ -62,22 +64,38 @@ class GuessSongViewModel : ViewModel() {
     @SuppressWarnings("MagicNumber")
     private fun loadPlaylist() {
         viewModelScope.launch {
-            val examplePlaylist =
-                listOf(
-                    Song(1, "Song 1"),
-                    Song(2, "Song 2"),
-                    Song(3, "Song 3"),
-                    Song(4, "Song 4"),
-                    Song(5, "Song 5"),
-                    Song(6, "Song 6"),
-                )
-            _guessState.value =
-                _guessState.value.copy(songs = examplePlaylist, currentSong = examplePlaylist[0])
+            val examplePlaylist = listOf(
+                Song(1, "Hello"),
+                Song(2, "Highway to Hell"),
+                Song(3, "Hell's Comin' with Me"),
+                Song(4, "Riptide"),
+                Song(5, "Rozmowa"),
+                Song(6, "Rower"),
+                Song(7, "Rozmowa"),
+                Song(8, "Róż"),
+                Song(9, "Rota"),
+                Song(9, "Szarość i Róż")
+            )
+            _guessState.value = _guessState.value.copy(
+                songs = examplePlaylist, currentSong = examplePlaylist[0])
         }
     }
 
-    fun updateSearchQuery(newQuery: TextFieldValue) {
-        _guessState.value = _guessState.value.copy(searchQuery = newQuery)
+    fun updateSearchQuery(query: TextFieldValue) {
+        _guessState.value = _guessState.value.copy(searchQuery = query)
+        performSearch(query.text)
+    }
+
+    @SuppressWarnings("MagicNumber")
+    private fun performSearch(query: String) {
+        if (query.isBlank()) {
+            _guessState.value = _guessState.value.copy(filteredSongs = _guessState.value.songs)
+        } else {
+            val filteredList = _guessState.value.songs.filter { song ->
+                FuzzySearch.ratio(song.title.lowercase(), query.lowercase()) > 70
+            }
+            _guessState.value = _guessState.value.copy(filteredSongs = filteredList)
+        }
     }
 
     fun submitAnswer(playerName: String, isCorrect: Boolean) {
