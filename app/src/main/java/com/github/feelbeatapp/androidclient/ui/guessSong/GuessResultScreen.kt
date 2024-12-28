@@ -72,7 +72,7 @@ fun GuessResultScreen(
                 if (guessState.players.any { it.resultStatus == ResultStatus.CORRECT }) {
                     stringResource(R.string.you_guessed_song_correctly)
                 } else {
-                    stringResource(R.string.ups_that_s_not_correct)
+                    stringResource(R.string.ups_that_s_not_correct_answer)
                 },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,

@@ -26,12 +26,8 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +42,6 @@ import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.acceptGame.Song
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,15 +50,11 @@ fun GuessSongScreen(
     viewModel: GuessSongViewModel = GuessSongViewModel(),
 ) {
     val guessState by viewModel.guessState.collectAsState()
-    var timeLeft by remember { mutableIntStateOf(guessState.snippetDuration) }
+    val timeLeft by viewModel.timeLeft.collectAsState()
+    val gameEnded by viewModel.gameEnded.collectAsState()
 
-    LaunchedEffect(key1 = timeLeft) {
-        if (timeLeft > 0) {
-            delay(timeMillis = 1000)
-            timeLeft -= 1
-        } else {
-            navController.navigate(FeelBeatRoute.GUESS_RESULT.name)
-        }
+    if (gameEnded) {
+        navController.navigate(FeelBeatRoute.GUESS_RESULT.name)
     }
 
     Scaffold(
@@ -111,9 +102,9 @@ fun GuessSongScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(guessState.songs.size) { index ->
+                items(guessState.filteredSongs.size) { index ->
                     SongItem(
-                        song = guessState.songs[index],
+                        song = guessState.filteredSongs[index],
                         onClick = { navController.navigate(FeelBeatRoute.GUESS_RESULT.name) },
                     )
                 }
