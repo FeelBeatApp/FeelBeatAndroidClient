@@ -1,7 +1,7 @@
 package com.github.feelbeatapp.androidclient.ui.roomSettings
 
 import androidx.lifecycle.ViewModel
-import com.github.feelbeatapp.androidclient.ui.home.Room
+import com.github.feelbeatapp.androidclient.ui.state.Room
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

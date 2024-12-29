@@ -3,26 +3,14 @@ package com.github.feelbeatapp.androidclient.ui.acceptGame
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.home.Room
-import com.github.feelbeatapp.androidclient.ui.startGame.Player
+import com.github.feelbeatapp.androidclient.ui.state.GameState
+import com.github.feelbeatapp.androidclient.ui.state.Player
+import com.github.feelbeatapp.androidclient.ui.state.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class Song(val id: Int, val title: String)
-
-data class Playlist(val name: String, val songs: List<Song>)
-
-data class GameState(
-    val players: List<Player> = emptyList(),
-    val songs: List<Song> = emptyList(),
-    val selectedRoom: Room? = null,
-    val playlist: Playlist = Playlist(name = "Playlist #1", songs = emptyList()),
-    val snippetDuration: Int = 30,
-    val pointsToWin: Int = 10,
-)
 
 class AcceptGameViewModel : ViewModel() {
     private val _gameState = MutableStateFlow(GameState())

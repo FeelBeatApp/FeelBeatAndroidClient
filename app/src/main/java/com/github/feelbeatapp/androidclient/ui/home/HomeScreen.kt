@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
+import com.github.feelbeatapp.androidclient.ui.state.Room
 
 @Composable
 fun HomeScreen(

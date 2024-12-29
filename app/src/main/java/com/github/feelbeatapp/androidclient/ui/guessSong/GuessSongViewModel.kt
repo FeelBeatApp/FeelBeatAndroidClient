@@ -4,30 +4,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.acceptGame.Playlist
-import com.github.feelbeatapp.androidclient.ui.acceptGame.Song
-import com.github.feelbeatapp.androidclient.ui.home.Room
-import com.github.feelbeatapp.androidclient.ui.startGame.Player
+import com.github.feelbeatapp.androidclient.ui.state.GuessState
+import com.github.feelbeatapp.androidclient.ui.state.Player
+import com.github.feelbeatapp.androidclient.ui.state.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.state.Song
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
-
-data class PlayerWithResult(val player: Player, val resultStatus: ResultStatus, val points: Int)
-
-data class GuessState(
-    val players: List<PlayerWithResult> = emptyList(),
-    val songs: List<Song> = emptyList(),
-    val filteredSongs: List<Song> = emptyList(),
-    val selectedRoom: Room? = null,
-    val playlist: Playlist = Playlist(name = "Playlist #1", songs = emptyList()),
-    val snippetDuration: Int = 30,
-    val pointsToWin: Int = 10,
-    val searchQuery: TextFieldValue = TextFieldValue(""),
-    val currentSong: Song? = null,
-)
 
 class GuessSongViewModel : ViewModel() {
     private val _guessState = MutableStateFlow(GuessState())

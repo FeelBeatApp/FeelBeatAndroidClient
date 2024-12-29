@@ -2,19 +2,11 @@ package com.github.feelbeatapp.androidclient.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.feelbeatapp.androidclient.ui.state.Room
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-data class Room(
-    val id: Int,
-    val name: String,
-    val maxPlayers: Int,
-    val snippetDuration: Int,
-    val pointsToWin: Int,
-    val playlistLink: String,
-)
 
 class HomeViewModel : ViewModel() {
 

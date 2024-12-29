@@ -3,9 +3,9 @@ package com.github.feelbeatapp.androidclient.ui.gameResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.guessSong.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.state.Player
+import com.github.feelbeatapp.androidclient.ui.state.PlayerWithResult
 import com.github.feelbeatapp.androidclient.ui.guessSong.ResultStatus
-import com.github.feelbeatapp.androidclient.ui.startGame.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
