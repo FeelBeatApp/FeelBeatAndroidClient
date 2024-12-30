@@ -35,4 +35,8 @@ class PreferencesAuthStorage @Inject constructor(@ApplicationContext ctx: Contex
 
         return AuthData(accessToken = accessToken, refreshToken = refreshToken, expires = expires)
     }
+
+    override fun clearAuthData() {
+        preferences.edit().clear().apply()
+    }
 }

@@ -22,6 +22,7 @@ import java.io.IOException
 import java.time.Instant
 import javax.inject.Inject
 
+@SuppressWarnings("TooManyFunctions")
 class SpotifyAuthManager
 @Inject
 constructor(
@@ -175,5 +176,20 @@ constructor(
             refreshToken = tokenResponse.refreshToken,
             expires = calculateExpiration(tokenResponse.expiresIn),
         )
+    }
+
+    override fun logout(ctx: Context) {
+        try {
+            authStorage.clearAuthData()
+            authData = null
+            state = AuthState.NOT_AUTHENTICATED
+
+//            val logoutUri = Uri.parse("https://accounts.spotify.com/logout")
+//            val logoutIntent = CustomTabsIntent.Builder().build()
+//            logoutIntent.launchUrl(ctx, logoutUri)
+        } catch (e: Exception) {
+            Log.e("SpotifyAuth", "Error during logout", e)
+            throw FeelBeatException(ErrorCode.AUTHENTICATION_LOGOUT_ERROR, e)
+        }
     }
 }

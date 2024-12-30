@@ -6,4 +6,6 @@ interface AuthStorage {
     fun storeAuthData(data: AuthData)
 
     fun retrieveAuthData(): AuthData?
+
+    fun clearAuthData()
 }

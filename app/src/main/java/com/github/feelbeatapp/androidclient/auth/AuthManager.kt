@@ -16,4 +16,6 @@ interface AuthManager {
     fun cancelLoginFlow()
 
     suspend fun getAccessToken(): String
+
+    fun logout(ctx: Context)
 }
