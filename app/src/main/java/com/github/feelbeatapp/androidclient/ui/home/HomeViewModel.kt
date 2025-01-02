@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.auth.AuthManager
-import com.github.feelbeatapp.androidclient.ui.state.Room
+import com.github.feelbeatapp.androidclient.model.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

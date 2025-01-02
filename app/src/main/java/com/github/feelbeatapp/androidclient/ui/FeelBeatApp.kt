@@ -8,15 +8,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.feelbeatapp.androidclient.ui.acceptGame.AcceptGameScreen
-import com.github.feelbeatapp.androidclient.ui.gameResult.GameResultScreen
-import com.github.feelbeatapp.androidclient.ui.guessSong.GuessResultScreen
-import com.github.feelbeatapp.androidclient.ui.guessSong.GuessSongScreen
+import com.github.feelbeatapp.androidclient.ui.acceptgame.AcceptGameScreen
+import com.github.feelbeatapp.androidclient.ui.gameresult.GameResultScreen
+import com.github.feelbeatapp.androidclient.ui.guesssong.GuessResultScreen
+import com.github.feelbeatapp.androidclient.ui.guesssong.GuessSongScreen
 import com.github.feelbeatapp.androidclient.ui.home.HomeScreen
 import com.github.feelbeatapp.androidclient.ui.login.LoginScreen
-import com.github.feelbeatapp.androidclient.ui.newRoomSettings.NewRoomSettingsScreen
-import com.github.feelbeatapp.androidclient.ui.roomSettings.RoomSettingsScreen
-import com.github.feelbeatapp.androidclient.ui.startGame.StartGameScreen
+import com.github.feelbeatapp.androidclient.ui.roomsettings.screens.EditRoomSettingsScreen
+import com.github.feelbeatapp.androidclient.ui.roomsettings.screens.NewRoomSettingsScreen
+import com.github.feelbeatapp.androidclient.ui.startgame.StartGameScreen
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
@@ -38,7 +38,7 @@ fun FeelBeatApp(
                     NewRoomSettingsScreen(navController = navController)
                 }
                 composable(route = FeelBeatRoute.ROOM_SETTINGS.name) {
-                    RoomSettingsScreen(navController = navController)
+                    EditRoomSettingsScreen(navController = navController)
                 }
                 composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
                     AcceptGameScreen(navController = navController)
