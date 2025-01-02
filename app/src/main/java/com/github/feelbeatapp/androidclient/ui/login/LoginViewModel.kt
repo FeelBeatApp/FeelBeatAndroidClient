@@ -11,8 +11,4 @@ class LoginViewModel @Inject constructor(private val authManager: AuthManager) :
     fun login(ctx: Context) {
         authManager.startLoginFlow(ctx)
     }
-
-    fun getAuthManager(): AuthManager {
-        return authManager
-    }
 }

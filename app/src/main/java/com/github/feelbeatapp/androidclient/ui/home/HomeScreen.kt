@@ -40,19 +40,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.state.Room
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = HomeViewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
     navController: NavController,
-    authManager: AuthManager,
 ) {
     val title = stringResource(R.string.feel_beat)
     val rooms by viewModel.rooms.collectAsState()
@@ -63,10 +63,13 @@ fun HomeScreen(
 
     if (isBottomSheetVisible) {
         ModalBottomSheet(onDismissRequest = { isBottomSheetVisible = false }) {
-            UserAccountBottomSheetContent(onLogoutClick = {
-                authManager.logout(ctx = ctx)
-                navController.navigate(FeelBeatRoute.LOGIN.name)
-            })
+            UserAccountBottomSheetContent(
+                onLogoutClick = {
+                    viewModel.logout(ctx)
+                    isBottomSheetVisible = false
+                    navController.navigate(FeelBeatRoute.LOGIN.name)
+                }
+            )
         }
     }
 
@@ -209,6 +212,6 @@ fun RoomItem(room: Room, isSelected: Boolean, onClick: () -> Unit) {
 @Preview
 @Composable
 fun HomePreview() {
-    // val navController = rememberNavController()
-    // HomeScreen(navController = navController)
+    val navController = rememberNavController()
+    HomeScreen(navController = navController)
 }

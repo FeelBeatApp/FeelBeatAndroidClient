@@ -5,7 +5,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,7 +14,6 @@ import com.github.feelbeatapp.androidclient.ui.guessSong.GuessResultScreen
 import com.github.feelbeatapp.androidclient.ui.guessSong.GuessSongScreen
 import com.github.feelbeatapp.androidclient.ui.home.HomeScreen
 import com.github.feelbeatapp.androidclient.ui.login.LoginScreen
-import com.github.feelbeatapp.androidclient.ui.login.LoginViewModel
 import com.github.feelbeatapp.androidclient.ui.newRoomSettings.NewRoomSettingsScreen
 import com.github.feelbeatapp.androidclient.ui.roomSettings.RoomSettingsScreen
 import com.github.feelbeatapp.androidclient.ui.startGame.StartGameScreen
@@ -26,7 +24,6 @@ fun FeelBeatApp(
     @Suppress("UnusedParameter") widthSizeClass: WindowWidthSizeClass,
     startScreen: FeelBeatRoute,
     modifier: Modifier = Modifier,
-    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     FeelBeatTheme {
         val navController = rememberNavController()
@@ -35,10 +32,7 @@ fun FeelBeatApp(
             NavHost(navController, startDestination = startScreen.name) {
                 composable(route = FeelBeatRoute.LOGIN.name) { LoginScreen() }
                 composable(route = FeelBeatRoute.HOME.name) {
-                    HomeScreen(
-                        navController = navController,
-                        authManager = loginViewModel.getAuthManager()
-                    )
+                    HomeScreen(navController = navController)
                 }
                 composable(route = FeelBeatRoute.NEW_ROOM_SETTINGS.name) {
                     NewRoomSettingsScreen(navController = navController)
@@ -48,9 +42,6 @@ fun FeelBeatApp(
                 }
                 composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
                     AcceptGameScreen(navController = navController)
-                }
-                composable(route = FeelBeatRoute.ACCOUNT_SETTINGS.name) {
-                    // AccountSettingsScreen(parentNavController = navController)
                 }
                 composable(route = FeelBeatRoute.GAME_RESULT.name) {
                     GameResultScreen(navController = navController)

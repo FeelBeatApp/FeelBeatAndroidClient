@@ -12,8 +12,7 @@ complexity:
   LongParameterList:
     ignoreDefaultParameters: true
   TooManyFunctions:
-    ignoreAnnotated:
-      - 'Preview'
+    active: false
 
 style:
   ThrowsCount:

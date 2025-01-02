@@ -1,15 +1,19 @@
 package com.github.feelbeatapp.androidclient.ui.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.ui.state.Room
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
-
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val authManager: AuthManager) : ViewModel() {
     private val _rooms = MutableStateFlow<List<Room>>(emptyList())
     val rooms: StateFlow<List<Room>> = _rooms.asStateFlow()
 
@@ -18,6 +22,10 @@ class HomeViewModel : ViewModel() {
 
     init {
         loadRooms()
+    }
+
+    fun logout(ctx: Context) {
+        authManager.logout(ctx)
     }
 
     @SuppressWarnings("MagicNumber")
