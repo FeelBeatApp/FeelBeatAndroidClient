@@ -14,9 +14,9 @@
     <string name="points_to_win_val">Points to Win: %1$d</string>
     <string name="playlist_name">Playlist: %1$s</string>
     <string name="new_room">New room</string>
-    <string name="number_of_players">Number of players</string>
-    <string name="snippet_duration">Snippet Duration</string>
-    <string name="points_to_win">Points to Win</string>
+    <string name="number_of_players">Max number of players</string>
+    <string name="turn_count">How many turns</string>
+    <string name="time_penalty_per_second">How many points per second you loose</string>
     <string name="playlist_link">Playlist link</string>
     <string name="enter_playlist_link">Enter playlist link</string>
     <string name="create_room">Create room</string>
@@ -32,4 +32,6 @@
     <string name="ups_that_s_not_correct_answer">Ups, that\'s not correct answer</string>
     <string name="time_left">time left</string>
     <string name="authorization_server_unreachable">Authorization server is unreachable</string>
+    <string name="base_points">With how many points you starting to guess</string>
+    <string name="incorrectGuessPenalty">How many points you will loose after incorrect guess</string>
 </resources>

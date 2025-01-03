@@ -6,10 +6,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-open class RoomSettingsViewModel : ViewModel() {
+abstract class RoomSettingsViewModel : ViewModel() {
     private val _roomSettings =
         MutableStateFlow(
-            RoomSettings(maxPlayers = 0, snippetDuration = 0, pointsToWin = 0, playlistLink = "")
+            RoomSettings(
+                maxPlayers = 0,
+                turnCount = 5,
+                timePenaltyPerSecond = 5,
+                basePoints = 100,
+                incorrectGuessPenalty = 20,
+                playlistLink = "",
+            )
         )
     val roomSettings = _roomSettings.asStateFlow()
 
@@ -17,12 +24,20 @@ open class RoomSettingsViewModel : ViewModel() {
         _roomSettings.update { it.copy(maxPlayers = value) }
     }
 
-    fun setSnippetDuration(value: Int) {
-        _roomSettings.update { it.copy(snippetDuration = value) }
+    fun setTurnCount(value: Int) {
+        _roomSettings.update { it.copy(turnCount = value) }
     }
 
-    fun setPointsToWin(value: Int) {
-        _roomSettings.update { it.copy(pointsToWin = value) }
+    fun setTimePenaltyPerSecond(value: Int) {
+        _roomSettings.update { it.copy(timePenaltyPerSecond = value) }
+    }
+
+    fun setBasePoints(value: Int) {
+        _roomSettings.update { it.copy(basePoints = value) }
+    }
+
+    fun setIncorrectGuessPenalty(value: Int) {
+        _roomSettings.update { it.copy(incorrectGuessPenalty = value) }
     }
 
     fun setPlaylistLink(value: String) {
