@@ -36,12 +36,14 @@ import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.model.Song
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
+import com.github.feelbeatapp.androidclient.ui.home.HomeRoute
 import com.github.feelbeatapp.androidclient.ui.startgame.PlayerCard
 
 @Composable
 fun AcceptGameScreen(
     viewModel: AcceptGameViewModel = AcceptGameViewModel(),
     navController: NavController,
+    internalNavController: NavController,
     isRoomCreator: Boolean = true,
 ) {
     val gameState = viewModel.gameState.collectAsState().value
@@ -55,7 +57,7 @@ fun AcceptGameScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            IconButton(onClick = { navController.navigate(FeelBeatRoute.HOME.name) }) {
+            IconButton(onClick = { internalNavController.navigate(HomeRoute.HOME.name) }) {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = stringResource(R.string.back),
@@ -113,7 +115,7 @@ fun AcceptGameScreen(
 
         if (isRoomCreator) {
             BottomNavigationBar(
-                navController = navController,
+                internalNavController = internalNavController,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
@@ -121,7 +123,7 @@ fun AcceptGameScreen(
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
+fun BottomNavigationBar(internalNavController: NavController, modifier: Modifier = Modifier) {
     NavigationBar(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
@@ -133,7 +135,7 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
             },
             label = { Text(stringResource(R.string.selected_room)) },
             selected = false,
-            onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) },
+            onClick = { internalNavController.navigate(FeelBeatRoute.ACCEPT_GAME.name) },
         )
         NavigationBarItem(
             icon = {
@@ -141,7 +143,7 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
             },
             label = { Text(stringResource(R.string.settings)) },
             selected = false,
-            onClick = { navController.navigate(FeelBeatRoute.ROOM_SETTINGS.name) },
+            onClick = { internalNavController.navigate(FeelBeatRoute.ROOM_SETTINGS.name) },
         )
     }
 }
@@ -164,5 +166,5 @@ fun SongItem(song: Song) {
 @Composable
 fun PreviewAcceptScreen() {
     val navController = rememberNavController()
-    AcceptGameScreen(navController = navController)
+    AcceptGameScreen(navController = navController, internalNavController = navController)
 }

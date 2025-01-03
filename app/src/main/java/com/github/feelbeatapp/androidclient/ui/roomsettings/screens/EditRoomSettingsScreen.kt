@@ -34,7 +34,7 @@ import com.github.feelbeatapp.androidclient.ui.roomsettings.viewmodels.RoomSetti
 @Composable
 fun EditRoomSettingsScreen(
     viewModel: RoomSettingsViewModel = EditRoomSettingsViewModel(),
-    navController: NavController,
+    internalNavController: NavController,
     modifier: Modifier = Modifier,
     isRoomCreator: Boolean = true,
 ) {
@@ -43,7 +43,7 @@ fun EditRoomSettingsScreen(
     Scaffold(
         bottomBar = {
             if (isRoomCreator) {
-                BottomNavigationBar(navController = navController)
+                BottomNavigationBar(navController = internalNavController)
             }
         },
         content = { padding ->
@@ -100,5 +100,5 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
 @Composable
 fun PreviewRoomSettingsScreen() {
     val navController = rememberNavController()
-    EditRoomSettingsScreen(navController = navController)
+    EditRoomSettingsScreen(internalNavController = navController)
 }

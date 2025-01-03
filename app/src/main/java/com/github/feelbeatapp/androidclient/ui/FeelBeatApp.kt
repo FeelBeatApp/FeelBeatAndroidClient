@@ -37,12 +37,6 @@ fun FeelBeatApp(
                 composable(route = FeelBeatRoute.NEW_ROOM_SETTINGS.name) {
                     NewRoomSettingsScreen(navController = navController)
                 }
-                composable(route = FeelBeatRoute.ROOM_SETTINGS.name) {
-                    EditRoomSettingsScreen(navController = navController)
-                }
-                composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
-                    AcceptGameScreen(navController = navController)
-                }
                 composable(route = FeelBeatRoute.GAME_RESULT.name) {
                     GameResultScreen(navController = navController)
                 }
