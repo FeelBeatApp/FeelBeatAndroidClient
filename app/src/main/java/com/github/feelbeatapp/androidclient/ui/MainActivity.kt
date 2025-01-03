@@ -23,8 +23,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            FeelBeatApp(widthSizeClass, startRoute)
+            FeelBeatApp(startRoute)
         }
     }
 }

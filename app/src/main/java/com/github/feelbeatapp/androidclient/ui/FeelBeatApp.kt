@@ -1,30 +1,23 @@
 package com.github.feelbeatapp.androidclient.ui
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.feelbeatapp.androidclient.ui.acceptgame.AcceptGameScreen
 import com.github.feelbeatapp.androidclient.ui.gameresult.GameResultScreen
 import com.github.feelbeatapp.androidclient.ui.guesssong.GuessResultScreen
 import com.github.feelbeatapp.androidclient.ui.guesssong.GuessSongScreen
 import com.github.feelbeatapp.androidclient.ui.home.HomeScreen
 import com.github.feelbeatapp.androidclient.ui.login.LoginScreen
-import com.github.feelbeatapp.androidclient.ui.roomsettings.screens.EditRoomSettingsScreen
 import com.github.feelbeatapp.androidclient.ui.roomsettings.screens.NewRoomSettingsScreen
 import com.github.feelbeatapp.androidclient.ui.startgame.StartGameScreen
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
-fun FeelBeatApp(
-    @Suppress("UnusedParameter") widthSizeClass: WindowWidthSizeClass,
-    startScreen: FeelBeatRoute,
-    modifier: Modifier = Modifier,
-) {
+fun FeelBeatApp(startScreen: FeelBeatRoute, modifier: Modifier = Modifier) {
     FeelBeatTheme {
         val navController = rememberNavController()
 
@@ -35,7 +28,10 @@ fun FeelBeatApp(
                     HomeScreen(navController = navController)
                 }
                 composable(route = FeelBeatRoute.NEW_ROOM_SETTINGS.name) {
-                    NewRoomSettingsScreen(navController = navController)
+                    NewRoomSettingsScreen(
+                        onNavigateTo = { navController.navigate(it) },
+                        onNavigateBack = { navController.popBackStack() },
+                    )
                 }
                 composable(route = FeelBeatRoute.GAME_RESULT.name) {
                     GameResultScreen(navController = navController)
@@ -57,5 +53,5 @@ fun FeelBeatApp(
 @Preview
 @Composable
 fun AppPreview() {
-    FeelBeatApp(WindowWidthSizeClass.Compact, FeelBeatRoute.LOGIN)
+    FeelBeatApp(FeelBeatRoute.LOGIN)
 }

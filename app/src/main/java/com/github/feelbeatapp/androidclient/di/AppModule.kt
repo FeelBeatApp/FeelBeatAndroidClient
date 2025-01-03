@@ -6,6 +6,8 @@ import com.github.feelbeatapp.androidclient.auth.OauthConfig
 import com.github.feelbeatapp.androidclient.auth.spotify.SpotifyAuthManager
 import com.github.feelbeatapp.androidclient.auth.storage.AuthStorage
 import com.github.feelbeatapp.androidclient.auth.storage.PreferencesAuthStorage
+import com.github.feelbeatapp.androidclient.network.api.FeelBeatApi
+import com.github.feelbeatapp.androidclient.network.api.KtorFeelBeatApi
 import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
 import com.github.feelbeatapp.androidclient.network.fullduplex.WebsocketClient
 import com.github.feelbeatapp.androidclient.network.spotify.KtorSpotifyAPI
@@ -21,6 +23,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
+import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 
@@ -58,6 +61,13 @@ abstract class AppModule {
                 refreshUri = BuildConfig.SPOTIFY_REFRESH_URI,
             )
         }
+
+        @Provides
+        @Singleton
+        @Named("API_URL")
+        fun provideApiUrl(): String {
+            return BuildConfig.API_URL
+        }
     }
 
     @Singleton @Binds abstract fun bindAuthManager(authManager: SpotifyAuthManager): AuthManager
@@ -65,4 +75,6 @@ abstract class AppModule {
     @Singleton @Binds abstract fun bindAuthStorage(authStorage: PreferencesAuthStorage): AuthStorage
 
     @Singleton @Binds abstract fun bindSpotifyAPI(spotifyAPI: KtorSpotifyAPI): SpotifyAPI
+
+    @Singleton @Binds abstract fun bindFeelBeatAPI(feelBeatApi: KtorFeelBeatApi): FeelBeatApi
 }

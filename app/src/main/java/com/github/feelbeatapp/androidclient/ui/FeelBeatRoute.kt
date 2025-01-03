@@ -9,5 +9,12 @@ enum class FeelBeatRoute {
     GAME_RESULT,
     GUESS_SONG,
     GUESS_RESULT,
-    START_GAME,
+    START_GAME;
+
+    fun withArgs(vararg args: String): String {
+        return buildString {
+            append(name)
+            args.forEach { append("/$it") }
+        }
+    }
 }
