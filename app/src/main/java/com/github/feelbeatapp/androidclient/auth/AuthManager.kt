@@ -17,5 +17,5 @@ interface AuthManager {
 
     suspend fun getAccessToken(): String
 
-    fun logout(ctx: Context)
+    fun logout()
 }

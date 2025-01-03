@@ -35,17 +35,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.model.Room
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +60,8 @@ fun HomeScreen(
     val title = stringResource(R.string.feel_beat)
     val rooms by viewModel.rooms.collectAsState()
     val selectedRoom by viewModel.selectedRoom.collectAsState()
-    val ctx = LocalContext.current
+    val playerName by viewModel.playerName.collectAsState()
+    val playerImageUrl by viewModel.playerImageUrl.collectAsState()
 
     var isBottomSheetVisible by remember { mutableStateOf(false) }
 
@@ -65,10 +69,12 @@ fun HomeScreen(
         ModalBottomSheet(onDismissRequest = { isBottomSheetVisible = false }) {
             UserAccountBottomSheetContent(
                 onLogoutClick = {
-                    viewModel.logout(ctx)
+                    viewModel.logout()
                     isBottomSheetVisible = false
                     navController.navigate(FeelBeatRoute.LOGIN.name)
-                }
+                },
+                name = playerName.toString(),
+                imageUrl = playerImageUrl.toString(),
             )
         }
     }
@@ -145,7 +151,7 @@ fun HomeTopBar(title: String, onAccountClick: () -> Unit) {
 }
 
 @Composable
-fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit) {
+fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit, name: String, imageUrl: String) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -156,13 +162,16 @@ fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit) {
                 Modifier.size(80.dp).background(Color.Gray, shape = MaterialTheme.shapes.large),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = "U", // Placeholder for user's avatar
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "User Avatar",
+                modifier =
+                    Modifier.size(80.dp).clip(MaterialTheme.shapes.large).background(Color.Gray),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.userimage),
             )
         }
-        Text(text = "User Name", style = MaterialTheme.typography.titleMedium)
+        Text(text = name, style = MaterialTheme.typography.titleMedium)
         Box(
             modifier =
                 Modifier.fillMaxWidth()

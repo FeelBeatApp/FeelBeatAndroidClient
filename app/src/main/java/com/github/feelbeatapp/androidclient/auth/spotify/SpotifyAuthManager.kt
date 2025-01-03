@@ -130,7 +130,7 @@ constructor(
     }
 
     private fun hasExpired(expires: Instant): Boolean {
-        return expires >= Instant.now()
+        return expires <= Instant.now()
     }
 
     private suspend fun refreshAccessToken() {
@@ -177,7 +177,7 @@ constructor(
         )
     }
 
-    override fun logout(ctx: Context) {
+    override fun logout() {
         try {
             authStorage.clearAuthData()
             authData = null

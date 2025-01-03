@@ -1,10 +1,10 @@
 package com.github.feelbeatapp.androidclient.ui.home
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.model.Room
+import com.github.feelbeatapp.androidclient.network.spotify.KtorSpotifyAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,19 +13,41 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val authManager: AuthManager) : ViewModel() {
+class HomeViewModel
+@Inject
+constructor(private val authManager: AuthManager, private val spotifyAPI: KtorSpotifyAPI) :
+    ViewModel() {
     private val _rooms = MutableStateFlow<List<Room>>(emptyList())
     val rooms: StateFlow<List<Room>> = _rooms.asStateFlow()
 
     private val _selectedRoom = MutableStateFlow<Room?>(null)
     val selectedRoom: StateFlow<Room?> = _selectedRoom.asStateFlow()
 
+    private val _playerName = MutableStateFlow<String?>(null)
+    val playerName: StateFlow<String?> get() = _playerName
+
+    private val _playerImageUrl = MutableStateFlow<String?>(null)
+    val playerImageUrl: StateFlow<String?> get() = _playerImageUrl
+
     init {
         loadRooms()
+        loadPlayerData()
     }
 
-    fun logout(ctx: Context) {
-        authManager.logout(ctx)
+    private fun loadPlayerData() {
+        viewModelScope.launch {
+            try {
+                val profile = spotifyAPI.getProfile()
+                _playerName.value = profile.displayName
+                _playerImageUrl.value = profile.images.first().url
+            } catch (e: Exception) {
+                _playerName.value = "Player"
+            }
+        }
+    }
+
+    fun logout() {
+        authManager.logout()
     }
 
     @SuppressWarnings("MagicNumber")

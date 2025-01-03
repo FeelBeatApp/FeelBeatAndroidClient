@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.model.Song
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.startgame.PlayerCard
 
 @Composable
@@ -53,10 +54,12 @@ fun AcceptGameScreen(
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            IconButton(onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) }) {
+            Spacer(modifier = Modifier.height(24.dp))
+            IconButton(onClick = { navController.navigate(FeelBeatRoute.HOME.name) }) {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = stringResource(R.string.back),
+                    modifier = Modifier.size(40.dp),
                 )
             }
 
