@@ -41,6 +41,7 @@ constructor(private val authManager: AuthManager, private val spotifyAPI: KtorSp
                 _playerName.value = profile.displayName
                 _playerImageUrl.value = profile.images.first().url
             } catch (e: Exception) {
+                print(e.message)
                 _playerName.value = "Player"
             }
         }

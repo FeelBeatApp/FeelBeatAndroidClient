@@ -164,11 +164,12 @@ fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit, name: String, image
         ) {
             AsyncImage(
                 model = imageUrl,
-                contentDescription = "User Avatar",
+                contentDescription = "Player Image",
                 modifier =
-                    Modifier.size(80.dp).clip(MaterialTheme.shapes.large).background(Color.Gray),
+                    Modifier.size(80.dp).clip(MaterialTheme.shapes.large),
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(R.drawable.userimage),
+                error = painterResource(R.drawable.userimage),
             )
         }
         Text(text = name, style = MaterialTheme.typography.titleMedium)

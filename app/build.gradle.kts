@@ -111,7 +111,6 @@ dependencies {
     // Coil
     implementation(libs.coil.kt.coil.compose)
 
-
     // ktor
     implementation(libs.io.ktor.client)
     implementation(libs.io.ktor.content.negotiation)
