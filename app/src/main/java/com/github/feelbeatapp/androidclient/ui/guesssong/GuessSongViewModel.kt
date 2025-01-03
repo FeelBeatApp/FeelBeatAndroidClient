@@ -4,9 +4,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.model.Player
-import com.github.feelbeatapp.androidclient.model.PlayerWithResult
-import com.github.feelbeatapp.androidclient.model.Song
+import com.github.feelbeatapp.androidclient.ui.model.Player
+import com.github.feelbeatapp.androidclient.ui.model.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.model.Song
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

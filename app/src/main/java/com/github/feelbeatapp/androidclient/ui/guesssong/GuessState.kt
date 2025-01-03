@@ -1,10 +1,10 @@
 package com.github.feelbeatapp.androidclient.ui.guesssong
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.feelbeatapp.androidclient.model.PlayerWithResult
-import com.github.feelbeatapp.androidclient.model.Playlist
-import com.github.feelbeatapp.androidclient.model.Room
-import com.github.feelbeatapp.androidclient.model.Song
+import com.github.feelbeatapp.androidclient.ui.model.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.model.Playlist
+import com.github.feelbeatapp.androidclient.ui.model.Room
+import com.github.feelbeatapp.androidclient.ui.model.Song
 
 data class GuessState(
     val players: List<PlayerWithResult> = emptyList(),

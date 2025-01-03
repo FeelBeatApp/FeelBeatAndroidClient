@@ -3,7 +3,7 @@ package com.github.feelbeatapp.androidclient.ui.startgame
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.model.Player
+import com.github.feelbeatapp.androidclient.ui.model.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

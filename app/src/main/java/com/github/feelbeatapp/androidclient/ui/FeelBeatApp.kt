@@ -54,4 +54,5 @@ fun FeelBeatApp(startScreen: FeelBeatRoute, modifier: Modifier = Modifier) {
 @Composable
 fun AppPreview() {
     FeelBeatApp(FeelBeatRoute.LOGIN)
+
 }

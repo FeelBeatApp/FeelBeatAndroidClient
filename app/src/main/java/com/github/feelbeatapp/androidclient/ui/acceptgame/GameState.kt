@@ -1,9 +1,9 @@
 package com.github.feelbeatapp.androidclient.ui.acceptgame
 
-import com.github.feelbeatapp.androidclient.model.Player
-import com.github.feelbeatapp.androidclient.model.Playlist
-import com.github.feelbeatapp.androidclient.model.Room
-import com.github.feelbeatapp.androidclient.model.Song
+import com.github.feelbeatapp.androidclient.ui.model.Player
+import com.github.feelbeatapp.androidclient.ui.model.Playlist
+import com.github.feelbeatapp.androidclient.ui.model.Room
+import com.github.feelbeatapp.androidclient.ui.model.Song
 
 data class GameState(
     val players: List<Player> = emptyList(),

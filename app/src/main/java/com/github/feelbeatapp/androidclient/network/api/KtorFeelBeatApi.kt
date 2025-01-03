@@ -3,9 +3,9 @@ package com.github.feelbeatapp.androidclient.network.api
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.error.ErrorCode
 import com.github.feelbeatapp.androidclient.error.FeelBeatException
-import com.github.feelbeatapp.androidclient.model.RoomSettings
 import com.github.feelbeatapp.androidclient.network.api.payloads.CreateRoomPayload
 import com.github.feelbeatapp.androidclient.network.api.responses.CreateRoomResponse
+import com.github.feelbeatapp.androidclient.ui.model.RoomSettings
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.headers
@@ -28,7 +28,7 @@ constructor(
     private val authManager: AuthManager,
 ) : FeelBeatApi {
     override suspend fun createRoom(settings: RoomSettings): String {
-        val payload = CreateRoomPayload(roomSettings = settings)
+        val payload = CreateRoomPayload.fromRoomSettings(settings)
         val token = authManager.getAccessToken()
 
         val res =
