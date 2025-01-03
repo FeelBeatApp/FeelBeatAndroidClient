@@ -1,8 +1,5 @@
-package com.github.feelbeatapp.androidclient.model
+package com.github.feelbeatapp.androidclient.ui.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class RoomSettings(
     val maxPlayers: Int,
     val turnCount: Int,

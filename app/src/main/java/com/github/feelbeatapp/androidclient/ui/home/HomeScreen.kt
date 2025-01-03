@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.model.Room
+import com.github.feelbeatapp.androidclient.ui.model.Room
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
