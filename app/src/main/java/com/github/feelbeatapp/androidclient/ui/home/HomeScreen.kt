@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -138,24 +140,33 @@ fun HomeTopBar(title: String, imageUrl: String, onAccountClick: () -> Unit) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
         colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
         actions = {
             IconButton(onClick = onAccountClick) {
                 AsyncImage(
                     model = imageUrl,
                     contentDescription = "Player Image",
-                    modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.large),
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(MaterialTheme.shapes.large),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(R.drawable.userimage),
-                    error = painterResource(R.drawable.userimage),
+                    error = @androidx.compose.runtime.Composable {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = stringResource(R.string.account),
+                            modifier = Modifier.size(80.dp)
+                        )
+                    } as Painter?
                 )
             }
         },
     )
 }
+
 
 @Composable
 fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit, name: String, imageUrl: String) {
