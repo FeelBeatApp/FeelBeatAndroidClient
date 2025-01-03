@@ -24,10 +24,10 @@ constructor(private val authManager: AuthManager, private val spotifyAPI: KtorSp
     val selectedRoom: StateFlow<Room?> = _selectedRoom.asStateFlow()
 
     private val _playerName = MutableStateFlow<String?>(null)
-    val playerName: StateFlow<String?> get() = _playerName
+    val playerName: StateFlow<String?> = _playerName.asStateFlow()
 
     private val _playerImageUrl = MutableStateFlow<String?>(null)
-    val playerImageUrl: StateFlow<String?> get() = _playerImageUrl
+    val playerImageUrl: StateFlow<String?> = _playerImageUrl.asStateFlow()
 
     init {
         loadRooms()

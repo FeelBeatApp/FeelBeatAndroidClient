@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -79,7 +78,11 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(topBar = { HomeTopBar(title) { isBottomSheetVisible = true } }) { innerPadding ->
+    Scaffold(
+        topBar = {
+            HomeTopBar(title, imageUrl = playerImageUrl.toString()) { isBottomSheetVisible = true }
+        }
+    ) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Text(
                 text = stringResource(R.string.current_games),
@@ -131,7 +134,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(title: String, onAccountClick: () -> Unit) {
+fun HomeTopBar(title: String, imageUrl: String, onAccountClick: () -> Unit) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
         colors =
@@ -141,9 +144,13 @@ fun HomeTopBar(title: String, onAccountClick: () -> Unit) {
             ),
         actions = {
             IconButton(onClick = onAccountClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = stringResource(R.string.account),
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Player Image",
+                    modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.large),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.userimage),
+                    error = painterResource(R.drawable.userimage),
                 )
             }
         },
@@ -165,8 +172,7 @@ fun UserAccountBottomSheetContent(onLogoutClick: () -> Unit, name: String, image
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "Player Image",
-                modifier =
-                    Modifier.size(80.dp).clip(MaterialTheme.shapes.large),
+                modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.large),
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(R.drawable.userimage),
                 error = painterResource(R.drawable.userimage),
