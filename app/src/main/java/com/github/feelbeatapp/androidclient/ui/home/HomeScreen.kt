@@ -41,18 +41,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.model.Room
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateTo: (String) -> Unit,
     modifier: Modifier = Modifier,
-    navController: NavController,
 ) {
     val title = stringResource(R.string.feel_beat)
     val rooms by viewModel.rooms.collectAsState()
@@ -67,7 +65,7 @@ fun HomeScreen(
                 onLogoutClick = {
                     viewModel.logout(ctx)
                     isBottomSheetVisible = false
-                    navController.navigate(FeelBeatRoute.LOGIN.name)
+                    onNavigateTo(FeelBeatRoute.LOGIN.name)
                 }
             )
         }
@@ -88,7 +86,7 @@ fun HomeScreen(
                     RoomItem(
                         room = room,
                         isSelected = room == selectedRoom,
-                        onClick = { navController.navigate(FeelBeatRoute.ACCEPT_GAME.name) },
+                        onClick = { onNavigateTo(FeelBeatRoute.ACCEPT_GAME.withArgs("<roomid>")) },
                     )
                 }
             }
@@ -107,7 +105,7 @@ fun HomeScreen(
                             )
                 ) {
                     IconButton(
-                        onClick = { navController.navigate(FeelBeatRoute.NEW_ROOM_SETTINGS.name) },
+                        onClick = { onNavigateTo(FeelBeatRoute.NEW_ROOM_SETTINGS.name) },
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         Icon(
@@ -212,6 +210,5 @@ fun RoomItem(room: Room, isSelected: Boolean, onClick: () -> Unit) {
 @Preview
 @Composable
 fun HomePreview() {
-    val navController = rememberNavController()
-    HomeScreen(navController = navController)
+    HomeScreen(onNavigateTo = {})
 }

@@ -43,6 +43,7 @@ android {
                 "SPOTIFY_REFRESH_URI",
                 "\"https://accounts.spotify.com/api/token\"",
             )
+            buildConfigField("String", "API_URL", "\"http://10.0.2.2:3000/api/v1\"")
         }
 
         release {
@@ -71,6 +72,7 @@ android {
                 "SPOTIFY_REFRESH_URI",
                 "\"https://accounts.spotify.com/api/token\"",
             )
+            buildConfigField("String", "API_URL", "\"http://localhost:3000/api/v1\"")
         }
     }
     compileOptions {

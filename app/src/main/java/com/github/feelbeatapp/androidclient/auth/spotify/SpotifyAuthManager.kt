@@ -130,7 +130,7 @@ constructor(
     }
 
     private fun hasExpired(expires: Instant): Boolean {
-        return expires >= Instant.now()
+        return expires <= Instant.now()
     }
 
     private suspend fun refreshAccessToken() {

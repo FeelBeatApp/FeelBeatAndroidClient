@@ -33,12 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.model.Song
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.ui.startgame.PlayerCard
 
 @Composable
 fun AcceptGameScreen(
+    roomId: String,
     viewModel: AcceptGameViewModel = AcceptGameViewModel(),
     navController: NavController,
     isRoomCreator: Boolean = true,
@@ -59,6 +60,7 @@ fun AcceptGameScreen(
                     contentDescription = stringResource(R.string.back),
                 )
             }
+            Text(roomId)
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -161,5 +163,5 @@ fun SongItem(song: Song) {
 @Composable
 fun PreviewAcceptScreen() {
     val navController = rememberNavController()
-    AcceptGameScreen(navController = navController)
+    AcceptGameScreen(roomId = "lksdfsdfsdfweoiwjer", navController = navController)
 }
