@@ -1,3 +1,5 @@
 package com.github.feelbeatapp.androidclient.model
 
-data class Song(val id: Int, val title: String)
+import android.net.Uri
+
+data class Song(val id: Int, val title: String, val songUri: Uri? = null)
