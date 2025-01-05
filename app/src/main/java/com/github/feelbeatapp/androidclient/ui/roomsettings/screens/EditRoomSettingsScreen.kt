@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -79,7 +80,15 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     ) {
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.selected_room))
+                Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.home))
+            },
+            label = { Text(stringResource(R.string.home)) },
+            selected = false,
+            onClick = { navController.navigate(FeelBeatRoute.HOME.name) },
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(Icons.Filled.Star, contentDescription = stringResource(R.string.selected_room))
             },
             label = { Text(stringResource(R.string.selected_room)) },
             selected = false,
@@ -90,7 +99,7 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
                 Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings))
             },
             label = { Text(stringResource(R.string.settings)) },
-            selected = false,
+            selected = true,
             onClick = { navController.navigate(FeelBeatRoute.ROOM_SETTINGS.name) },
         )
     }

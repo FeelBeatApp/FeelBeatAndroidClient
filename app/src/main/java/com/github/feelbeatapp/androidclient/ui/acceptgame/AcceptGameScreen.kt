@@ -10,16 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -36,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.model.Song
 import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
-import com.github.feelbeatapp.androidclient.ui.home.HomeRoute
 import com.github.feelbeatapp.androidclient.ui.startgame.PlayerCard
 
 @Composable
@@ -48,26 +45,22 @@ fun AcceptGameScreen(
 ) {
     val gameState = viewModel.gameState.collectAsState().value
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         Column(
             modifier =
-                Modifier.fillMaxSize()
-                    .padding(bottom = 56.dp)
-                    .verticalScroll(rememberScrollState()),
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 56.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-            IconButton(onClick = { internalNavController.navigate(HomeRoute.HOME.name) }) {
-                Icon(
-                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = stringResource(R.string.back),
-                    modifier = Modifier.size(40.dp),
-                )
-            }
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 gameState.players.forEach { player -> PlayerCard(player = player) }
@@ -107,7 +100,9 @@ fun AcceptGameScreen(
 
             Button(
                 onClick = { navController.navigate(FeelBeatRoute.START_GAME.name) },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             ) {
                 Text(stringResource(R.string.play), style = MaterialTheme.typography.headlineMedium)
             }
@@ -131,10 +126,18 @@ fun BottomNavigationBar(internalNavController: NavController, modifier: Modifier
     ) {
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.selected_room))
+                Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.home))
+            },
+            label = { Text(stringResource(R.string.home)) },
+            selected = false,
+            onClick = { internalNavController.navigate(FeelBeatRoute.HOME.name) },
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(Icons.Filled.Star, contentDescription = stringResource(R.string.selected_room))
             },
             label = { Text(stringResource(R.string.selected_room)) },
-            selected = false,
+            selected = true,
             onClick = { internalNavController.navigate(FeelBeatRoute.ACCEPT_GAME.name) },
         )
         NavigationBarItem(
@@ -148,10 +151,13 @@ fun BottomNavigationBar(internalNavController: NavController, modifier: Modifier
     }
 }
 
+
 @Composable
 fun SongItem(song: Song) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(

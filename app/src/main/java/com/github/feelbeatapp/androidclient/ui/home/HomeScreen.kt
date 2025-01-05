@@ -87,21 +87,21 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            NavHost(internalNavController, startDestination = HomeRoute.HOME.name) {
-                composable(route = HomeRoute.HOME.name) {
+            NavHost(internalNavController, startDestination = FeelBeatRoute.HOME.name) {
+                composable(route = FeelBeatRoute.HOME.name) {
                     HomeBody(
                         viewModel = viewModel,
                         internalNavController = internalNavController,
                         navController = navController,
                     )
                 }
-                composable(route = HomeRoute.ACCEPT_GAME.name) {
+                composable(route = FeelBeatRoute.ACCEPT_GAME.name) {
                     AcceptGameScreen(
                         internalNavController = internalNavController,
                         navController = navController,
                     )
                 }
-                composable(route = HomeRoute.ROOM_SETTINGS.name) {
+                composable(route = FeelBeatRoute.ROOM_SETTINGS.name) {
                     EditRoomSettingsScreen(internalNavController = internalNavController)
                 }
             }
