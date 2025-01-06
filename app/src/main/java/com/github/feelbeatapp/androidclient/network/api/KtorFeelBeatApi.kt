@@ -5,7 +5,7 @@ import com.github.feelbeatapp.androidclient.error.ErrorCode
 import com.github.feelbeatapp.androidclient.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.network.api.payloads.CreateRoomPayload
 import com.github.feelbeatapp.androidclient.network.api.responses.CreateRoomResponse
-import com.github.feelbeatapp.androidclient.ui.model.RoomSettings
+import com.github.feelbeatapp.androidclient.ui.app.model.RoomSettings
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.headers

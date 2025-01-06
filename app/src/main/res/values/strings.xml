@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FeelBeatAndroidClient</string>
+    <string name="app_name">FeelBeat</string>
     <string name="go_back">Go back</string>
     <string name="settings">Settings</string>
     <string name="account">Account</string>
@@ -13,7 +13,7 @@
     <string name="snippet_duration_val">Snippet Duration: %1$d seconds</string>
     <string name="points_to_win_val">Points to Win: %1$d</string>
     <string name="playlist_name">Playlist: %1$s</string>
-    <string name="new_room">New room</string>
+    <string name="new_room">Create new room</string>
     <string name="number_of_players">Max number of players</string>
     <string name="turn_count">How many turns</string>
     <string name="time_penalty_per_second">How many points per second you loose</string>
@@ -34,4 +34,5 @@
     <string name="authorization_server_unreachable">Authorization server is unreachable</string>
     <string name="base_points">With how many points you starting to guess</string>
     <string name="incorrectGuessPenalty">How many points you will loose after incorrect guess</string>
+    <string name="get_ready">Get ready</string>
 </resources>

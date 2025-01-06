@@ -1,6 +1,6 @@
 package com.github.feelbeatapp.androidclient.network.api.payloads
 
-import com.github.feelbeatapp.androidclient.ui.model.RoomSettings
+import com.github.feelbeatapp.androidclient.ui.app.model.RoomSettings
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 
