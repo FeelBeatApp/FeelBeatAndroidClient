@@ -1,11 +1,15 @@
 package com.github.feelbeatapp.androidclient.di
 
+import androidx.compose.material3.SnackbarHostState
 import com.github.feelbeatapp.androidclient.BuildConfig
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.auth.OauthConfig
 import com.github.feelbeatapp.androidclient.auth.spotify.SpotifyAuthManager
 import com.github.feelbeatapp.androidclient.auth.storage.AuthStorage
 import com.github.feelbeatapp.androidclient.auth.storage.PreferencesAuthStorage
+import com.github.feelbeatapp.androidclient.error.ErrorEmitter
+import com.github.feelbeatapp.androidclient.error.ErrorHandler
+import com.github.feelbeatapp.androidclient.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.network.api.FeelBeatApi
 import com.github.feelbeatapp.androidclient.network.api.KtorFeelBeatApi
 import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
@@ -37,6 +41,8 @@ abstract class AppModule {
                 install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
             }
 
+        private val errorHandler = ErrorHandler()
+
         @Provides
         @Singleton
         fun provideHttpClient(): HttpClient {
@@ -67,6 +73,18 @@ abstract class AppModule {
         @Named("API_URL")
         fun provideApiUrl(): String {
             return BuildConfig.API_URL
+        }
+
+        @Provides
+        @Singleton
+        fun provideErrorEmitter(): ErrorEmitter {
+            return errorHandler
+        }
+
+        @Provides
+        @Singleton
+        fun provideErrorReceiver(): ErrorReceiver {
+            return errorHandler
         }
     }
 

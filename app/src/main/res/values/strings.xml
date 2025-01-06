@@ -32,6 +32,10 @@
     <string name="ups_that_s_not_correct_answer">Ups, that\'s not correct answer</string>
     <string name="time_left">time left</string>
     <string name="authorization_server_unreachable">Authorization server is unreachable</string>
+    <string name="feelbeat_server_unreachable">FeelBeat server is unreachable</string>
+    <string name="feelbeat_server_error">Server error: %1$s</string>
+    <string name="unexpected_error">Unexpected error occurred</string>
+    <string name="incorrect_playlist_link">Make sure playlist link is valid</string>
     <string name="base_points">With how many points you starting to guess</string>
     <string name="incorrectGuessPenalty">How many points you will loose after incorrect guess</string>
     <string name="get_ready">Get ready</string>

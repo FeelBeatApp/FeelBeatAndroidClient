@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -78,6 +79,7 @@ fun AppScreen(
                 onNavigateBack = onNavigateBack,
             )
         },
+        snackbarHost = { SnackbarHost(hostState = appViewModel.snackBarHost) },
         bottomBar = { bottomBar() },
         modifier = Modifier.fillMaxSize(),
     ) { padding ->

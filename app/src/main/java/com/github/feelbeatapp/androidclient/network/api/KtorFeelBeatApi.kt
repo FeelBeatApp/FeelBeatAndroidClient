@@ -3,6 +3,7 @@ package com.github.feelbeatapp.androidclient.network.api
 import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.error.ErrorCode
 import com.github.feelbeatapp.androidclient.error.FeelBeatException
+import com.github.feelbeatapp.androidclient.error.FeelBeatServerException
 import com.github.feelbeatapp.androidclient.network.api.payloads.CreateRoomPayload
 import com.github.feelbeatapp.androidclient.network.api.responses.CreateRoomResponse
 import com.github.feelbeatapp.androidclient.ui.app.model.RoomSettings
@@ -48,7 +49,7 @@ constructor(
             }
 
         if (res.status != HttpStatusCode.OK) {
-            throw FeelBeatException(ErrorCode.FEELBEAT_SERVER_ERROR, res.bodyAsText())
+            throw FeelBeatServerException(res.bodyAsText())
         }
 
         val (roomId) =

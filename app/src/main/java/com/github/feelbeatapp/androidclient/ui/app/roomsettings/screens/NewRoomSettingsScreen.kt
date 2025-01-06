@@ -31,8 +31,8 @@ fun NewRoomSettingsScreen(
     newRoomSettingsViewModel: NewRoomSettingsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val roomCreationState by newRoomSettingsViewModel.roomCreationState.collectAsState()
     val createdRoomId by newRoomSettingsViewModel.roomCreated.collectAsState(null)
+    val loading by newRoomSettingsViewModel.loading.collectAsState()
 
     LaunchedEffect(createdRoomId) {
         val roomId = createdRoomId
@@ -47,9 +47,7 @@ fun NewRoomSettingsScreen(
     ) {
         SettingsControls(viewModel = newRoomSettingsViewModel)
 
-        Text(roomCreationState.errorMessage ?: "")
-
-        if (roomCreationState.loading) {
+        if (loading) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.secondary,
