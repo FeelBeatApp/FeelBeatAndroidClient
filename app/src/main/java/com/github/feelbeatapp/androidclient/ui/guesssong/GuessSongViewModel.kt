@@ -24,6 +24,7 @@ class GuessSongViewModel : ViewModel() {
     private val _gameEnded = MutableStateFlow(false)
     val gameEnded: StateFlow<Boolean> = _gameEnded.asStateFlow()
 
+
     init {
         loadPlayers()
         loadPlaylist()

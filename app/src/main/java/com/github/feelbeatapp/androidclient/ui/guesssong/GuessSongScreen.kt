@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.guesssong
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,32 +26,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerControlView
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
 import com.github.feelbeatapp.androidclient.model.PlayerWithResult
 import com.github.feelbeatapp.androidclient.model.Song
-
+import com.github.feelbeatapp.androidclient.ui.FeelBeatRoute
+import com.github.feelbeatapp.androidclient.ui.guesssong.components.MusicPlayer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,7 +87,7 @@ fun GuessSongScreen(
                 }
             }
 
-            MusicPlayer(viewModel = viewModel)
+            MusicPlayer(song = guessState.currentSong)
 
             Column {
                 Text(
@@ -153,49 +146,6 @@ fun PlayerStatusIcon(player: PlayerWithResult) {
         }
     }
 }
-
-@androidx.annotation.OptIn(UnstableApi::class)
-@Composable
-fun MusicPlayer(viewModel: GuessSongViewModel) {
-    val context = LocalContext.current
-
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            viewModel.guessState.value.currentSong?.songUri?.let { uri ->
-                setMediaItem(MediaItem.fromUri(uri))
-            }
-            prepare()
-            playWhenReady = false
-        }
-    }
-
-    DisposableEffect(key1 = exoPlayer) {
-        onDispose { exoPlayer.release() }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = stringResource(id = R.string.music_control),
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        AndroidView(
-            modifier = Modifier.fillMaxWidth(),
-            factory = {
-                PlayerControlView(context).apply {
-                    player = exoPlayer
-                }
-            }
-        )
-    }
-}
-
 
 @Composable
 fun SearchBar(searchQuery: TextFieldValue, onSearchQueryChange: (TextFieldValue) -> Unit) {
