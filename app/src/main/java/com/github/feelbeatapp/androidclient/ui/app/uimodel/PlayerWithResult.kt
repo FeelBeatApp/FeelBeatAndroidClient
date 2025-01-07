@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.ui.app.model
+package com.github.feelbeatapp.androidclient.ui.app.uimodel
 
 import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.ResultStatus
 

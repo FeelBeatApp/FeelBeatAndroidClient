@@ -38,8 +38,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.app.model.PlayerWithResult
-import com.github.feelbeatapp.androidclient.ui.app.model.Song
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 
 @OptIn(ExperimentalMaterial3Api::class)

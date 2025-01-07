@@ -1,9 +1,9 @@
 package com.github.feelbeatapp.androidclient.ui.app.lobby.acceptgame
 
-import com.github.feelbeatapp.androidclient.ui.app.model.Player
-import com.github.feelbeatapp.androidclient.ui.app.model.Playlist
-import com.github.feelbeatapp.androidclient.ui.app.model.Room
-import com.github.feelbeatapp.androidclient.ui.app.model.Song
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Player
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Playlist
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Room
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
 
 
 data class GameState(

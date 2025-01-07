@@ -38,7 +38,7 @@ constructor(private val feelBeatApi: FeelBeatApi, private val errorReceiver: Err
 
             _loading.value = true
             try {
-                val roomId = feelBeatApi.createRoom(roomSettings.value)
+                val roomId = feelBeatApi.createRoom(roomSettings.value.toCreateRoomPayload())
                 _roomCreated.emit(roomId)
             } catch (e: FeelBeatException) {
                 errorReceiver.submitError(e)

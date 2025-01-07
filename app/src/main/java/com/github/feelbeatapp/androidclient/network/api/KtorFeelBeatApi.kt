@@ -4,11 +4,13 @@ import com.github.feelbeatapp.androidclient.auth.AuthManager
 import com.github.feelbeatapp.androidclient.error.ErrorCode
 import com.github.feelbeatapp.androidclient.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.error.FeelBeatServerException
-import com.github.feelbeatapp.androidclient.network.api.payloads.CreateRoomPayload
+import com.github.feelbeatapp.androidclient.model.CreateRoomPayload
+import com.github.feelbeatapp.androidclient.model.RoomListView
 import com.github.feelbeatapp.androidclient.network.api.responses.CreateRoomResponse
-import com.github.feelbeatapp.androidclient.ui.app.model.RoomSettings
+import com.github.feelbeatapp.androidclient.network.api.responses.FetchRoomsResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -28,8 +30,7 @@ constructor(
     private val httpClient: HttpClient,
     private val authManager: AuthManager,
 ) : FeelBeatApi {
-    override suspend fun createRoom(settings: RoomSettings): String {
-        val payload = CreateRoomPayload.fromRoomSettings(settings)
+    override suspend fun createRoom(payload: CreateRoomPayload): String {
         val token = authManager.getAccessToken()
 
         val res =
@@ -49,7 +50,7 @@ constructor(
             }
 
         if (res.status != HttpStatusCode.OK) {
-            throw FeelBeatServerException(res.bodyAsText())
+            throw FeelBeatServerException(res.bodyAsText().trim())
         }
 
         val (roomId) =
@@ -64,5 +65,40 @@ constructor(
             }
 
         return roomId
+    }
+
+    override suspend fun fetchRooms(): List<RoomListView> {
+        val token = authManager.getAccessToken()
+
+        val res =
+            try {
+                httpClient.get("$baseUrl/rooms") {
+                    headers { set("Authorization", "Bearer $token") }
+                }
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException,
+                    is UnresolvedAddressException ->
+                        throw FeelBeatException(ErrorCode.FEELBEAT_SERVER_UNREACHABLE, e)
+                    else -> throw e
+                }
+            }
+
+        if (res.status != HttpStatusCode.OK) {
+            throw FeelBeatServerException(res.bodyAsText().trim())
+        }
+
+        val (rooms) =
+            try {
+                res.body<FetchRoomsResponse>()
+            } catch (e: UnsupportedOperationException) {
+                throw FeelBeatException(
+                    ErrorCode.FEELBEAT_SERVER_INCORRECT_RESPONSE_FORMAT,
+                    "Failed to parse server response",
+                    e,
+                )
+            }
+
+        return rooms
     }
 }

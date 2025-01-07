@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.ui.app.model
+package com.github.feelbeatapp.androidclient.ui.app.uimodel
 
 data class Room(
     val id: Int,

@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.game.startgame.PlayerCard
-import com.github.feelbeatapp.androidclient.ui.app.model.Song
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
 
 @Composable
 fun AcceptGameScreen(

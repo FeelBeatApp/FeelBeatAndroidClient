@@ -43,9 +43,9 @@ fun AppGraph(onLogout: () -> Unit) {
         NavHost(navController = navController, startDestination = AppRoute.HOME.route) {
             composable(route = AppRoute.HOME.route) {
                 HomeScreen(
-                    onRoomSelect = { room ->
+                    onRoomSelect = { roomId ->
                         navController.navigate(
-                            AppRoute.ROOM_LOBBY.withArgs(mapOf("roomId" to room.id.toString()))
+                            AppRoute.ROOM_LOBBY.withArgs(mapOf("roomId" to roomId))
                         )
                     },
                     onNewRoom = { navController.navigate(AppRoute.NEW_ROOM.route) },
