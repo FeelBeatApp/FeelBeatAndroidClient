@@ -1,6 +1,5 @@
 package com.github.feelbeatapp.androidclient.ui.guesssong
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
