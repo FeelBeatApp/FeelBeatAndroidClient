@@ -2,69 +2,90 @@ package com.github.feelbeatapp.androidclient.ui.guesssong.components
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.net.Uri
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
+import com.github.feelbeatapp.androidclient.media.MusicService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @SuppressWarnings("MagicNumber")
 class MusicPlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    @SuppressLint("StaticFieldLeak")
-    private val context = application.applicationContext
-    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
+    @SuppressLint("StaticFieldLeak") private val context: Context = application.applicationContext
+
+    @SuppressLint("StaticFieldLeak") private var musicService: MusicService? = null
+    private val serviceIntent = Intent(context, MusicService::class.java)
+    private var serviceConnection: ServiceConnection? = null
 
     private val _currentPosition = MutableStateFlow(0f)
-    val currentPosition: StateFlow<Float> get() = _currentPosition
+    val currentPosition: StateFlow<Float> = _currentPosition.asStateFlow()
 
     private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean> get() = _isPlaying
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
-    val duration: Float
-        get() = maxOf(exoPlayer.duration.toFloat(), 0f)
+    var duration = 0f
 
     init {
-        exoPlayer.prepare()
+        bindToService()
     }
 
-    fun loadSong(songUrl: String) {
-        val mediaItem = MediaItem.fromUri(Uri.parse(songUrl))
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-    }
+    private fun bindToService() {
+        serviceConnection =
+            object : ServiceConnection {
+                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                    val binder = service as MusicService.MusicBinder
+                    musicService = binder.getService()
+                    observePlayerState()
+                }
 
-    fun play() {
-        exoPlayer.play()
-        _isPlaying.value = true
-        trackPosition()
-    }
-
-    fun pause() {
-        exoPlayer.pause()
-        _isPlaying.value = false
-    }
-
-    fun seekTo(position: Float) {
-        exoPlayer.seekTo(position.toLong())
-        _currentPosition.value = position
-    }
-
-    private fun trackPosition() {
-        viewModelScope.launch {
-            while (_isPlaying.value) {
-                _currentPosition.value = exoPlayer.currentPosition.toFloat()
-                delay(500)
+                override fun onServiceDisconnected(name: ComponentName?) {
+                    musicService = null
+                }
             }
-        }
+
+        context.bindService(serviceIntent, serviceConnection!!, Context.BIND_AUTO_CREATE)
     }
 
     override fun onCleared() {
         super.onCleared()
-        exoPlayer.release()
+        serviceConnection?.let { context.unbindService(it) }
+        serviceConnection = null
+    }
+
+    fun loadSong(songUrl: String) {
+        musicService?.playSongFromUrl(songUrl)
+    }
+
+    private fun observePlayerState() {
+        val player = musicService?.getPlayer() ?: return
+
+        viewModelScope.launch {
+            while (true) {
+                _currentPosition.value = player.currentPosition / 1000f
+                _isPlaying.value = player.playWhenReady
+                duration = (player.duration / 1000f).coerceAtLeast(0f)
+                delay(100)
+            }
+        }
+    }
+
+    fun play() {
+        musicService?.getPlayer()?.play()
+    }
+
+    fun pause() {
+        musicService?.getPlayer()?.pause()
+    }
+
+    fun seekTo(position: Float) {
+        musicService?.getPlayer()?.seekTo((position * 1000).toLong())
     }
 }
