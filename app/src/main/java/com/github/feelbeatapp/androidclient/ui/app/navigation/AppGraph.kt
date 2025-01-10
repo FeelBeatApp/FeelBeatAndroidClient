@@ -87,6 +87,7 @@ fun getRouteTitle(route: String?): String {
     return stringResource(
         when (route) {
             AppRoute.ROOM_LOBBY.route -> R.string.get_ready
+            AppRoute.ROOM_SONGS.route -> R.string.playlist_content
             AppRoute.ROOM_EDIT.route -> R.string.edit_room
             AppRoute.NEW_ROOM.route -> R.string.create_room
             else -> R.string.app_name
@@ -105,6 +106,9 @@ fun getBottomBar(route: String?, onNavigate: (AppRoute) -> Unit): @Composable ()
     return when (route) {
         AppRoute.ROOM_LOBBY.route -> ({
                 LobbyBottomBar(AppRoute.ROOM_LOBBY, onNavigate = onNavigate)
+            })
+        AppRoute.ROOM_SONGS.route -> ({
+                LobbyBottomBar(AppRoute.ROOM_SONGS, onNavigate = onNavigate)
             })
         AppRoute.ROOM_EDIT.route -> ({
                 LobbyBottomBar(AppRoute.ROOM_EDIT, onNavigate = onNavigate)

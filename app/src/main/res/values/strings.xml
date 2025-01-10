@@ -39,4 +39,8 @@
     <string name="base_points">With how many points you starting to guess</string>
     <string name="incorrectGuessPenalty">How many points you will loose after incorrect guess</string>
     <string name="get_ready">Get ready</string>
+    <string name="playlist_image">Playlist image</string>
+    <string name="song_cover">Song cover</string>
+    <string name="playlist_content">Playlist content</string>
+    <string name="failed_to_join_room">Couldn\'t join the room</string>
 </resources>

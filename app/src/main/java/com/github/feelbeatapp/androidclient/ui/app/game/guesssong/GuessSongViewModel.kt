@@ -3,9 +3,6 @@ package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.Player
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
 import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,27 +28,7 @@ class GuessSongViewModel : ViewModel() {
     }
 
     private fun loadPlayers() {
-        viewModelScope.launch {
-            val examplePlayers =
-                listOf(
-                    PlayerWithResult(
-                        Player("User123", R.drawable.userimage),
-                        ResultStatus.CORRECT,
-                        0,
-                    ),
-                    PlayerWithResult(
-                        Player("User456", R.drawable.userimage),
-                        ResultStatus.WRONG,
-                        0,
-                    ),
-                    PlayerWithResult(
-                        Player("User789", R.drawable.userimage),
-                        ResultStatus.NORESPONSE,
-                        0,
-                    ),
-                )
-            _guessState.value = _guessState.value.copy(players = examplePlayers)
-        }
+        viewModelScope.launch {}
     }
 
     @SuppressWarnings("MagicNumber")

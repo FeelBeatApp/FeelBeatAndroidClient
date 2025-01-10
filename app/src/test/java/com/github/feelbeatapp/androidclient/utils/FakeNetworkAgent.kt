@@ -1,11 +1,10 @@
 package com.github.feelbeatapp.androidclient.utils
 
-import com.github.feelbeatapp.androidclient.network.fullduplex.NetworkAgent
+import com.github.feelbeatapp.androidclient.infra.network.NetworkClient
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 
-class FakeNetworkAgent : NetworkAgent {
+class FakeNetworkAgent : NetworkClient {
     private val _sentMessages: MutableList<String> = ArrayList()
     val sentMessages: List<String>
         get() = _sentMessages.toList()
@@ -16,7 +15,7 @@ class FakeNetworkAgent : NetworkAgent {
         incoming.emit(text)
     }
 
-    override fun connect(path: String) {
+    override suspend fun connect(path: String): Flow<String> {
         TODO("Not yet implemented")
     }
 
@@ -26,9 +25,5 @@ class FakeNetworkAgent : NetworkAgent {
 
     override suspend fun sendMessage(text: String) {
         _sentMessages.add(text)
-    }
-
-    override fun receiveFlow(): SharedFlow<String> {
-        return incoming.asSharedFlow()
     }
 }

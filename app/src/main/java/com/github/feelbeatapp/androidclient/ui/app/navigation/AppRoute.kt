@@ -5,6 +5,7 @@ enum class AppRoute(val route: String) {
     NEW_ROOM("new_room"),
     ROOM("room"),
     ROOM_LOBBY("room/{roomId}"),
+    ROOM_SONGS("room/{roomId}/songs"),
     ROOM_EDIT("room/{roomId}/edit"),
     GAME("game"),
     START_GAME("game/{roomId}"),

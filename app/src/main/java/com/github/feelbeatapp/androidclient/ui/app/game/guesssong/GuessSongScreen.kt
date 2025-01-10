@@ -1,6 +1,5 @@
 package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,10 +36,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
 import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
-import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,8 +131,10 @@ fun PlayerStatusIcon(player: PlayerWithResult) {
         }
 
     Box(modifier = Modifier.size(48.dp)) {
-        Image(
-            painter = painterResource(id = player.player.image),
+        AsyncImage(
+            model = player.player.imageUrl,
+            placeholder = painterResource(R.drawable.userimage),
+            error = painterResource(R.drawable.userimage),
             contentDescription = stringResource(R.string.player_avatar),
             modifier = Modifier.size(48.dp).clip(CircleShape),
         )

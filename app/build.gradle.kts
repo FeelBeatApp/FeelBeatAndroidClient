@@ -24,7 +24,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "SOCKET_URI", "\"ws://10.0.2.2\"")
+            buildConfigField("String", "SOCKET_URI", "\"ws://10.0.2.2:3000\"")
             buildConfigField("String", "SPOTIFY_CLIENT_ID", "\"0368b2bddb504887b517fc4e8fca9cc5\"")
             buildConfigField("String", "SPOTIFY_REDIRECT_URI", "\"feelbeat://callback\"")
             buildConfigField("String", "SPOTIFY_SCOPE", "\"user-read-private user-read-email\"")

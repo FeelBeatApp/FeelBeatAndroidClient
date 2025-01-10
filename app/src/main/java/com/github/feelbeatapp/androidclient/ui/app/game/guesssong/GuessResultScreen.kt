@@ -1,6 +1,5 @@
 package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 
@@ -50,7 +50,7 @@ fun GuessResultScreen(
             ) {
                 guessState.players.forEach { playerWithResult ->
                     PlayerStatusIcon(
-                        image = playerWithResult.player.image,
+                        image = playerWithResult.player.imageUrl,
                         isCorrect = (playerWithResult.resultStatus == ResultStatus.CORRECT),
                     )
                 }
@@ -93,10 +93,12 @@ fun GuessResultScreen(
 }
 
 @Composable
-fun PlayerStatusIcon(image: Int, isCorrect: Boolean) {
+fun PlayerStatusIcon(image: String, isCorrect: Boolean) {
     Box(contentAlignment = Alignment.TopEnd) {
-        Image(
-            painter = painterResource(id = image),
+        AsyncImage(
+            model = image,
+            placeholder = painterResource(R.drawable.userimage),
+            error = painterResource(R.drawable.userimage),
             contentDescription = "Player Avatar",
             modifier = Modifier.size(60.dp).clip(CircleShape),
         )

@@ -1,6 +1,6 @@
 package com.github.feelbeatapp.androidclient
 
-import com.github.feelbeatapp.androidclient.auth.PKCEUtils
+import com.github.feelbeatapp.androidclient.infra.auth.PKCEUtils
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -4,18 +4,18 @@ import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.feelbeatapp.androidclient.auth.AuthManager
-import com.github.feelbeatapp.androidclient.error.ErrorEmitter
-import com.github.feelbeatapp.androidclient.error.FeelBeatException
-import com.github.feelbeatapp.androidclient.error.FeelBeatServerException
-import com.github.feelbeatapp.androidclient.network.spotify.SpotifyAPI
+import com.github.feelbeatapp.androidclient.api.spotify.SpotifyAPI
+import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
+import com.github.feelbeatapp.androidclient.infra.error.ErrorEmitter
+import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
+import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class PlayerIdentity(val name: String, val imageUrl: String)
 
@@ -48,7 +48,8 @@ constructor(
 
     private fun formatException(exception: FeelBeatException): String {
         return when (exception) {
-            is FeelBeatServerException ->  ctx.getString(exception.code.toStringId(), exception.serverMessage)
+            is FeelBeatServerException ->
+                ctx.getString(exception.code.toStringId(), exception.serverMessage)
             else -> ctx.getString(exception.code.toStringId())
         }
     }
@@ -57,7 +58,10 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val profile = spotifyAPI.getProfile()
             _playerIdentity.value =
-                PlayerIdentity(name = profile.displayName, imageUrl = profile.images.first().url)
+                PlayerIdentity(
+                    name = profile.displayName,
+                    imageUrl = if (profile.images.isNotEmpty()) profile.images.first().url else "",
+                )
         }
     }
 

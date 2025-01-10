@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.github.feelbeatapp.androidclient.auth.AuthManager
+import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
 import com.github.feelbeatapp.androidclient.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

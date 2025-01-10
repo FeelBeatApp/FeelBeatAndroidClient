@@ -2,7 +2,7 @@ package com.github.feelbeatapp.androidclient.ui.login
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.github.feelbeatapp.androidclient.auth.AuthManager
+import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

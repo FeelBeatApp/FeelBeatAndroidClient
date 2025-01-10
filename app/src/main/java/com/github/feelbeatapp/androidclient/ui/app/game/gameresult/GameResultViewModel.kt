@@ -2,9 +2,6 @@ package com.github.feelbeatapp.androidclient.ui.app.game.gameresult
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.ResultStatus
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.Player
 import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,28 +18,6 @@ class GameResultViewModel : ViewModel() {
 
     @SuppressWarnings("MagicNumber")
     private fun fetchGameResults() {
-        viewModelScope.launch {
-            val results =
-                listOf(
-                        PlayerWithResult(
-                            Player("User123", R.drawable.userimage),
-                            ResultStatus.CORRECT,
-                            10,
-                        ),
-                        PlayerWithResult(
-                            Player("User456", R.drawable.userimage),
-                            ResultStatus.WRONG,
-                            7,
-                        ),
-                        PlayerWithResult(
-                            Player("User789", R.drawable.userimage),
-                            ResultStatus.NORESPONSE,
-                            1,
-                        ),
-                    )
-                    .sortedByDescending { it.points }
-
-            _players.value = results
-        }
+        viewModelScope.launch {}
     }
 }

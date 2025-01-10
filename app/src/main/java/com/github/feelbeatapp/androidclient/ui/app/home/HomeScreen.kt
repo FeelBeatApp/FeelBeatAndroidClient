@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.model.RoomListView
+import com.github.feelbeatapp.androidclient.api.feelbeat.responses.RoomListViewResponse
 
 @Composable
 fun HomeScreen(
@@ -101,21 +100,21 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoomList(
-    items: List<RoomListView>,
+    items: List<RoomListViewResponse>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onRoomSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     PullToRefreshBox(isRefreshing = isRefreshing, onRefresh = onRefresh, modifier = modifier) {
-        LazyColumn(Modifier.fillMaxSize()) {
+        LazyColumn(Modifier) {
             items(items) { ListItem({ RoomItem(room = it, onClick = { onRoomSelect(it.id) }) }) }
         }
     }
 }
 
 @Composable
-fun RoomItem(room: RoomListView, onClick: () -> Unit) {
+fun RoomItem(room: RoomListViewResponse, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
