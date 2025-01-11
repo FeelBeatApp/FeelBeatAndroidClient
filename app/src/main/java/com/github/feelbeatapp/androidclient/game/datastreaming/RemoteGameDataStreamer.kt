@@ -10,7 +10,6 @@ import com.github.feelbeatapp.androidclient.game.model.GameState
 import com.github.feelbeatapp.androidclient.infra.error.ErrorCode
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.infra.network.NetworkClient
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -21,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import javax.inject.Inject
 
 class RemoteGameDataStreamer @Inject constructor(private val networkClient: NetworkClient) :
     GameDataStreamer {
@@ -29,10 +29,14 @@ class RemoteGameDataStreamer @Inject constructor(private val networkClient: Netw
     private var scope: CoroutineScope? = null
 
     override suspend fun joinRoom(roomId: String) {
-        scope?.cancel()
+        leaveRoom()
         val newScope = CoroutineScope(Dispatchers.IO)
         scope = newScope
         newScope.launch { networkClient.connect("/ws/$roomId").collect { processMessage(it) } }
+    }
+
+    override fun leaveRoom() {
+        scope?.cancel()
         scope = null
         gameStateFlow.value = null
     }
@@ -53,7 +57,9 @@ class RemoteGameDataStreamer @Inject constructor(private val networkClient: Netw
                     gameStateFlow.value = game?.gameState()
                 }
                 ServerMessageType.PLAYER_LEFT.name -> {
-                    game?.removePlayer(Json.decodeFromString<PlayerLeftMessage>(content).payload)
+                    val payload = Json.decodeFromString<PlayerLeftMessage>(content).payload
+                    game?.removePlayer(payload.left)
+                    game?.setAdmin(payload.admin)
                     gameStateFlow.value = game?.gameState()
                 }
                 else -> Log.w("RemoteGameDataStreamer", "Received unexpected message: $content")
@@ -71,6 +77,7 @@ class RemoteGameDataStreamer @Inject constructor(private val networkClient: Netw
                     playlistName = initialState.playlist.name,
                     playlistImageUrl = initialState.playlist.imageUrl,
                     adminId = initialState.admin,
+                    me = initialState.me,
                     players = initialState.players,
                     songs = initialState.playlist.songs.map { it.toSongModel() },
                 )

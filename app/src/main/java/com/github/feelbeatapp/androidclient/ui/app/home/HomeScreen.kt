@@ -42,7 +42,10 @@ fun HomeScreen(
     val rooms by homeViewModel.rooms.collectAsState()
     val loading by homeViewModel.loading.collectAsState()
 
-    LaunchedEffect(null) { homeViewModel.loadRooms() }
+    LaunchedEffect(null) {
+        homeViewModel.leaveRoom()
+        homeViewModel.loadRooms()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {

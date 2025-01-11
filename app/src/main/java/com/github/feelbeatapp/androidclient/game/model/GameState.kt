@@ -5,6 +5,7 @@ data class GameState(
     val playlistName: String,
     val playlistImageUrl: String,
     val adminId: String,
+    val me: String,
     val players: List<Player>,
     val songs: List<Song>,
 )

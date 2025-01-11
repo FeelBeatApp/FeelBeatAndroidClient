@@ -15,4 +15,8 @@ class Game(private var gameState: GameState) {
     fun removePlayer(playerId: String) {
         gameState = gameState.copy(players = gameState.players.filter { it.id != playerId })
     }
+
+    fun setAdmin(playerId: String) {
+        gameState = gameState.copy(adminId = playerId)
+    }
 }

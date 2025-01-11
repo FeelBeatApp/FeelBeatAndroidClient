@@ -7,5 +7,11 @@ import kotlinx.serialization.Serializable
 @SerialName("PLAYER_LEFT")
 data class PlayerLeftMessage(
     override val type: String = ServerMessageType.PLAYER_LEFT.name,
-    val payload: String,
+    val payload: PlayerLeftPayload,
 ) : ServerMessage()
+
+@Serializable
+data class PlayerLeftPayload(
+    val left: String,
+    val admin: String
+)

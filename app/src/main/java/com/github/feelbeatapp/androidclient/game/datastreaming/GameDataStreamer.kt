@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface GameDataStreamer {
     suspend fun joinRoom(roomId: String)
 
+    fun leaveRoom()
+
     fun gameStateFlow(): StateFlow<GameState?>
 }
