@@ -8,10 +8,8 @@ import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -30,15 +28,15 @@ constructor(
     val editRoomState = _editRoomState.asStateFlow()
 
     private var appliedSettings: RoomSettings
-    val isApplied: Flow<Boolean>
+    val isApplied = MutableStateFlow(true)
 
     init {
         updateState(gameDataStreamer.gameStateFlow().value)
-        appliedSettings = _roomSettings.value
-
-        isApplied = _roomSettings.map { it == appliedSettings }
+        appliedSettings = mRoomSettings.value
 
         viewModelScope.launch { gameDataStreamer.gameStateFlow().collect { updateState(it) } }
+
+        viewModelScope.launch { roomSettings.collect { isApplied.value = appliedSettings == it } }
     }
 
     private fun updateState(gameState: GameState?) {
@@ -56,7 +54,8 @@ constructor(
                     playlistLink = "${BASE_PLAYLIST_LINK}/${gameState.settings.playlistId}",
                 )
 
-            _roomSettings.value = appliedSettings
+            mRoomSettings.value = appliedSettings
+            isApplied.value = true
         }
     }
 
@@ -74,9 +73,5 @@ constructor(
         viewModelScope.launch {
             gameDataStreamer.updateSettings(roomSettings.value.toRoomSettingsModel())
         }
-    }
-
-    fun isApplied(): Boolean {
-        return appliedSettings == roomSettings.value
     }
 }

@@ -28,40 +28,40 @@ data class RoomSettings(
 }
 
 abstract class RoomSettingsViewModel : ViewModel() {
-    protected val _roomSettings =
+    protected val mRoomSettings =
         MutableStateFlow(
             RoomSettings(
-                maxPlayers = 0,
+                maxPlayers = 4,
                 turnCount = 5,
                 timePenaltyPerSecond = 5,
-                basePoints = 100,
-                incorrectGuessPenalty = 20,
+                basePoints = 500,
+                incorrectGuessPenalty = 100,
                 playlistLink = "",
             )
         )
-    val roomSettings = _roomSettings.asStateFlow()
+    val roomSettings = mRoomSettings.asStateFlow()
 
     fun setMaxPlayers(value: Int) {
-        _roomSettings.update { it.copy(maxPlayers = value) }
+        mRoomSettings.update { it.copy(maxPlayers = value) }
     }
 
     fun setTurnCount(value: Int) {
-        _roomSettings.update { it.copy(turnCount = value) }
+        mRoomSettings.update { it.copy(turnCount = value) }
     }
 
     fun setTimePenaltyPerSecond(value: Int) {
-        _roomSettings.update { it.copy(timePenaltyPerSecond = value) }
+        mRoomSettings.update { it.copy(timePenaltyPerSecond = value) }
     }
 
     fun setBasePoints(value: Int) {
-        _roomSettings.update { it.copy(basePoints = value) }
+        mRoomSettings.update { it.copy(basePoints = value) }
     }
 
     fun setIncorrectGuessPenalty(value: Int) {
-        _roomSettings.update { it.copy(incorrectGuessPenalty = value) }
+        mRoomSettings.update { it.copy(incorrectGuessPenalty = value) }
     }
 
     fun setPlaylistLink(value: String) {
-        _roomSettings.update { it.copy(playlistLink = value) }
+        mRoomSettings.update { it.copy(playlistLink = value) }
     }
 }

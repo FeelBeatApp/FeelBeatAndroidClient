@@ -6,11 +6,11 @@ import com.github.feelbeatapp.androidclient.game.datastreaming.GameDataStreamer
 import com.github.feelbeatapp.androidclient.game.model.GameState
 import com.github.feelbeatapp.androidclient.game.model.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class LobbyHomeState(
     val currentRoomId: String? = null,
@@ -18,6 +18,8 @@ data class LobbyHomeState(
     val playlistImageUrl: String = "",
     val adminName: String = "Admin",
     val players: List<Player> = listOf(),
+    val readyMap: Map<String, Boolean> = mapOf(),
+    val me: String = "",
 )
 
 @HiltViewModel
@@ -40,9 +42,15 @@ class LobbyHomeViewModel @Inject constructor(private val gameDataStreamer: GameD
                     playlistImageUrl = gameState.playlistImageUrl,
                     adminName = gameState.players.find { it.id == gameState.adminId }?.name ?: "",
                     players = gameState.players,
+                    readyMap = gameState.readyMap,
+                    me = gameState.me,
                 )
         } else {
             _lobbyHomeState.update { it.copy(currentRoomId = null) }
         }
+    }
+
+    fun setReadyToPlay(ready: Boolean) {
+        viewModelScope.launch { gameDataStreamer.sendReadyStatus(ready) }
     }
 }

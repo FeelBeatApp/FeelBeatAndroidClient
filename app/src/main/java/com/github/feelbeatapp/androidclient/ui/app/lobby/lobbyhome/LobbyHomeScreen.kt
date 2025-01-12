@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.app.lobby.lobbyhome
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -38,7 +39,7 @@ import com.github.feelbeatapp.androidclient.ui.loading.LoadingScreen
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun LobbyHomeScreen(onPlay: () -> Unit, viewModel: LobbyHomeViewModel = hiltViewModel()) {
+fun LobbyHomeScreen(viewModel: LobbyHomeViewModel = hiltViewModel()) {
     val lobbyState by viewModel.lobbyHomeState.collectAsStateWithLifecycle()
 
     if (lobbyState.currentRoomId == null) {
@@ -86,13 +87,40 @@ fun LobbyHomeScreen(onPlay: () -> Unit, viewModel: LobbyHomeViewModel = hiltView
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         ) {
-            lobbyState.players.forEach { player -> PlayerCard(player = player) }
+            lobbyState.players.forEach { player ->
+                PlayerCard(player = player) {
+                    if (lobbyState.readyMap.getOrDefault(player.id, false))
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier =
+                                Modifier.fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = .8f)),
+                        ) {
+                            Text("Ready!", color = MaterialTheme.colorScheme.onPrimary)
+                        }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(onClick = onPlay, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Text(stringResource(R.string.play), style = MaterialTheme.typography.headlineMedium)
+        val ready = lobbyState.readyMap[lobbyState.me] ?: false
+        Button(
+            onClick = {viewModel.setReadyToPlay(!ready)},
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        ) {
+            Text(
+                text =
+                    if (!ready) stringResource(R.string.ready)
+                    else
+                        stringResource(
+                            R.string.waiting_for,
+                            lobbyState.readyMap.count { it.value },
+                            lobbyState.players.size,
+                        ),
+                style = MaterialTheme.typography.headlineMedium,
+            )
         }
     }
 }
@@ -100,5 +128,5 @@ fun LobbyHomeScreen(onPlay: () -> Unit, viewModel: LobbyHomeViewModel = hiltView
 @Preview(showBackground = true)
 @Composable
 fun PreviewAcceptScreen() {
-    LobbyHomeScreen({})
+    LobbyHomeScreen()
 }

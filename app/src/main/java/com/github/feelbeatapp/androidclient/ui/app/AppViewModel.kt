@@ -28,7 +28,7 @@ constructor(
     private val authManager: AuthManager,
     private val spotifyAPI: SpotifyAPI,
     private val errorEmitter: ErrorEmitter,
-    private val gameDataStreamer: GameDataStreamer
+    private val gameDataStreamer: GameDataStreamer,
 ) : ViewModel() {
     private val _playerIdentity = MutableStateFlow<PlayerIdentity?>(null)
     val playerIdentity = _playerIdentity.asStateFlow()

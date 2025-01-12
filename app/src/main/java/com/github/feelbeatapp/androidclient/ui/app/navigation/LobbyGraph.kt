@@ -6,8 +6,8 @@ import com.github.feelbeatapp.androidclient.ui.app.lobby.lobbyhome.LobbyHomeScre
 import com.github.feelbeatapp.androidclient.ui.app.lobby.lobbysongs.LobbySongsScreen
 import com.github.feelbeatapp.androidclient.ui.app.roomsettings.screens.LobbyRoomSettingsScreen
 
-fun NavGraphBuilder.lobbyGraph(onPlay: () -> Unit) {
-    composable(route = AppRoute.ROOM_LOBBY.route) { LobbyHomeScreen(onPlay = onPlay) }
+fun NavGraphBuilder.lobbyGraph() {
+    composable(route = AppRoute.ROOM_LOBBY.route) { LobbyHomeScreen() }
 
     composable(route = AppRoute.ROOM_SONGS.route) { LobbySongsScreen() }
 

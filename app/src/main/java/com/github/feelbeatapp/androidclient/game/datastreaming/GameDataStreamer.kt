@@ -13,4 +13,6 @@ interface GameDataStreamer {
     fun gameStateFlow(): StateFlow<GameState?>
 
     suspend fun updateSettings(settings: RoomSettings)
+
+    suspend fun sendReadyStatus(ready: Boolean)
 }

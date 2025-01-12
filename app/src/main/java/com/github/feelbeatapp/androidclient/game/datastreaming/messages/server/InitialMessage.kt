@@ -2,9 +2,9 @@ package com.github.feelbeatapp.androidclient.game.datastreaming.messages.server
 
 import com.github.feelbeatapp.androidclient.game.model.Player
 import com.github.feelbeatapp.androidclient.game.model.RoomSettings
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 @SerialName("INITIAL")
@@ -20,6 +20,7 @@ data class InitialGameState(
     val admin: String,
     val playlist: Playlist,
     val players: List<Player>,
+    val readyMap: Map<String, Boolean>,
     val settings: RoomSettings,
 )
 
@@ -43,4 +44,3 @@ data class Song(
         )
     }
 }
-

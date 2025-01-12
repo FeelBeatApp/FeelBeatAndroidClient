@@ -9,4 +9,6 @@ data class GameState(
     val players: List<Player>,
     val songs: List<Song>,
     val settings: RoomSettings,
+    val readyMap: Map<String, Boolean>,
+    val stage: RoomStage,
 )

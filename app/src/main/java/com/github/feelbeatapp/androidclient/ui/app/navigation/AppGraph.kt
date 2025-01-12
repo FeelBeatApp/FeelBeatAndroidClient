@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.game.model.RoomStage
 import com.github.feelbeatapp.androidclient.ui.app.AppScreen
 import com.github.feelbeatapp.androidclient.ui.app.home.HomeScreen
 import com.github.feelbeatapp.androidclient.ui.app.lobby.components.LobbyBottomBar
@@ -23,16 +24,32 @@ import com.github.feelbeatapp.androidclient.ui.app.roomsettings.screens.NewRoomS
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
-fun AppGraph(onLogout: () -> Unit, lobbyViewModel: LobbyViewModel = hiltViewModel()) {
+fun AppGraph(
+    onLogout: () -> Unit,
+    lobbyViewModel: LobbyViewModel = hiltViewModel(),
+    navigationViewModel: NavigationViewModel = hiltViewModel(),
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val route = navBackStackEntry?.destination?.route
     val lobbyState by lobbyViewModel.lobbyState.collectAsStateWithLifecycle()
+    val stage by navigationViewModel.stage.collectAsStateWithLifecycle(RoomStage.LOBBY)
+    val loadedRoomId by navigationViewModel.roomId.collectAsStateWithLifecycle(null)
 
     LaunchedEffect(lobbyState.joinFailed) {
         if (lobbyState.joinFailed) {
             navController.popBackStack(AppRoute.HOME.route, inclusive = false)
             lobbyViewModel.reset()
+        }
+    }
+
+    LaunchedEffect(stage) {
+        if (stage == RoomStage.GAME) {
+            navController.navigate(
+                AppRoute.START_GAME.withArgs(mapOf("roomId" to (loadedRoomId ?: "")))
+            ) {
+                popUpTo(AppRoute.HOME.route)
+            }
         }
     }
 
@@ -77,16 +94,7 @@ fun AppGraph(onLogout: () -> Unit, lobbyViewModel: LobbyViewModel = hiltViewMode
                 )
             }
             navigation(route = AppRoute.ROOM.route, startDestination = AppRoute.ROOM_LOBBY.route) {
-                lobbyGraph(
-                    onPlay = {
-                        val roomId = navBackStackEntry?.getRoomId()
-                        if (roomId != null) {
-                            navController.navigate(
-                                AppRoute.START_GAME.withArgs(mapOf("roomId" to roomId))
-                            )
-                        }
-                    },
-                )
+                lobbyGraph()
             }
 
             navigation(route = AppRoute.GAME.route, startDestination = AppRoute.START_GAME.route) {

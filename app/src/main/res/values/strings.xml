@@ -8,7 +8,7 @@
     <string name="edit_room">Edit room</string>
     <string name="feel_beat">Feel Beat</string>
     <string name="back">Back</string>
-    <string name="play">PLAY</string>
+    <string name="ready">READY</string>
     <string name="player_image">Player Image</string>
     <string name="snippet_duration_val">Snippet Duration: %1$d seconds</string>
     <string name="points_to_win_val">Points to Win: %1$d</string>
@@ -45,4 +45,5 @@
     <string name="failed_to_join_room">Couldn\'t join the room</string>
     <string name="max_players_too_small">Can\'t set max players, too much players in room</string>
     <string name="apply">Apply</string>
+    <string name="waiting_for">WAITING FOR %1$s/%2$s</string>
 </resources>

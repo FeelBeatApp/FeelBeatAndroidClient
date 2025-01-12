@@ -25,7 +25,7 @@ fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) 
         label = stringResource(R.string.number_of_players),
         value = roomSettings.maxPlayers,
         onValueChange = { viewModel.setMaxPlayers(it) },
-        valueRange = 1..7,
+        valueRange = 1..8,
         interval = 1,
         enabled = enabled,
     )
@@ -35,7 +35,7 @@ fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) 
         value = roomSettings.turnCount,
         onValueChange = { viewModel.setTurnCount(it) },
         valueRange = 1..10,
-        interval = 9,
+        interval = 1,
         enabled = enabled,
     )
 
@@ -44,7 +44,7 @@ fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) 
         value = roomSettings.timePenaltyPerSecond,
         onValueChange = { viewModel.setTimePenaltyPerSecond(it) },
         valueRange = 1..20,
-        interval = 19,
+        interval = 1,
         enabled = enabled,
     )
 
@@ -53,7 +53,7 @@ fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) 
         value = roomSettings.basePoints,
         onValueChange = { viewModel.setBasePoints(it) },
         valueRange = 100..1000,
-        interval = 9,
+        interval = 10,
         enabled = enabled,
     )
 
@@ -62,7 +62,7 @@ fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) 
         value = roomSettings.incorrectGuessPenalty,
         onValueChange = { viewModel.setIncorrectGuessPenalty(it) },
         valueRange = 50..500,
-        interval = 9,
+        interval = 50,
         enabled = enabled,
     )
 
