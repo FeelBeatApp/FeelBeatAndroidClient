@@ -1,6 +1,7 @@
 package com.github.feelbeatapp.androidclient.game.datastreaming
 
 import com.github.feelbeatapp.androidclient.game.model.GameState
+import com.github.feelbeatapp.androidclient.game.model.RoomSettings
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.StateFlow
 
@@ -10,4 +11,6 @@ interface GameDataStreamer {
     fun leaveRoom()
 
     fun gameStateFlow(): StateFlow<GameState?>
+
+    suspend fun updateSettings(settings: RoomSettings)
 }

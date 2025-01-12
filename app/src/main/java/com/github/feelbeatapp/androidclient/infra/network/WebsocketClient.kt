@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.withContext
 
 /** Websocket implementation of communication with FeelBeat server */
 class WebsocketClient
@@ -47,6 +49,7 @@ constructor(
                     path = "${serverUrl.fullPath}${path}",
                     request = { header("Authorization", "Bearer $token") },
                 ) {
+                    session = this
                     for (msg in offlineQueue) {
                         this.send(msg)
                     }
@@ -65,6 +68,7 @@ constructor(
             .catch { e ->
                 throw FeelBeatException(ErrorCode.FEELBEAT_SERVER_FAILED_TO_JOIN_ROOM, e)
             }
+            .onCompletion { session = null }
     }
 
     override suspend fun disconnect() {
@@ -72,10 +76,12 @@ constructor(
     }
 
     override suspend fun sendMessage(text: String) {
-        if (session == null) {
-            offlineQueue.offer(text)
-        } else {
-            session?.send(text)
+        withContext(Dispatchers.IO) {
+            if (session == null) {
+                offlineQueue.offer(text)
+            } else {
+                session?.send(text)
+            }
         }
     }
 }

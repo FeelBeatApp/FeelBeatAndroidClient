@@ -6,6 +6,7 @@ enum class ServerMessageType {
     INITIAL,
     NEW_PLAYER,
     PLAYER_LEFT,
+    SERVER_ERROR,
 }
 
 @Serializable
