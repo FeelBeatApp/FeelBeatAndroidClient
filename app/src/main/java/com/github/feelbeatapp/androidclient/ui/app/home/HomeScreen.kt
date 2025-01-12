@@ -109,7 +109,7 @@ fun RoomList(
     modifier: Modifier = Modifier,
 ) {
     PullToRefreshBox(isRefreshing = isRefreshing, onRefresh = onRefresh, modifier = modifier) {
-        LazyColumn(Modifier) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(items) { ListItem({ RoomCard(room = it, onClick = { onRoomSelect(it.id) }) }) }
         }
     }

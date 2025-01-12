@@ -5,17 +5,18 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.api.spotify.SpotifyAPI
+import com.github.feelbeatapp.androidclient.game.datastreaming.GameDataStreamer
 import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
 import com.github.feelbeatapp.androidclient.infra.error.ErrorEmitter
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class PlayerIdentity(val name: String, val imageUrl: String)
 
@@ -27,6 +28,7 @@ constructor(
     private val authManager: AuthManager,
     private val spotifyAPI: SpotifyAPI,
     private val errorEmitter: ErrorEmitter,
+    private val gameDataStreamer: GameDataStreamer
 ) : ViewModel() {
     private val _playerIdentity = MutableStateFlow<PlayerIdentity?>(null)
     val playerIdentity = _playerIdentity.asStateFlow()
@@ -67,5 +69,6 @@ constructor(
 
     fun logout() {
         authManager.logout()
+        gameDataStreamer.leaveRoom()
     }
 }
