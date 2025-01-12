@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,7 +77,12 @@ fun LobbyHomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = lobbyState.playlistName, style = MaterialTheme.typography.displayMedium)
+            Text(
+                text = lobbyState.playlistName,
+                style = MaterialTheme.typography.displayMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 Icon(Icons.Default.Star, contentDescription = "star icon")

@@ -15,15 +15,16 @@ import kotlinx.coroutines.launch
 @SuppressWarnings("MagicNumber")
 class MusicPlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    @SuppressLint("StaticFieldLeak")
-    private val context = application.applicationContext
+    @SuppressLint("StaticFieldLeak") private val context = application.applicationContext
     private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
 
     private val _currentPosition = MutableStateFlow(0f)
-    val currentPosition: StateFlow<Float> get() = _currentPosition
+    val currentPosition: StateFlow<Float>
+        get() = _currentPosition
 
     private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean> get() = _isPlaying
+    val isPlaying: StateFlow<Boolean>
+        get() = _isPlaying
 
     val duration: Float
         get() = maxOf(exoPlayer.duration.toFloat(), 0f)
