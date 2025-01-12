@@ -15,7 +15,7 @@ data class RoomSettings(
     val incorrectGuessPenalty: Int,
     val playlistLink: String,
 ) {
-    fun toCreateRoomPayload(): RoomSettings {
+    fun toRoomSettingsModel(): RoomSettings {
         return RoomSettings(
             maxPlayers = maxPlayers,
             turnCount = turnCount,
@@ -28,7 +28,7 @@ data class RoomSettings(
 }
 
 abstract class RoomSettingsViewModel : ViewModel() {
-    private val _roomSettings =
+    protected val _roomSettings =
         MutableStateFlow(
             RoomSettings(
                 maxPlayers = 0,

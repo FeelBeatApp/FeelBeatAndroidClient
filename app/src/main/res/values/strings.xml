@@ -43,4 +43,6 @@
     <string name="song_cover">Song cover</string>
     <string name="playlist_content">Playlist content</string>
     <string name="failed_to_join_room">Couldn\'t join the room</string>
+    <string name="max_players_too_small">Can\'t set max players, too much players in room</string>
+    <string name="apply">Apply</string>
 </resources>

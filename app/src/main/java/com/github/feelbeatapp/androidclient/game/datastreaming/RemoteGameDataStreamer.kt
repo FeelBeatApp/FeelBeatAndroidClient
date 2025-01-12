@@ -1,17 +1,22 @@
 package com.github.feelbeatapp.androidclient.game.datastreaming
 
 import android.util.Log
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdateMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdatePayload
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialGameState
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.NewPlayerMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerLeftMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.ServerErrorMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.ServerMessageType
 import com.github.feelbeatapp.androidclient.game.model.GameState
+import com.github.feelbeatapp.androidclient.game.model.RoomSettings
+import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
 import com.github.feelbeatapp.androidclient.infra.error.ErrorCode
 import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
+import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import com.github.feelbeatapp.androidclient.infra.network.NetworkClient
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -23,14 +28,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import javax.inject.Inject
 
 class RemoteGameDataStreamer
 @Inject
-constructor(private val networkClient: NetworkClient, private val errorReceiver: ErrorReceiver) :
-    GameDataStreamer {
+constructor(
+    private val networkClient: NetworkClient,
+    private val errorReceiver: ErrorReceiver,
+    private val authManager: AuthManager,
+) : GameDataStreamer {
     private var game: Game? = null
     private var gameStateFlow = MutableStateFlow<GameState?>(null)
     private var scope: CoroutineScope? = null
@@ -74,11 +84,28 @@ constructor(private val networkClient: NetworkClient, private val errorReceiver:
         return gameStateFlow.asStateFlow()
     }
 
-    private fun processMessage(content: String) {
+    override suspend fun updateSettings(settings: RoomSettings) {
+        withContext(Dispatchers.IO) {
+            val token = authManager.getAccessToken()
+            val message =
+                SettingsUpdateMessage(
+                    payload = SettingsUpdatePayload(token = token, settings = settings)
+                )
+            networkClient.sendMessage(Json.encodeToString(message))
+        }
+    }
+
+    private suspend fun processMessage(content: String) {
         try {
             val type = Json.decodeFromString<JsonObject>(content)["type"]?.jsonPrimitive?.content
 
             when (type) {
+                ServerMessageType.SERVER_ERROR.name ->
+                    errorReceiver.submitError(
+                        FeelBeatServerException(
+                            Json.decodeFromString<ServerErrorMessage>(content).payload
+                        )
+                    )
                 ServerMessageType.INITIAL.name ->
                     loadInitialState(Json.decodeFromString<InitialMessage>(content).payload)
                 ServerMessageType.NEW_PLAYER.name -> {
@@ -109,6 +136,7 @@ constructor(private val networkClient: NetworkClient, private val errorReceiver:
                     me = initialState.me,
                     players = initialState.players,
                     songs = initialState.playlist.songs.map { it.toSongModel() },
+                    settings = initialState.settings,
                 )
             )
         gameStateFlow.value = game?.gameState()

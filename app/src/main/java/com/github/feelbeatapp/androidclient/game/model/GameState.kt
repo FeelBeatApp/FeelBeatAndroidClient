@@ -8,4 +8,5 @@ data class GameState(
     val me: String,
     val players: List<Player>,
     val songs: List<Song>,
+    val settings: RoomSettings,
 )
