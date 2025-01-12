@@ -12,11 +12,11 @@ import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class PlayerIdentity(val name: String, val imageUrl: String)
 

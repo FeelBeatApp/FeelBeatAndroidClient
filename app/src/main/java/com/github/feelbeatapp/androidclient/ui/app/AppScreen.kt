@@ -5,12 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +60,7 @@ fun AppScreen(
     val playerIdentity by appViewModel.playerIdentity.collectAsState()
 
     var playerIdentitySheetOpen by remember { mutableStateOf(false) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     if (playerIdentitySheetOpen) {
         ModalBottomSheet(onDismissRequest = { playerIdentitySheetOpen = false }) {
@@ -70,6 +75,53 @@ fun AppScreen(
         }
     }
 
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text(text = stringResource(R.string.exit_room)) },
+            text = {
+                Text(
+                    text = stringResource(R.string.are_you_sure),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            confirmButton = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Absolute.Right,
+                ) {
+                    TextButton(
+                        onClick = {
+                            showExitDialog = false
+                            onNavigateBack()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.yes),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+
+                    TextButton(
+                        onClick = { showExitDialog = false },
+                        modifier =
+                            Modifier.background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                    shape = MaterialTheme.shapes.small,
+                                )
+                                .padding(horizontal = 4.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            },
+        )
+    }
+
     Scaffold(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         topBar = {
@@ -78,7 +130,7 @@ fun AppScreen(
                 backVisible = backVisible,
                 imageUrl = playerIdentity?.imageUrl,
                 onAccountClick = { playerIdentitySheetOpen = true },
-                onNavigateBack = onNavigateBack,
+                onBackClick = { showExitDialog = true },
             )
         },
         snackbarHost = { SnackbarHost(hostState = appViewModel.snackBarHost) },
@@ -96,7 +148,7 @@ fun AppBar(
     backVisible: Boolean,
     imageUrl: String?,
     onAccountClick: () -> Unit,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
@@ -119,7 +171,7 @@ fun AppBar(
         },
         navigationIcon = {
             if (backVisible) {
-                IconButton(onClick = onNavigateBack) {
+                IconButton(onClick = { onBackClick() }) {
                     Icon(
                         Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = stringResource(R.string.back),
