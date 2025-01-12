@@ -20,8 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -31,27 +30,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.components.PlayerCard
+import com.github.feelbeatapp.androidclient.ui.loading.LoadingScreen
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun LobbyHomeScreen(
-    roomId: String,
-    onPlay: () -> Unit,
-    viewModel: LobbyHomeViewModel = hiltViewModel(),
-) {
-    val lobbyState = viewModel.lobbyHomeState.collectAsState().value
-
-    LaunchedEffect(roomId) {
-        if (roomId != lobbyState.currentRoomId) {
-            viewModel.joinRoom(roomId)
-        }
-    }
+fun LobbyHomeScreen(onPlay: () -> Unit, viewModel: LobbyHomeViewModel = hiltViewModel()) {
+    val lobbyState by viewModel.lobbyHomeState.collectAsStateWithLifecycle()
 
     if (lobbyState.currentRoomId == null) {
-        Text("Loading ")
+        LoadingScreen()
         return
     }
 
@@ -109,5 +100,5 @@ fun LobbyHomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAcceptScreen() {
-    LobbyHomeScreen("Room id", {})
+    LobbyHomeScreen({})
 }

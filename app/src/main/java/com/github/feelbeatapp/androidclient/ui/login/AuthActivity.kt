@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
 import com.github.feelbeatapp.androidclient.ui.MainActivity
+import com.github.feelbeatapp.androidclient.ui.loading.LoadingScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +43,6 @@ class AuthActivity : ComponentActivity() {
             finish()
         }
 
-        setContent { AuthLoadingScreen() }
+        setContent { LoadingScreen() }
     }
 }

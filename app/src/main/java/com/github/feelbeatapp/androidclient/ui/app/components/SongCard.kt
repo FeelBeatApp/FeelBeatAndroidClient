@@ -62,7 +62,7 @@ fun SongCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(10.dp, 0.dp),
             ) {
-                Column(verticalArrangement = Arrangement.Center) {
+                Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
                     Text(title, style = MaterialTheme.typography.titleMedium)
 
                     Text(artist, style = MaterialTheme.typography.titleSmall)

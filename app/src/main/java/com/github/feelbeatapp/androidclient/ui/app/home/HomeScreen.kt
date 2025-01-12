@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.api.feelbeat.responses.RoomListViewResponse
 import com.github.feelbeatapp.androidclient.ui.app.components.RoomCard
@@ -39,8 +39,8 @@ fun HomeScreen(
     onNewRoom: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val rooms by homeViewModel.rooms.collectAsState()
-    val loading by homeViewModel.loading.collectAsState()
+    val rooms by homeViewModel.rooms.collectAsStateWithLifecycle()
+    val loading by homeViewModel.loading.collectAsStateWithLifecycle()
 
     LaunchedEffect(null) {
         homeViewModel.leaveRoom()

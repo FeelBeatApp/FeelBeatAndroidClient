@@ -19,10 +19,11 @@ import java.util.ArrayDeque
 import java.util.Queue
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.flowOn
 
 /** Websocket implementation of communication with FeelBeat server */
 class WebsocketClient
@@ -60,10 +61,10 @@ constructor(
                     }
                 }
             }
+            .flowOn(Dispatchers.IO)
             .catch { e ->
                 throw FeelBeatException(ErrorCode.FEELBEAT_SERVER_FAILED_TO_JOIN_ROOM, e)
             }
-            .onCompletion { Log.d("Look", "completed") }
     }
 
     override suspend fun disconnect() {

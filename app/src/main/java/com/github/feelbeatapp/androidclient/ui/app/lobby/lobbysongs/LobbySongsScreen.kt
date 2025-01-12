@@ -14,11 +14,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.feelbeatapp.androidclient.ui.app.components.SongCard
+import com.github.feelbeatapp.androidclient.ui.loading.LoadingScreen
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
 fun LobbySongsScreen(viewModel: LobbySongsViewModel = hiltViewModel()) {
     val songs by viewModel.songs.collectAsStateWithLifecycle()
+
+    if (songs.isEmpty()) {
+        LoadingScreen()
+        return
+    }
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),

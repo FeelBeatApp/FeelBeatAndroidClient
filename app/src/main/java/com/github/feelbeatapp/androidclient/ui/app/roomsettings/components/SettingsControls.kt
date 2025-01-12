@@ -18,15 +18,16 @@ import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.roomsettings.viewmodels.RoomSettingsViewModel
 
 @Composable
-fun SettingsControls(viewModel: RoomSettingsViewModel) {
+fun SettingsControls(viewModel: RoomSettingsViewModel, enabled: Boolean = true) {
     val roomSettings by viewModel.roomSettings.collectAsState()
 
     SettingSlider(
         label = stringResource(R.string.number_of_players),
         value = roomSettings.maxPlayers,
         onValueChange = { viewModel.setMaxPlayers(it) },
-        valueRange = 1..5,
-        steps = 4,
+        valueRange = 1..7,
+        interval = 1,
+        enabled = enabled,
     )
 
     SettingSlider(
@@ -34,7 +35,8 @@ fun SettingsControls(viewModel: RoomSettingsViewModel) {
         value = roomSettings.turnCount,
         onValueChange = { viewModel.setTurnCount(it) },
         valueRange = 1..10,
-        steps = 9,
+        interval = 9,
+        enabled = enabled,
     )
 
     SettingSlider(
@@ -42,7 +44,8 @@ fun SettingsControls(viewModel: RoomSettingsViewModel) {
         value = roomSettings.timePenaltyPerSecond,
         onValueChange = { viewModel.setTimePenaltyPerSecond(it) },
         valueRange = 1..20,
-        steps = 19,
+        interval = 19,
+        enabled = enabled,
     )
 
     SettingSlider(
@@ -50,7 +53,8 @@ fun SettingsControls(viewModel: RoomSettingsViewModel) {
         value = roomSettings.basePoints,
         onValueChange = { viewModel.setBasePoints(it) },
         valueRange = 100..1000,
-        steps = 9,
+        interval = 9,
+        enabled = enabled,
     )
 
     SettingSlider(
@@ -58,24 +62,27 @@ fun SettingsControls(viewModel: RoomSettingsViewModel) {
         value = roomSettings.incorrectGuessPenalty,
         onValueChange = { viewModel.setIncorrectGuessPenalty(it) },
         valueRange = 50..500,
-        steps = 9,
+        interval = 9,
+        enabled = enabled,
     )
 
-    Text(
-        text = stringResource(R.string.playlist_link),
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(top = 8.dp),
-    )
+    if (enabled) {
+        Text(
+            text = stringResource(R.string.playlist_link),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(top = 8.dp),
+        )
 
-    TextField(
-        value = roomSettings.playlistLink,
-        keyboardOptions =
-            KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Uri,
-                imeAction = ImeAction.Done,
-            ),
-        onValueChange = { viewModel.setPlaylistLink(it) },
-        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-        label = { Text(stringResource(R.string.enter_playlist_link)) },
-    )
+        TextField(
+            value = roomSettings.playlistLink,
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Uri,
+                    imeAction = ImeAction.Done,
+                ),
+            onValueChange = { viewModel.setPlaylistLink(it) },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            label = { Text(stringResource(R.string.enter_playlist_link)) },
+        )
+    }
 }

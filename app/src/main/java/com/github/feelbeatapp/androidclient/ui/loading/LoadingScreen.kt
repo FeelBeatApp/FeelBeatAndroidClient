@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.ui.login
+package com.github.feelbeatapp.androidclient.ui.loading
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 const val SPINNER_HEIGHT_OFFSET = 0.5f
 
 @Composable
-fun AuthLoadingScreen() {
+fun LoadingScreen(text: String = "Loading") {
     FeelBeatTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,7 +39,7 @@ fun AuthLoadingScreen() {
             }
 
             Text(
-                text = "Loading",
+                text = text,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -49,6 +49,6 @@ fun AuthLoadingScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun AuthLoadingScreenPreview() {
-    AuthLoadingScreen()
+fun LoadingScreenPreview() {
+    LoadingScreen()
 }

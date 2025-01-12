@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class ErrorHandler @Inject constructor() : ErrorEmitter, ErrorReceiver {
-    private val _errors = MutableSharedFlow<FeelBeatException>()
+    private val _errors = MutableSharedFlow<FeelBeatException>(extraBufferCapacity = 32)
     override val errors = _errors.asSharedFlow()
 
     override suspend fun submitError(exception: FeelBeatException) {

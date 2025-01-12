@@ -1,9 +1,12 @@
 package com.github.feelbeatapp.androidclient.ui.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,15 +17,24 @@ import androidx.navigation.compose.rememberNavController
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.AppScreen
 import com.github.feelbeatapp.androidclient.ui.app.home.HomeScreen
-import com.github.feelbeatapp.androidclient.ui.app.lobby.LobbyBottomBar
+import com.github.feelbeatapp.androidclient.ui.app.lobby.components.LobbyBottomBar
+import com.github.feelbeatapp.androidclient.ui.app.lobby.viewmodels.LobbyViewModel
 import com.github.feelbeatapp.androidclient.ui.app.roomsettings.screens.NewRoomSettingsScreen
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @Composable
-fun AppGraph(onLogout: () -> Unit) {
+fun AppGraph(onLogout: () -> Unit, lobbyViewModel: LobbyViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val route = navBackStackEntry?.destination?.route
+    val lobbyState by lobbyViewModel.lobbyState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(lobbyState.joinFailed) {
+        if (lobbyState.joinFailed) {
+            navController.popBackStack(AppRoute.HOME.route, inclusive = false)
+            lobbyViewModel.reset()
+        }
+    }
 
     AppScreen(
         title = getRouteTitle(route),
@@ -44,6 +56,7 @@ fun AppGraph(onLogout: () -> Unit) {
             composable(route = AppRoute.HOME.route) {
                 HomeScreen(
                     onRoomSelect = { roomId ->
+                        lobbyViewModel.joinRoom(roomId)
                         navController.navigate(
                             AppRoute.ROOM_LOBBY.withArgs(mapOf("roomId" to roomId))
                         )
@@ -54,6 +67,7 @@ fun AppGraph(onLogout: () -> Unit) {
             composable(route = AppRoute.NEW_ROOM.route) {
                 NewRoomSettingsScreen(
                     onRoomCreated = {
+                        lobbyViewModel.joinRoom(it)
                         navController.navigate(
                             AppRoute.ROOM_LOBBY.withArgs(mapOf("roomId" to it))
                         ) {
@@ -71,7 +85,7 @@ fun AppGraph(onLogout: () -> Unit) {
                                 AppRoute.START_GAME.withArgs(mapOf("roomId" to roomId))
                             )
                         }
-                    }
+                    },
                 )
             }
 
@@ -125,9 +139,9 @@ fun getNavigateBackBehaviour(route: String?, navController: NavHostController): 
     }
 }
 
-fun NavBackStackEntry.getRoomId(): String {
+fun NavBackStackEntry.getRoomId(): String? {
     val roomId = arguments?.getString("roomId")
-    return roomId!!
+    return roomId
 }
 
 @Composable

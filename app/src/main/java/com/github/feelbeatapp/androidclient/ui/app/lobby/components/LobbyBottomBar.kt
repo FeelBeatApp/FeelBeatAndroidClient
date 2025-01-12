@@ -1,4 +1,4 @@
-package com.github.feelbeatapp.androidclient.ui.app.lobby
+package com.github.feelbeatapp.androidclient.ui.app.lobby.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home

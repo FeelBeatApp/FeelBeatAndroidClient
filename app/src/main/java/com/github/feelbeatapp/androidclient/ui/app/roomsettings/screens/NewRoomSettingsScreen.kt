@@ -16,13 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.roomsettings.components.SettingsControls
 import com.github.feelbeatapp.androidclient.ui.app.roomsettings.viewmodels.NewRoomSettingsViewModel
@@ -33,8 +33,8 @@ fun NewRoomSettingsScreen(
     newRoomSettingsViewModel: NewRoomSettingsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val createdRoomId by newRoomSettingsViewModel.roomCreated.collectAsState(null)
-    val loading by newRoomSettingsViewModel.loading.collectAsState()
+    val createdRoomId by newRoomSettingsViewModel.roomCreated.collectAsStateWithLifecycle(null)
+    val loading by newRoomSettingsViewModel.loading.collectAsStateWithLifecycle()
 
     LaunchedEffect(createdRoomId) {
         val roomId = createdRoomId
