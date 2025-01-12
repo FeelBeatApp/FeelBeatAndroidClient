@@ -1,9 +1,14 @@
 package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
+import com.github.feelbeatapp.androidclient.game.datastreaming.GameDataStreamer
+import com.github.feelbeatapp.androidclient.game.model.Song
+import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +16,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
 
-class GuessSongViewModel : ViewModel() {
+@HiltViewModel
+class GuessSongViewModel @Inject constructor(private val gameDataStreamer: GameDataStreamer) :
+    ViewModel() {
     private val _guessState = MutableStateFlow(GuessState())
     val guessState: StateFlow<GuessState> = _guessState.asStateFlow()
 
@@ -22,37 +29,30 @@ class GuessSongViewModel : ViewModel() {
     val gameEnded: StateFlow<Boolean> = _gameEnded.asStateFlow()
 
     init {
-        loadPlayers()
-        loadPlaylist()
+        loadGuessState()
         startTimer()
     }
 
-    private fun loadPlayers() {
-        viewModelScope.launch {}
-    }
-
-    @SuppressWarnings("MagicNumber")
-    private fun loadPlaylist() {
+    private fun loadGuessState() {
         viewModelScope.launch {
-            val examplePlaylist =
-                listOf(
-                    Song(1, "Hello"),
-                    Song(2, "Highway to Hell"),
-                    Song(3, "Hell's Comin' with Me"),
-                    Song(4, "Riptide"),
-                    Song(5, "Rozmowa"),
-                    Song(6, "Rower"),
-                    Song(7, "R"),
-                    Song(8, "Róż"),
-                    Song(9, "Rota"),
-                    Song(10, "Szarość i Róż"),
-                )
-            _guessState.value =
-                _guessState.value.copy(
-                    songs = examplePlaylist,
-                    filteredSongs = examplePlaylist,
-                    currentSong = examplePlaylist[0],
-                )
+            gameDataStreamer.gameStateFlow().collect { gameState ->
+                val updatedPlayers =
+                    gameState?.players?.map { player ->
+                        PlayerWithResult(
+                            player = player,
+                            resultStatus = ResultStatus.NORESPONSE,
+                            points = 0,
+                        )
+                    } ?: listOf()
+
+                _guessState.value =
+                    _guessState.value.copy(
+                        playlistName = gameState?.playlistName.toString(),
+                        songs = gameState?.songs ?: listOf(),
+                        players = updatedPlayers,
+                    )
+                Log.d("yup", "updating")
+            }
         }
     }
 
@@ -82,7 +82,7 @@ class GuessSongViewModel : ViewModel() {
                     FuzzySearch.ratio(song.title.lowercase(), query.lowercase())
                 }
             }
-        _guessState.value = _guessState.value.copy(filteredSongs = sortedList)
+        _guessState.value = _guessState.value.copy(songs = sortedList)
     }
 
     fun submitAnswer(playerName: String, isCorrect: Boolean) {

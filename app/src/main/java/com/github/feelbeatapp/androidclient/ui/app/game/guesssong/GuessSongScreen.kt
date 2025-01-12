@@ -21,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,24 +33,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.game.model.Song
+import com.github.feelbeatapp.androidclient.ui.app.components.SongCard
+import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.MusicPlayer
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.Song
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GuessSongScreen(
     roomId: String,
     onNavigate: (String) -> Unit,
-    viewModel: GuessSongViewModel = GuessSongViewModel(),
+    viewModel: GuessSongViewModel = hiltViewModel(),
 ) {
-    val guessState by viewModel.guessState.collectAsState()
     val timeLeft by viewModel.timeLeft.collectAsState()
     val gameEnded by viewModel.gameEnded.collectAsState()
+    val guessState by viewModel.guessState.collectAsStateWithLifecycle()
 
     if (gameEnded) {
         onNavigate(AppRoute.GAME_RESULT.withArgs(mapOf("roomId" to roomId)))
@@ -60,20 +64,29 @@ fun GuessSongScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(guessState.playlist.name) },
+                title = {
+                    Text(
+                        text = guessState.playlistName,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp),
+                    )
+                },
                 actions = {
                     Text(
                         text = timeLeft.toString(),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 16.dp),
+                        modifier = Modifier.padding(end = 16.dp, top = 0.dp),
                     )
                 },
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues).fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(paddingValues).fillMaxSize().padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -85,7 +98,11 @@ fun GuessSongScreen(
                 }
             }
 
-            MusicControlSlider()
+            MusicPlayer(
+                song =
+                    guessState.currentSong
+                        as com.github.feelbeatapp.androidclient.ui.app.uimodel.Song?
+            )
 
             Column {
                 Text(
@@ -102,9 +119,9 @@ fun GuessSongScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(guessState.filteredSongs.size) { index ->
+                items(guessState.songs.size) { index ->
                     SongItem(
-                        song = guessState.filteredSongs[index],
+                        song = guessState.songs[index],
                         onClick = {
                             onNavigate(AppRoute.GUESS_RESULT.withArgs(mapOf("roomId" to roomId)))
                         },
@@ -130,13 +147,13 @@ fun PlayerStatusIcon(player: PlayerWithResult) {
             ResultStatus.NORESPONSE -> Color.Gray
         }
 
-    Box(modifier = Modifier.size(48.dp)) {
+    Box(modifier = Modifier.size(36.dp)) {
         AsyncImage(
             model = player.player.imageUrl,
             placeholder = painterResource(R.drawable.userimage),
             error = painterResource(R.drawable.userimage),
             contentDescription = stringResource(R.string.player_avatar),
-            modifier = Modifier.size(48.dp).clip(CircleShape),
+            modifier = Modifier.size(36.dp).clip(CircleShape),
         )
         icon?.let {
             Icon(
@@ -146,18 +163,6 @@ fun PlayerStatusIcon(player: PlayerWithResult) {
                 modifier = Modifier.align(Alignment.BottomEnd).size(16.dp),
             )
         }
-    }
-}
-
-@Composable
-fun MusicControlSlider() {
-    Column {
-        Text(stringResource(R.string.music_control), style = MaterialTheme.typography.bodyMedium)
-        Slider(
-            value = 0.5f,
-            onValueChange = { /* TODO Handle slider change */ },
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 
@@ -183,13 +188,14 @@ fun SearchBar(searchQuery: TextFieldValue, onSearchQueryChange: (TextFieldValue)
 @Composable
 fun SongItem(song: Song, onClick: () -> Unit) {
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column { Text(song.title, style = MaterialTheme.typography.bodyLarge) }
-        }
+        SongCard(
+            title = song.title,
+            artist = song.artist,
+            imageUrl = song.imageUrl,
+            duration = song.duration,
+            size = 40.dp,
+            displayDuration = false,
+        )
     }
 }
 

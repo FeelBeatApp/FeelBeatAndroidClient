@@ -1,22 +1,16 @@
 package com.github.feelbeatapp.androidclient.ui.app.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.api.feelbeat.responses.RoomListViewResponse
+import com.github.feelbeatapp.androidclient.ui.app.components.RoomCard
 
 @Composable
 fun HomeScreen(
@@ -49,50 +44,54 @@ fun HomeScreen(
 
     LaunchedEffect(null) { homeViewModel.loadRooms() }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(R.string.current_games),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp),
-        )
-
-        if (loading) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                strokeWidth = 4.dp,
-                modifier = Modifier.width(50.dp).height(50.dp),
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = stringResource(R.string.current_games),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp),
             )
-        } else {
-            RoomList(
-                items = rooms,
-                isRefreshing = loading,
-                onRefresh = { homeViewModel.loadRooms() },
-                onRoomSelect = onRoomSelect,
-            )
-        }
 
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp).padding(horizontal = 16.dp)
-        ) {
-            Box(
-                modifier =
-                    Modifier.align(Alignment.BottomEnd)
-                        .size(60.dp)
-                        .background(
-                            MaterialTheme.colorScheme.primary,
-                            shape = MaterialTheme.shapes.medium,
-                        )
-            ) {
-                IconButton(onClick = onNewRoom, modifier = Modifier.fillMaxSize()) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(36.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary,
+            if (loading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        strokeWidth = 4.dp,
+                        modifier = Modifier.size(50.dp),
                     )
                 }
+            } else {
+                RoomList(
+                    items = rooms,
+                    isRefreshing = loading,
+                    onRefresh = { homeViewModel.loadRooms() },
+                    onRoomSelect = onRoomSelect,
+                    modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+                )
             }
+        }
+
+        IconButton(
+            onClick = onNewRoom,
+            modifier =
+                Modifier.align(Alignment.BottomEnd)
+                    .padding(bottom = 40.dp, end = 40.dp)
+                    .size(60.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = MaterialTheme.shapes.medium,
+                    ),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(36.dp),
+            )
         }
     }
 }
@@ -108,31 +107,7 @@ fun RoomList(
 ) {
     PullToRefreshBox(isRefreshing = isRefreshing, onRefresh = onRefresh, modifier = modifier) {
         LazyColumn(Modifier) {
-            items(items) { ListItem({ RoomItem(room = it, onClick = { onRoomSelect(it.id) }) }) }
-        }
-    }
-}
-
-@Composable
-fun RoomItem(room: RoomListViewResponse, onClick: () -> Unit) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        modifier =
-            Modifier.fillMaxWidth()
-                .padding(8.dp)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = MaterialTheme.shapes.medium,
-                ),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = room.name,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f),
-            )
+            items(items) { ListItem({ RoomCard(room = it, onClick = { onRoomSelect(it.id) }) }) }
         }
     }
 }

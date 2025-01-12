@@ -35,6 +35,7 @@ fun SongCard(
     duration: Duration,
     size: Dp,
     elevation: Dp = 6.dp,
+    displayDuration: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -67,7 +68,7 @@ fun SongCard(
                     Text(artist, style = MaterialTheme.typography.titleSmall)
                 }
 
-                Text(duration.toString())
+                if (displayDuration) Text(duration.toString())
             }
         }
     }

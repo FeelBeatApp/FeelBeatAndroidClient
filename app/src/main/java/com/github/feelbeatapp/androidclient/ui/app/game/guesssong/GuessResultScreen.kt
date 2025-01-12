@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
@@ -31,7 +32,7 @@ import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 fun GuessResultScreen(
     roomId: String,
     onNavigate: (String) -> Unit,
-    viewModel: GuessSongViewModel = GuessSongViewModel(),
+    viewModel: GuessSongViewModel = hiltViewModel(),
 ) {
     val guessState by viewModel.guessState.collectAsState()
 
