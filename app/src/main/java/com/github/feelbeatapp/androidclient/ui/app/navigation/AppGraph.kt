@@ -125,7 +125,9 @@ fun AppGraph(
             }
 
             navigation(route = AppRoute.GAME.route, startDestination = AppRoute.START_GAME.route) {
-                gameGraph(onNavigate = { navController.navigate(it) })
+                gameGraph(
+                    onNavigate = { navController.navigate(it) { popUpTo(AppRoute.HOME.route) } }
+                )
             }
         }
     }

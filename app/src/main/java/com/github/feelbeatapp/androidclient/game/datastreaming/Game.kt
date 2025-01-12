@@ -1,8 +1,10 @@
 package com.github.feelbeatapp.androidclient.game.datastreaming
 
+import com.github.feelbeatapp.androidclient.game.model.AudioState
 import com.github.feelbeatapp.androidclient.game.model.GameState
 import com.github.feelbeatapp.androidclient.game.model.Player
 import com.github.feelbeatapp.androidclient.game.model.RoomStage
+import java.time.Instant
 
 class Game(private var gameState: GameState) {
     fun gameState(): GameState {
@@ -31,5 +33,9 @@ class Game(private var gameState: GameState) {
 
     fun setStage(stage: RoomStage) {
         gameState = gameState.copy(stage = stage)
+    }
+
+    fun scheduleAudio(url: String, startAt: Instant) {
+        gameState = gameState.copy(audio = AudioState(url, startAt))
     }
 }

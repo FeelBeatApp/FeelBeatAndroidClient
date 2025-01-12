@@ -7,6 +7,7 @@ import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.S
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialGameState
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.NewPlayerMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlaySongMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerLeftMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerReadyMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.RoomStageMessage
@@ -21,6 +22,7 @@ import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import com.github.feelbeatapp.androidclient.infra.network.NetworkClient
+import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -131,6 +133,7 @@ constructor(
                 ServerMessageType.PLAYER_LEFT.name -> processPlayerLeft(content)
                 ServerMessageType.PLAYER_READY.name -> processPlayerReady(content)
                 ServerMessageType.ROOM_STAGE.name -> processRoomStage(content)
+                ServerMessageType.PLAY_SONG.name -> processPlaySong(content)
                 else -> Log.w("RemoteGameDataStreamer", "Received unexpected message: $content")
             }
         } catch (e: Exception) {
@@ -159,6 +162,7 @@ constructor(
                     settings = initialState.settings,
                     readyMap = initialState.readyMap,
                     stage = RoomStage.LOBBY,
+                    audio = null,
                 )
             )
         gameStateFlow.value = game?.gameState()
@@ -193,6 +197,16 @@ constructor(
 
         synchronized(this) {
             game?.setStage(RoomStage.valueOf(stage))
+            gameStateFlow.value = game?.gameState()
+        }
+    }
+
+    private fun processPlaySong(content: String) {
+        val payload = Json.decodeFromString<PlaySongMessage>(content).payload
+        val start = Instant.ofEpochSecond(payload.timestamp)
+
+        synchronized(this) {
+            game?.scheduleAudio(payload.url, start)
             gameStateFlow.value = game?.gameState()
         }
     }

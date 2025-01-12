@@ -11,4 +11,5 @@ data class GameState(
     val settings: RoomSettings,
     val readyMap: Map<String, Boolean>,
     val stage: RoomStage,
+    val audio: AudioState?,
 )
