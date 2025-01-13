@@ -1,5 +1,7 @@
 package com.github.feelbeatapp.androidclient.ui.app
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,10 +44,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
-import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +55,8 @@ fun AppScreen(
     title: String,
     backVisible: Boolean,
     onLogout: () -> Unit,
-    onNavigateBack: () -> Unit,
+    navController: NavController,
+    // onNavigateBack: () -> Unit,
     appViewModel: AppViewModel = hiltViewModel(),
     bottomBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
@@ -61,6 +65,18 @@ fun AppScreen(
 
     var playerIdentitySheetOpen by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+    val backCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showExitDialog = true
+            }
+        }
+    }
+
+    LaunchedEffect(backPressedDispatcher) { backPressedDispatcher?.addCallback(backCallback) }
 
     if (playerIdentitySheetOpen) {
         ModalBottomSheet(onDismissRequest = { playerIdentitySheetOpen = false }) {
@@ -93,7 +109,10 @@ fun AppScreen(
                     TextButton(
                         onClick = {
                             showExitDialog = false
-                            onNavigateBack()
+                            navController.navigate(AppRoute.HOME.route) {
+                                popUpTo(AppRoute.HOME.route)
+                            }
+                            // onNavigateBack()
                         }
                     ) {
                         Text(
@@ -224,5 +243,5 @@ fun UserAccountBottomSheetContent(playerIdentity: PlayerIdentity?, onLogoutClick
 @Composable
 @Preview
 fun AppScreenPreview() {
-    FeelBeatTheme { AppScreen(title = "Title", backVisible = true, {}, {}) }
+    // FeelBeatTheme { AppScreen(title = "Title", backVisible = true, {}, {}) }
 }

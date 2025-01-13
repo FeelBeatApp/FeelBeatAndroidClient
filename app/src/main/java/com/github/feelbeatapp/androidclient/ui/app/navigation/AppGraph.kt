@@ -57,7 +57,8 @@ fun AppGraph(
         title = getRouteTitle(route),
         backVisible = getBackButtonVisibility(route),
         onLogout = onLogout,
-        onNavigateBack = getNavigateBackBehaviour(route, navController),
+        navController = navController,
+        // onNavigateBack = getNavigateBackBehaviour(route, navController),
         bottomBar =
             getBottomBar(
                 route,

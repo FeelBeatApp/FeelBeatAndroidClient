@@ -43,7 +43,10 @@ fun StartGameScreen(
 
     Column(
         modifier =
-            Modifier.fillMaxSize().padding(16.dp).background(MaterialTheme.colorScheme.background),
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
