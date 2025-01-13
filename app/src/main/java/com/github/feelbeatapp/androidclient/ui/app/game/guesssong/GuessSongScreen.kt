@@ -54,11 +54,15 @@ fun GuessSongScreen(
     viewModel: GuessSongViewModel = hiltViewModel(),
 ) {
     val timeLeft by viewModel.timeLeft.collectAsState()
+    val gameTurnEnded by viewModel.gameTurnEnded.collectAsState()
     val gameEnded by viewModel.gameEnded.collectAsState()
     val guessState by viewModel.guessState.collectAsStateWithLifecycle()
 
     if (gameEnded) {
         onNavigate(AppRoute.GAME_RESULT.withArgs(mapOf("roomId" to roomId)))
+    }
+    if (gameTurnEnded) {
+        onNavigate(AppRoute.GUESS_RESULT.withArgs(mapOf("roomId" to roomId)))
     }
 
     Scaffold(

@@ -24,17 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
+import com.github.feelbeatapp.androidclient.game.model.Player
 import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
 
 @Composable
 fun GameResultScreen(
     onNavigate: (String) -> Unit,
-    viewModel: GameResultViewModel = GameResultViewModel(),
+    viewModel: GameResultViewModel = hiltViewModel(),
 ) {
     val players by viewModel.players.collectAsState()
 
@@ -67,16 +70,19 @@ fun GameResultScreen(
 }
 
 @Composable
-fun PlayerScoreItem(player: PlayerWithResult) {
+fun PlayerScoreItem(player: Player) {
     Box(modifier = Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(R.drawable.userimage),
-                contentDescription = "Player Avatar",
+            AsyncImage(
+                model = player.imageUrl,
+                placeholder = painterResource(R.drawable.userimage),
+                error = painterResource(R.drawable.userimage),
+                contentDescription = stringResource(R.string.player_avatar),
                 modifier = Modifier.size(48.dp).clip(CircleShape),
             )
+
             Text(
-                text = "${player.player.name}: ${player.points} points",
+                text = "${player.name}: ${player.score} points",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,

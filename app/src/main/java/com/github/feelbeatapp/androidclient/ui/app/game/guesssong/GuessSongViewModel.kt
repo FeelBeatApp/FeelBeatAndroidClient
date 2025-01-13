@@ -25,6 +25,9 @@ class GuessSongViewModel @Inject constructor(private val gameDataStreamer: GameD
     private val _timeLeft = MutableStateFlow(_guessState.value.snippetDuration)
     val timeLeft: StateFlow<Int> = _timeLeft.asStateFlow()
 
+    private val _gameTurnEnded = MutableStateFlow(false)
+    val gameTurnEnded: StateFlow<Boolean> = _gameTurnEnded.asStateFlow()
+
     private val _gameEnded = MutableStateFlow(false)
     val gameEnded: StateFlow<Boolean> = _gameEnded.asStateFlow()
 
@@ -63,7 +66,7 @@ class GuessSongViewModel @Inject constructor(private val gameDataStreamer: GameD
                 delay(1000L)
                 _timeLeft.emit(_timeLeft.value - 1)
             }
-            _gameEnded.value = true
+            _gameTurnEnded.value = true
         }
     }
 
