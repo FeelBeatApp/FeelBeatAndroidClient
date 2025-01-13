@@ -1,10 +1,25 @@
 package com.github.feelbeatapp.androidclient.ui.app.navigation
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
@@ -53,12 +68,23 @@ fun AppGraph(
         }
     }
 
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    ExitDialog(
+        showExitDialog = showExitDialog,
+        onChange = { showExitDialog = it },
+        onNavigateBack = { navController.popBackStack(AppRoute.HOME.route, inclusive = false) },
+    )
+
+    if (route != AppRoute.HOME.route) {
+        BackHandler { getNavigateBackBehaviour(route, navController, { showExitDialog = true })() }
+    }
+
     AppScreen(
         title = getRouteTitle(route),
         backVisible = getBackButtonVisibility(route),
         onLogout = onLogout,
-        navController = navController,
-        // onNavigateBack = getNavigateBackBehaviour(route, navController),
+        onNavigateBack = getNavigateBackBehaviour(route, navController, { showExitDialog = true }),
         bottomBar =
             getBottomBar(
                 route,
@@ -106,6 +132,56 @@ fun AppGraph(
 }
 
 @Composable
+fun ExitDialog(showExitDialog: Boolean, onChange: (Boolean) -> Unit, onNavigateBack: () -> Unit) {
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { onChange(false) },
+            title = { Text(text = stringResource(R.string.exit_room)) },
+            text = {
+                Text(
+                    text = stringResource(R.string.are_you_sure),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            confirmButton = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Absolute.Right,
+                ) {
+                    TextButton(
+                        onClick = {
+                            onChange(false)
+                            onNavigateBack()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.yes),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+
+                    TextButton(
+                        onClick = { onChange(false) },
+                        modifier =
+                            Modifier.background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                    shape = MaterialTheme.shapes.small,
+                                )
+                                .padding(horizontal = 4.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
 fun getRouteTitle(route: String?): String {
     return stringResource(
         when (route) {
@@ -140,11 +216,15 @@ fun getBottomBar(route: String?, onNavigate: (AppRoute) -> Unit): @Composable ()
     }
 }
 
-fun getNavigateBackBehaviour(route: String?, navController: NavHostController): () -> Unit {
+fun getNavigateBackBehaviour(
+    route: String?,
+    navController: NavHostController,
+    showDialog: () -> Unit,
+): () -> Unit {
     return when (route) {
-        AppRoute.ROOM_LOBBY.route,
-        AppRoute.ROOM_EDIT.route -> ({ navController.popBackStack(AppRoute.HOME.route, false) })
-        else -> ({ navController.navigateUp() })
+        AppRoute.HOME.route -> ({})
+        AppRoute.NEW_ROOM.route -> ({ navController.popBackStack(AppRoute.HOME.route, false) })
+        else -> showDialog
     }
 }
 
