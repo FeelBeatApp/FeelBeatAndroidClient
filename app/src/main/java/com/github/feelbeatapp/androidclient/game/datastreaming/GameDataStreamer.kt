@@ -15,4 +15,6 @@ interface GameDataStreamer {
     suspend fun updateSettings(settings: RoomSettings)
 
     suspend fun sendReadyStatus(ready: Boolean)
+
+    suspend fun sendGuess(id: String, points: Int)
 }

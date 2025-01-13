@@ -9,6 +9,9 @@ import com.github.feelbeatapp.androidclient.game.model.Song
 import com.github.feelbeatapp.androidclient.infra.audio.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,6 +23,8 @@ data class GuessSongState(
     val query: String = "",
     val songs: List<Song> = listOf(),
     val songDuration: Long = 0,
+    val pointsToWin: Int = 0,
+    val cumulatedPoints: Int = 0,
 )
 
 @HiltViewModel
@@ -44,6 +49,7 @@ constructor(
                 players = gameState?.players ?: listOf(),
                 songs = gameState?.songs ?: listOf(),
                 songDuration = gameState?.audio?.duration?.toMillis() ?: 0,
+                cumulatedPoints = gameState?.pointsMap?.get(gameState.me) ?: 0,
             )
         }
     }
@@ -62,6 +68,19 @@ constructor(
 
     fun play() {
         audioController.play()
+
+        _uiState.update {
+            it.copy(pointsToWin = gameDataStreamer.gameStateFlow().value?.settings?.basePoints ?: 0)
+        }
+
+        viewModelScope.launch(Dispatchers.Default) {
+            while (true) {
+                delay(1.seconds)
+                val minus =
+                    gameDataStreamer.gameStateFlow().value?.settings?.timePenaltyPerSecond ?: 0
+                _uiState.update { it.copy(pointsToWin = it.pointsToWin - minus) }
+            }
+        }
     }
 
     fun pause() {

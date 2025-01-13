@@ -28,9 +28,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import javax.inject.Named
 import javax.inject.Singleton
-import kotlinx.serialization.json.Json
 
 @Module
 @InstallIn(SingletonComponent::class)

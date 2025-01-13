@@ -35,7 +35,7 @@ const val ICON_SIZE = .8f
 @Composable
 fun PlayerGameBadge(
     imageUrl: String,
-    points: Int,
+    points: Int? = null,
     result: GuessResult? = null,
     size: Dp = 80.dp,
     modifier: Modifier = Modifier,
@@ -76,12 +76,14 @@ fun PlayerGameBadge(
                 }
             }
         }
-        Text(
-            text = points.toString(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(top = 4.dp),
-        )
+        if (points != null) {
+            Text(
+                text = points.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
 }
 

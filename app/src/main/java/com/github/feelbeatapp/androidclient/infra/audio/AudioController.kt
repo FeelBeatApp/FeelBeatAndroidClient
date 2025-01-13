@@ -10,10 +10,10 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
 data class PlaybackState(val isPlaying: Boolean = false, val progress: Long = 0)
 
@@ -81,6 +81,9 @@ class AudioController @Inject constructor(@ApplicationContext ctx: Context) : Li
             controllerFuture.addListener({ seek(to) }, MoreExecutors.directExecutor())
         } else {
             controller.seekTo(to)
+            if (!controller.isPlaying) {
+                controller.play()
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package com.github.feelbeatapp.androidclient.game.datastreaming
 
 import android.util.Log
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.GuessSongMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.GuessSongPayload
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.ReadyStatusMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdateMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdatePayload
@@ -8,6 +10,7 @@ import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.I
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.NewPlayerMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlaySongMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerGuessMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerLeftMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.PlayerReadyMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.RoomStageMessage
@@ -122,6 +125,27 @@ constructor(
         }
     }
 
+    override suspend fun sendGuess(id: String, points: Int) {
+        synchronized(this) {
+            game.let {
+                if (it == null) {
+                    return
+                }
+
+                it.markGuess(id)
+                gameStateFlow.value = it.gameState()
+            }
+        }
+
+        withContext(Dispatchers.IO) {
+            networkClient.sendMessage(
+                Json.encodeToString(
+                    GuessSongMessage(payload = GuessSongPayload(id = id, points = points))
+                )
+            )
+        }
+    }
+
     private suspend fun processMessage(content: String) {
         try {
             val type = Json.decodeFromString<JsonObject>(content)["type"]?.jsonPrimitive?.content
@@ -135,6 +159,7 @@ constructor(
                 ServerMessageType.PLAYER_READY.name -> processPlayerReady(content)
                 ServerMessageType.ROOM_STAGE.name -> processRoomStage(content)
                 ServerMessageType.PLAY_SONG.name -> processPlaySong(content)
+                ServerMessageType.PLAYER_GUESS.name -> processPlayerGuess(content)
                 else -> Log.w("RemoteGameDataStreamer", "Received unexpected message: $content")
             }
         } catch (e: Exception) {
@@ -164,6 +189,9 @@ constructor(
                     readyMap = initialState.readyMap,
                     stage = RoomStage.LOBBY,
                     audio = null,
+                    pointsMap = initialState.players.associateBy({ it.id }, { 0 }),
+                    songGuessMap = mapOf(),
+                    playerGuessMap = mapOf(),
                 )
             )
         gameStateFlow.value = game?.gameState()
@@ -209,6 +237,26 @@ constructor(
         synchronized(this) {
             game?.scheduleAudio(payload.url, start, Duration.ofMillis(payload.duration))
             gameStateFlow.value = game?.gameState()
+        }
+    }
+
+    private fun processPlayerGuess(content: String) {
+        val payload = Json.decodeFromString<PlayerGuessMessage>(content).payload
+
+        Log.d("yupi", "yay")
+        synchronized(this) {
+            game.let {
+                if (game == null) {
+                    return
+                }
+
+                if (payload.songId.isNotEmpty()) {
+                    game?.resolveGuess(payload.songId, payload.correct)
+                }
+
+                game?.setPlayerGuessResult(payload.playerId, payload.correct)
+                game?.addPoints(payload.playerId, payload.points)
+            }
         }
     }
 }

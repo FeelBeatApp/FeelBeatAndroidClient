@@ -33,6 +33,6 @@ class GameResultViewModel @Inject constructor(private val gameDataStreamer: Game
     }
 
     private fun sortPlayers() {
-        _players.value = _players.value.sortedByDescending { player -> player.score }
+        _players.value = _players.value.sortedByDescending { player -> player.id }
     }
 }

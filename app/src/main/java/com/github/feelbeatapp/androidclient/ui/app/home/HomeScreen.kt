@@ -4,14 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,27 +53,13 @@ fun HomeScreen(
                 modifier = Modifier.padding(16.dp),
             )
 
-            if (loading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.secondary,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                        strokeWidth = 4.dp,
-                        modifier = Modifier.size(50.dp),
-                    )
-                }
-            } else {
-                RoomList(
-                    items = rooms,
-                    isRefreshing = loading,
-                    onRefresh = { homeViewModel.loadRooms() },
-                    onRoomSelect = onRoomSelect,
-                    modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
-                )
-            }
+            RoomList(
+                items = rooms,
+                isRefreshing = loading,
+                onRefresh = { homeViewModel.loadRooms() },
+                onRoomSelect = onRoomSelect,
+                modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+            )
         }
 
         IconButton(

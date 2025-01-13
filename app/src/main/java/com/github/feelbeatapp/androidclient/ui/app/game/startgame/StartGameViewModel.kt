@@ -18,10 +18,11 @@ import kotlinx.coroutines.launch
 data class StartGameState(
     val loading: Boolean = true,
     val players: List<Player> = listOf(),
-    val counter: Int = 5,
+    val counter: Int = DEFAULT_COUNTER,
 )
 
-const val SECOND_MS: Long = 1000
+const val DELAY: Long = 500
+const val DEFAULT_COUNTER = 5
 
 @HiltViewModel
 class StartGameViewModel
@@ -44,7 +45,7 @@ constructor(
                 if (!counterLaunched) {
                     viewModelScope.launch {
                         while (startGameState.value.counter > 0) {
-                            delay(SECOND_MS)
+                            delay(DELAY)
                             updateState(gameDataStreamer.gameStateFlow().value)
                         }
                     }
@@ -54,14 +55,16 @@ constructor(
     }
 
     private fun updateState(gameState: GameState?) {
+        val counter =
+            if (gameState?.audio == null) DEFAULT_COUNTER
+            else if (Instant.now().isAfter(gameState.audio.startAt)) 0
+            else Duration.between(Instant.now(), gameState.audio.startAt).seconds.toInt()
+
         _startGameState.value =
             StartGameState(
                 players = gameState?.players ?: listOf(),
                 loading = gameState?.audio == null,
-                counter =
-                    if (gameState?.audio != null)
-                        Duration.between(Instant.now(), gameState.audio.startAt).seconds.toInt()
-                    else 5,
+                counter = counter,
             )
 
         if (gameState?.audio != null) {

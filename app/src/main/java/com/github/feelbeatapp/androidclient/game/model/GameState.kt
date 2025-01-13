@@ -12,4 +12,7 @@ data class GameState(
     val readyMap: Map<String, Boolean>,
     val stage: RoomStage,
     val audio: AudioState?,
+    val pointsMap: Map<String, Int>,
+    val songGuessMap: Map<String, GuessCorrectness>,
+    val playerGuessMap: Map<String, GuessCorrectness>,
 )

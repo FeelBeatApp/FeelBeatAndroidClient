@@ -5,10 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -17,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,11 +43,7 @@ import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.Aud
 
 @OptIn(UnstableApi::class)
 @Composable
-fun GuessSongScreen(
-    roomId: String,
-    onNavigate: (String) -> Unit,
-    viewModel: GuessSongViewModel = hiltViewModel(),
-) {
+fun GuessSongScreen(viewModel: GuessSongViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val playbackState by viewModel.playbackState.collectAsStateWithLifecycle()
 
@@ -52,12 +54,48 @@ fun GuessSongScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            uiState.players.forEach { player ->
-                PlayerGameBadge(imageUrl = player.imageUrl, points = 200, size = 40.dp)
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().weight(1f),
+            ) {
+                items(
+                    uiState.players
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                        .plus(uiState.players)
+                ) { player ->
+                    PlayerGameBadge(imageUrl = player.imageUrl, size = 40.dp)
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                VerticalDivider(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    uiState.cumulatedPoints.toString(),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("+", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    uiState.pointsToWin.toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("points")
             }
         }
 
@@ -76,8 +114,6 @@ fun GuessSongScreen(
         }
 
         HorizontalDivider()
-
-        Text(text = "${uiState.songDuration} ${playbackState.progress}")
 
         AudioPlayerControls(
             value = playbackState.progress,
@@ -124,5 +160,5 @@ fun SongItem(song: Song, onClick: () -> Unit) {
 @Preview
 @Composable
 fun GuessSongPreview() {
-    GuessSongScreen("roomId", {})
+    GuessSongScreen()
 }
