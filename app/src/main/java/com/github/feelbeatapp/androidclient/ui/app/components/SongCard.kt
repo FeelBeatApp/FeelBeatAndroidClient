@@ -34,11 +34,13 @@ fun SongCard(
     imageUrl: String,
     duration: Duration,
     size: Dp,
+    onClick: () -> Unit = {},
     elevation: Dp = 6.dp,
     displayDuration: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
+        onClick = onClick,
         elevation = CardDefaults.cardElevation(defaultElevation = elevation),
         modifier = modifier.height(size).fillMaxWidth(),
     ) {

@@ -19,11 +19,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class KtorFeelBeatApi
 @Inject

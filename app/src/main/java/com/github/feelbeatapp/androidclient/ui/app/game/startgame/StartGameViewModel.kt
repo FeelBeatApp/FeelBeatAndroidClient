@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.game.datastreaming.GameDataStreamer
 import com.github.feelbeatapp.androidclient.game.model.GameState
 import com.github.feelbeatapp.androidclient.game.model.Player
+import com.github.feelbeatapp.androidclient.infra.audio.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import java.time.Instant
@@ -23,8 +24,12 @@ data class StartGameState(
 const val SECOND_MS: Long = 1000
 
 @HiltViewModel
-class StartGameViewModel @Inject constructor(private val gameDataStreamer: GameDataStreamer) :
-    ViewModel() {
+class StartGameViewModel
+@Inject
+constructor(
+    private val gameDataStreamer: GameDataStreamer,
+    private val audioController: AudioController,
+) : ViewModel() {
     private val _startGameState = MutableStateFlow(StartGameState())
     val startGameState = _startGameState.asStateFlow()
 
@@ -58,5 +63,12 @@ class StartGameViewModel @Inject constructor(private val gameDataStreamer: GameD
                         Duration.between(Instant.now(), gameState.audio.startAt).seconds.toInt()
                     else 5,
             )
+
+        if (gameState?.audio != null) {
+            audioController.loadAudioFromUri(
+                gameState.audio.url,
+                gameState.audio.duration.toMillis(),
+            )
+        }
     }
 }

@@ -110,9 +110,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
-    // Coil
-    implementation(libs.coil.kt.coil.compose)
-
     // ktor
     implementation(libs.io.ktor.client)
     implementation(libs.io.ktor.content.negotiation)
@@ -123,6 +120,12 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    // media3
+    implementation(libs.media3.ui)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.common)
+    implementation(libs.media3.session)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

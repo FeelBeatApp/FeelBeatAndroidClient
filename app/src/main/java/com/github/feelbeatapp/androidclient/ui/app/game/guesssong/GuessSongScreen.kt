@@ -1,177 +1,96 @@
 package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import androidx.media3.common.util.UnstableApi
 import com.github.feelbeatapp.androidclient.R
 import com.github.feelbeatapp.androidclient.game.model.Song
 import com.github.feelbeatapp.androidclient.ui.app.components.SongCard
-import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.MusicPlayer
-import com.github.feelbeatapp.androidclient.ui.app.navigation.AppRoute
-import com.github.feelbeatapp.androidclient.ui.app.uimodel.PlayerWithResult
+import com.github.feelbeatapp.androidclient.ui.app.game.components.PlayerGameBadge
+import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.AudioPlayerControls
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(UnstableApi::class)
 @Composable
 fun GuessSongScreen(
     roomId: String,
     onNavigate: (String) -> Unit,
     viewModel: GuessSongViewModel = hiltViewModel(),
 ) {
-    val timeLeft by viewModel.timeLeft.collectAsState()
-    val gameTurnEnded by viewModel.gameTurnEnded.collectAsState()
-    val gameEnded by viewModel.gameEnded.collectAsState()
-    val guessState by viewModel.guessState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val playbackState by viewModel.playbackState.collectAsStateWithLifecycle()
 
-    if (gameEnded) {
-        onNavigate(AppRoute.GAME_RESULT.withArgs(mapOf("roomId" to roomId)))
-    }
-    if (gameTurnEnded) {
-        onNavigate(AppRoute.GUESS_RESULT.withArgs(mapOf("roomId" to roomId)))
-    }
+    LaunchedEffect(null) { viewModel.play() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = guessState.playlistName,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp),
-                    )
-                },
-                actions = {
-                    Text(
-                        text = timeLeft.toString(),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 16.dp, top = 0.dp),
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues).fillMaxSize().padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+    Column(
+        modifier = Modifier.fillMaxSize().padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                guessState.players.forEach { playerWithResult ->
-                    PlayerStatusIcon(player = playerWithResult)
-                }
-            }
-
-            MusicPlayer(
-                song =
-                    guessState.currentSong
-                        as com.github.feelbeatapp.androidclient.ui.app.uimodel.Song?
-            )
-
-            Column {
-                Text(
-                    text = stringResource(R.string.guess_the_song),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                SearchBar(
-                    searchQuery = guessState.searchQuery,
-                    onSearchQueryChange = { viewModel.updateSearchQuery(it) },
-                )
-            }
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(guessState.songs.size) { index ->
-                    SongItem(
-                        song = guessState.songs[index],
-                        onClick = {
-                            onNavigate(AppRoute.GUESS_RESULT.withArgs(mapOf("roomId" to roomId)))
-                        },
-                    )
-                }
+            uiState.players.forEach { player ->
+                PlayerGameBadge(imageUrl = player.imageUrl, points = 200, size = 40.dp)
             }
         }
-    }
-}
 
-@Composable
-fun PlayerStatusIcon(player: PlayerWithResult) {
-    val icon =
-        when (player.resultStatus) {
-            ResultStatus.CORRECT -> Icons.Outlined.Done
-            ResultStatus.WRONG -> Icons.Outlined.Close
-            ResultStatus.NORESPONSE -> null
-        }
-    val color =
-        when (player.resultStatus) {
-            ResultStatus.CORRECT -> Color.Green
-            ResultStatus.WRONG -> Color.Red
-            ResultStatus.NORESPONSE -> Color.Gray
-        }
+        HorizontalDivider()
 
-    Box(modifier = Modifier.size(36.dp)) {
-        AsyncImage(
-            model = player.player.imageUrl,
-            placeholder = painterResource(R.drawable.userimage),
-            error = painterResource(R.drawable.userimage),
-            contentDescription = stringResource(R.string.player_avatar),
-            modifier = Modifier.size(36.dp).clip(CircleShape),
+        SearchBar(
+            searchQuery = uiState.query,
+            onSearchQueryChange = { viewModel.updateSearchQuery(it) },
         )
-        icon?.let {
-            Icon(
-                imageVector = it,
-                tint = color,
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.BottomEnd).size(16.dp),
-            )
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxSize().weight(1f),
+        ) {
+            items(uiState.songs) { song -> SongItem(song = song, onClick = {}) }
         }
+
+        HorizontalDivider()
+
+        Text(text = "${uiState.songDuration} ${playbackState.progress}")
+
+        AudioPlayerControls(
+            value = playbackState.progress,
+            onValueChange = { viewModel.seek(it) },
+            duration = uiState.songDuration,
+            isPlaying = playbackState.isPlaying,
+            onPlayPause = { isPlaying -> if (isPlaying) viewModel.pause() else viewModel.play() },
+        )
     }
 }
 
 @Composable
-fun SearchBar(searchQuery: TextFieldValue, onSearchQueryChange: (TextFieldValue) -> Unit) {
+fun SearchBar(searchQuery: String, onSearchQueryChange: (String) -> Unit) {
     Row(
         modifier =
             Modifier.fillMaxWidth()
@@ -191,16 +110,15 @@ fun SearchBar(searchQuery: TextFieldValue, onSearchQueryChange: (TextFieldValue)
 
 @Composable
 fun SongItem(song: Song, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        SongCard(
-            title = song.title,
-            artist = song.artist,
-            imageUrl = song.imageUrl,
-            duration = song.duration,
-            size = 40.dp,
-            displayDuration = false,
-        )
-    }
+    SongCard(
+        title = song.title,
+        artist = song.artist,
+        imageUrl = song.imageUrl,
+        duration = song.duration,
+        onClick = onClick,
+        size = 50.dp,
+        displayDuration = false,
+    )
 }
 
 @Preview

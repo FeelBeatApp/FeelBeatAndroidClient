@@ -191,6 +191,7 @@ fun getRouteTitle(route: String?): String {
             AppRoute.ROOM_SONGS.route -> R.string.playlist_content
             AppRoute.ROOM_EDIT.route -> R.string.edit_room
             AppRoute.NEW_ROOM.route -> R.string.create_room
+            AppRoute.GUESS.route -> R.string.guess_the_song
             else -> R.string.app_name
         }
     )

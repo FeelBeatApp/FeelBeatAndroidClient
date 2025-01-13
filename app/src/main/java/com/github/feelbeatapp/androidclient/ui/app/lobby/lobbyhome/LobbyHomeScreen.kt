@@ -107,7 +107,7 @@ fun LobbyHomeScreen(viewModel: LobbyHomeViewModel = hiltViewModel()) {
 
         val ready = lobbyState.readyMap[lobbyState.me] ?: false
         Button(
-            onClick = {viewModel.setReadyToPlay(!ready)},
+            onClick = { viewModel.setReadyToPlay(!ready) },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         ) {
             Text(

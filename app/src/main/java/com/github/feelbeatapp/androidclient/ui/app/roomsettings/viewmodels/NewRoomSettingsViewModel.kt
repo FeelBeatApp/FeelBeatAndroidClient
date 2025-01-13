@@ -1,10 +1,10 @@
 package com.github.feelbeatapp.androidclient.ui.app.roomsettings.viewmodels
 
 import androidx.lifecycle.viewModelScope
+import com.github.feelbeatapp.androidclient.api.feelbeat.FeelBeatApi
 import com.github.feelbeatapp.androidclient.infra.error.ErrorCode
 import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
-import com.github.feelbeatapp.androidclient.api.feelbeat.FeelBeatApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.http.Url
 import javax.inject.Inject

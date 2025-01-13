@@ -10,8 +10,4 @@ data class PlayerLeftMessage(
     val payload: PlayerLeftPayload,
 ) : ServerMessage()
 
-@Serializable
-data class PlayerLeftPayload(
-    val left: String,
-    val admin: String
-)
+@Serializable data class PlayerLeftPayload(val left: String, val admin: String)

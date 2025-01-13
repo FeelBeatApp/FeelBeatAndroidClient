@@ -10,4 +10,4 @@ data class PlaySongMessage(
     val payload: PlaySongPayload,
 ) : ServerMessage()
 
-@Serializable data class PlaySongPayload(val url: String, val timestamp: Long)
+@Serializable data class PlaySongPayload(val url: String, val timestamp: Long, val duration: Long)

@@ -7,11 +7,11 @@ import com.github.feelbeatapp.androidclient.infra.error.ErrorCode
 import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val BASE_PLAYLIST_LINK = "https://open.spotify.com/playlist"
 

@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.feelbeatapp.androidclient.game.datastreaming.GameDataStreamer
 import com.github.feelbeatapp.androidclient.game.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class LobbySongsViewModel @Inject constructor(private val gameDataStreamer: GameDataStreamer) :

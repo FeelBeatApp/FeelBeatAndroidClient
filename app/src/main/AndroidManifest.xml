@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <application
         android:name=".FeelBeatApplication"
         android:allowBackup="true"
@@ -14,6 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FeelBeatAndroidClient"
         tools:targetApi="31">
+        <service
+            android:name=".infra.audio.AudioPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

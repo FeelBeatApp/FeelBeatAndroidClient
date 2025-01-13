@@ -22,6 +22,7 @@ import com.github.feelbeatapp.androidclient.infra.error.ErrorReceiver
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatException
 import com.github.feelbeatapp.androidclient.infra.error.FeelBeatServerException
 import com.github.feelbeatapp.androidclient.infra.network.NetworkClient
+import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -206,7 +207,7 @@ constructor(
         val start = Instant.ofEpochSecond(payload.timestamp)
 
         synchronized(this) {
-            game?.scheduleAudio(payload.url, start)
+            game?.scheduleAudio(payload.url, start, Duration.ofMillis(payload.duration))
             gameStateFlow.value = game?.gameState()
         }
     }
