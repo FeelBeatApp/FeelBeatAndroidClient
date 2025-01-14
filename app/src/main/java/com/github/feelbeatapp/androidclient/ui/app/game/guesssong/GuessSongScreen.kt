@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.game.model.GuessCorrectness
 import com.github.feelbeatapp.androidclient.game.model.Song
 import com.github.feelbeatapp.androidclient.ui.app.components.SongCard
 import com.github.feelbeatapp.androidclient.ui.app.game.components.PlayerGameBadge
@@ -62,17 +63,8 @@ fun GuessSongScreen(viewModel: GuessSongViewModel = hiltViewModel()) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth().weight(1f),
             ) {
-                items(
-                    uiState.players
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                        .plus(uiState.players)
-                ) { player ->
-                    PlayerGameBadge(imageUrl = player.imageUrl, size = 40.dp)
+                items(uiState.players.plus(uiState.players)) { p ->
+                    PlayerGameBadge(imageUrl = p.player.imageUrl, size = 40.dp, result = p.status)
                 }
             }
 
@@ -110,7 +102,13 @@ fun GuessSongScreen(viewModel: GuessSongViewModel = hiltViewModel()) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize().weight(1f),
         ) {
-            items(uiState.songs) { song -> SongItem(song = song, onClick = {}) }
+            items(uiState.songs) { s ->
+                SongItem(
+                    song = s.song,
+                    onClick = { viewModel.guess(s.song.id) },
+                    correctness = s.status,
+                )
+            }
         }
 
         HorizontalDivider()
@@ -145,7 +143,10 @@ fun SearchBar(searchQuery: String, onSearchQueryChange: (String) -> Unit) {
 }
 
 @Composable
-fun SongItem(song: Song, onClick: () -> Unit) {
+fun SongItem(song: Song, onClick: () -> Unit, correctness: GuessCorrectness) {
+    if (correctness == GuessCorrectness.VERIFYING) {
+        Text("Verifying")
+    }
     SongCard(
         title = song.title,
         artist = song.artist,

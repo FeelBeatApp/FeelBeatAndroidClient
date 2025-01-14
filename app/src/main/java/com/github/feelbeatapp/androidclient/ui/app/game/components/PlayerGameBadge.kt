@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
-import com.github.feelbeatapp.androidclient.ui.app.game.GuessResult
+import com.github.feelbeatapp.androidclient.game.model.GuessCorrectness
 import com.github.feelbeatapp.androidclient.ui.theme.FeelBeatTheme
 
 const val ICON_SIZE = .8f
@@ -36,7 +36,7 @@ const val ICON_SIZE = .8f
 fun PlayerGameBadge(
     imageUrl: String,
     points: Int? = null,
-    result: GuessResult? = null,
+    result: GuessCorrectness = GuessCorrectness.UNKNOWN,
     size: Dp = 80.dp,
     modifier: Modifier = Modifier,
 ) {
@@ -55,9 +55,9 @@ fun PlayerGameBadge(
 
             val color =
                 when (result) {
-                    null -> Color.Transparent
-                    GuessResult.CORRECT -> Color.Green.copy(alpha = .7f)
-                    GuessResult.INCORRECT -> Color.Red.copy(alpha = .7f)
+                    GuessCorrectness.CORRECT -> Color.Green.copy(alpha = .7f)
+                    GuessCorrectness.INCORRECT -> Color.Red.copy(alpha = .7f)
+                    else -> Color.Transparent
                 }
 
             Column(
@@ -65,11 +65,17 @@ fun PlayerGameBadge(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize().background(color),
             ) {
-                if (result != null) {
+                if (result == GuessCorrectness.CORRECT) {
                     Icon(
-                        if (result == GuessResult.CORRECT) Icons.Default.Done
-                        else Icons.Default.Close,
+                        Icons.Default.Done,
                         contentDescription = "correct",
+                        tint = MaterialTheme.colorScheme.surface,
+                        modifier = Modifier.fillMaxSize(ICON_SIZE),
+                    )
+                } else if (result == GuessCorrectness.INCORRECT) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "incorrect",
                         tint = MaterialTheme.colorScheme.surface,
                         modifier = Modifier.fillMaxSize(ICON_SIZE),
                     )
@@ -105,7 +111,7 @@ fun PlayerBadgeCorrectPreview() {
         PlayerGameBadge(
             imageUrl = "https://cdn-icons-png.flaticon.com/512/219/219983.png",
             points = 200,
-            result = GuessResult.CORRECT,
+            result = GuessCorrectness.CORRECT,
         )
     }
 }
@@ -117,7 +123,7 @@ fun PlayerBadgeIncorrectPreview() {
         PlayerGameBadge(
             imageUrl = "https://cdn-icons-png.flaticon.com/512/219/219983.png",
             points = 200,
-            result = GuessResult.INCORRECT,
+            result = GuessCorrectness.INCORRECT,
         )
     }
 }

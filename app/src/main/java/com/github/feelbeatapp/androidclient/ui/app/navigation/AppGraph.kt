@@ -50,6 +50,9 @@ fun AppGraph(
     val lobbyState by lobbyViewModel.lobbyState.collectAsStateWithLifecycle()
     val stage by navigationViewModel.stage.collectAsStateWithLifecycle(RoomStage.LOBBY)
     val loadedRoomId by navigationViewModel.roomId.collectAsStateWithLifecycle(null)
+    val correctReceived by navigationViewModel.correctReceived.collectAsStateWithLifecycle(false)
+    val scheduledAudio by navigationViewModel.scheduledAudio.collectAsStateWithLifecycle(null)
+    val lastGameResult by navigationViewModel.lastGameResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(lobbyState.joinFailed) {
         if (lobbyState.joinFailed) {
@@ -62,6 +65,36 @@ fun AppGraph(
         if (stage == RoomStage.GAME) {
             navController.navigate(
                 AppRoute.START_GAME.withArgs(mapOf("roomId" to (loadedRoomId ?: "")))
+            ) {
+                popUpTo(AppRoute.HOME.route)
+            }
+        }
+    }
+
+    LaunchedEffect(correctReceived) {
+        if (correctReceived) {
+            navController.navigate(
+                AppRoute.GUESS_RESULT.withArgs(mapOf("roomId" to (loadedRoomId ?: "")))
+            ) {
+                popUpTo(AppRoute.HOME.route)
+            }
+        }
+    }
+
+    LaunchedEffect(scheduledAudio) {
+        if (scheduledAudio != null) {
+            navController.navigate(
+                AppRoute.START_GAME.withArgs(mapOf("roomId" to (loadedRoomId ?: "")))
+            ) {
+                popUpTo(AppRoute.HOME.route)
+            }
+        }
+    }
+
+    LaunchedEffect(lastGameResult) {
+        if (lastGameResult.isNotEmpty()) {
+            navController.navigate(
+                AppRoute.GAME_RESULT.withArgs(mapOf("roomId" to (loadedRoomId ?: "")))
             ) {
                 popUpTo(AppRoute.HOME.route)
             }

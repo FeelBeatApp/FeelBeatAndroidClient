@@ -10,7 +10,9 @@ enum class ServerMessageType {
     PLAYER_READY,
     ROOM_STAGE,
     PLAY_SONG,
-    PLAYER_GUESS
+    PLAYER_GUESS,
+    CORRECT_SONG,
+    END_GAME,
 }
 
 @Serializable

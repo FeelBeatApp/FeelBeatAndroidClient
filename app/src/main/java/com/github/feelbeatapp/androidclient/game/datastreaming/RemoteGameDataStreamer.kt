@@ -6,6 +6,8 @@ import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.G
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.ReadyStatusMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdateMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.client.SettingsUpdatePayload
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.CorrectSongMessage
+import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.EndGameMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialGameState
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.InitialMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.NewPlayerMessage
@@ -17,6 +19,8 @@ import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.R
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.ServerErrorMessage
 import com.github.feelbeatapp.androidclient.game.datastreaming.messages.server.ServerMessageType
 import com.github.feelbeatapp.androidclient.game.model.GameState
+import com.github.feelbeatapp.androidclient.game.model.GuessCorrectness
+import com.github.feelbeatapp.androidclient.game.model.PlayerFinalScore
 import com.github.feelbeatapp.androidclient.game.model.RoomSettings
 import com.github.feelbeatapp.androidclient.game.model.RoomStage
 import com.github.feelbeatapp.androidclient.infra.auth.AuthManager
@@ -53,6 +57,7 @@ constructor(
 ) : GameDataStreamer {
     private var game: Game? = null
     private var gameStateFlow = MutableStateFlow<GameState?>(null)
+    private var resultStateFlow = MutableStateFlow<List<PlayerFinalScore>>(listOf())
     private var scope: CoroutineScope? = null
 
     override suspend fun joinRoom(roomId: String): Deferred<Unit> =
@@ -97,6 +102,10 @@ constructor(
         return gameStateFlow.asStateFlow()
     }
 
+    override fun lastGameResultStateFlow(): StateFlow<List<PlayerFinalScore>> {
+        return resultStateFlow.asStateFlow()
+    }
+
     override suspend fun updateSettings(settings: RoomSettings) {
         withContext(Dispatchers.IO) {
             val token = authManager.getAccessToken()
@@ -115,10 +124,13 @@ constructor(
                     return
                 }
 
+                game
                 it.setMyReadyStatus(ready)
                 gameStateFlow.value = it.gameState()
             }
         }
+
+        resultStateFlow.value = listOf()
 
         withContext(Dispatchers.IO) {
             networkClient.sendMessage(Json.encodeToString(ReadyStatusMessage(payload = ready)))
@@ -133,6 +145,11 @@ constructor(
                 }
 
                 it.markGuess(id)
+
+                if (points == 0) {
+                    it.setPlayerGuessResult(it.gameState().me ?: "", false)
+                }
+
                 gameStateFlow.value = it.gameState()
             }
         }
@@ -160,6 +177,8 @@ constructor(
                 ServerMessageType.ROOM_STAGE.name -> processRoomStage(content)
                 ServerMessageType.PLAY_SONG.name -> processPlaySong(content)
                 ServerMessageType.PLAYER_GUESS.name -> processPlayerGuess(content)
+                ServerMessageType.CORRECT_SONG.name -> processCorrectSong(content)
+                ServerMessageType.END_GAME.name -> processEndGame(content)
                 else -> Log.w("RemoteGameDataStreamer", "Received unexpected message: $content")
             }
         } catch (e: Exception) {
@@ -192,6 +211,7 @@ constructor(
                     pointsMap = initialState.players.associateBy({ it.id }, { 0 }),
                     songGuessMap = mapOf(),
                     playerGuessMap = mapOf(),
+                    lastGuessStatus = GuessCorrectness.VERIFYING,
                 )
             )
         gameStateFlow.value = game?.gameState()
@@ -235,15 +255,21 @@ constructor(
         val start = Instant.ofEpochSecond(payload.timestamp)
 
         synchronized(this) {
-            game?.scheduleAudio(payload.url, start, Duration.ofMillis(payload.duration))
-            gameStateFlow.value = game?.gameState()
+            game.let {
+                if (it == null) {
+                    return
+                }
+
+                it.scheduleAudio(payload.url, start, Duration.ofMillis(payload.duration))
+                it.resetGuessing()
+                gameStateFlow.value = it.gameState()
+            }
         }
     }
 
     private fun processPlayerGuess(content: String) {
         val payload = Json.decodeFromString<PlayerGuessMessage>(content).payload
 
-        Log.d("yupi", "yay")
         synchronized(this) {
             game.let {
                 if (game == null) {
@@ -251,12 +277,40 @@ constructor(
                 }
 
                 if (payload.songId.isNotEmpty()) {
-                    game?.resolveGuess(payload.songId, payload.correct)
+                    it?.resolveGuess(payload.songId, payload.correct)
                 }
 
-                game?.setPlayerGuessResult(payload.playerId, payload.correct)
-                game?.addPoints(payload.playerId, payload.points)
+                it?.setPlayerGuessResult(payload.playerId, payload.correct)
+                it?.addPoints(payload.playerId, payload.points)
+
+                gameStateFlow.value = it?.gameState()
             }
         }
+    }
+
+    private fun processCorrectSong(content: String) {
+        val correctSongId = Json.decodeFromString<CorrectSongMessage>(content).payload
+
+        synchronized(this) {
+            game?.setCorrectSong(correctSongId)
+            gameStateFlow.value = game?.gameState()
+        }
+    }
+
+    private fun processEndGame(content: String) {
+        val payload = Json.decodeFromString<EndGameMessage>(content).payload
+
+        synchronized(this) {
+            game.let {
+                if (it == null) {
+                    return
+                }
+
+                it.resetGame()
+                gameStateFlow.value = it.gameState()
+            }
+        }
+
+        resultStateFlow.value = payload.results
     }
 }

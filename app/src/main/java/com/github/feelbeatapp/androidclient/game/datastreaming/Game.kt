@@ -44,20 +44,23 @@ class Game(private var gameState: GameState) {
     fun markGuess(id: String) {
         gameState =
             gameState.copy(
-                songGuessMap = gameState.songGuessMap.plus(Pair(id, GuessCorrectness.VERIFYING))
+                songGuessMap = gameState.songGuessMap.plus(Pair(id, GuessCorrectness.VERIFYING)),
+                lastGuessStatus = GuessCorrectness.VERIFYING,
             )
     }
 
     fun resolveGuess(songId: String, correct: Boolean) {
         gameState =
             gameState.copy(
-                playerGuessMap =
+                songGuessMap =
                     gameState.songGuessMap.plus(
                         Pair(
                             songId,
                             if (correct) GuessCorrectness.CORRECT else GuessCorrectness.INCORRECT,
                         )
-                    )
+                    ),
+                lastGuessStatus =
+                    if (correct) GuessCorrectness.CORRECT else GuessCorrectness.INCORRECT,
             )
     }
 
@@ -81,6 +84,30 @@ class Game(private var gameState: GameState) {
                     gameState.pointsMap.plus(
                         Pair(playerId, gameState.pointsMap.getOrDefault(playerId, 0) + points)
                     )
+            )
+    }
+
+    fun setCorrectSong(songId: String) {
+        gameState =
+            gameState.copy(
+                songGuessMap = gameState.songGuessMap.plus(Pair(songId, GuessCorrectness.CORRECT))
+            )
+    }
+
+    fun resetGuessing() {
+        gameState = gameState.copy(songGuessMap = mapOf(), playerGuessMap = mapOf())
+    }
+
+    fun resetGame() {
+        gameState =
+            gameState.copy(
+                readyMap = mapOf(),
+                stage = RoomStage.LOBBY,
+                audio = null,
+                pointsMap = mapOf(),
+                songGuessMap = mapOf(),
+                playerGuessMap = mapOf(),
+                lastGuessStatus = GuessCorrectness.UNKNOWN,
             )
     }
 }

@@ -38,7 +38,7 @@ fun GameResultScreen(
     onNavigate: (String) -> Unit,
     viewModel: GameResultViewModel = hiltViewModel(),
 ) {
-    val players by viewModel.players.collectAsState()
+    val gameResultState by viewModel.gameResultState.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -56,11 +56,15 @@ fun GameResultScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(8.dp),
         ) {
-            items(players) { player -> PlayerScoreItem(player = player) }
+            items(gameResultState.results.sortedByDescending { it.points }) { result ->
+                PlayerScoreItem(player = result.profile, score = result.points)
+            }
         }
 
         Button(
-            onClick = { onNavigate(AppRoute.HOME.name) },
+            onClick = {
+                onNavigate(AppRoute.ROOM_LOBBY.withArgs(mapOf("roomId" to gameResultState.roomId)))
+            },
             modifier = Modifier.padding(vertical = 16.dp),
         ) {
             Text(text = "CLOSE")
@@ -69,7 +73,7 @@ fun GameResultScreen(
 }
 
 @Composable
-fun PlayerScoreItem(player: Player) {
+fun PlayerScoreItem(player: Player, score: Int) {
     Box(modifier = Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
@@ -81,7 +85,7 @@ fun PlayerScoreItem(player: Player) {
             )
 
             Text(
-                text = "${player.name}: ${200} points",
+                text = "${player.name}: $score points",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,

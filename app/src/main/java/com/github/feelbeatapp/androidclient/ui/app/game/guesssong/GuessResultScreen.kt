@@ -1,26 +1,34 @@
 package com.github.feelbeatapp.androidclient.ui.app.game.guesssong
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.feelbeatapp.androidclient.R
+import com.github.feelbeatapp.androidclient.game.model.GuessCorrectness
+import com.github.feelbeatapp.androidclient.ui.app.game.components.PlayerGameBadge
+import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.AudioPlayerControls
 
 @Composable
 fun GuessResultScreen(
@@ -28,99 +36,94 @@ fun GuessResultScreen(
     onNavigate: (String) -> Unit,
     viewModel: GuessSongViewModel = hiltViewModel(),
 ) {
-    //    val guessState by viewModel.guessState.collectAsState()
-    //
-    //    Column(
-    //        modifier = Modifier.fillMaxSize().padding(16.dp),
-    //        horizontalAlignment = Alignment.CenterHorizontally,
-    //        verticalArrangement = Arrangement.SpaceBetween,
-    //    ) {
-    //        Column(
-    //            horizontalAlignment = Alignment.CenterHorizontally,
-    //            modifier = Modifier.fillMaxWidth(),
-    //        ) {
-    //            Row(
-    //                horizontalArrangement = Arrangement.SpaceEvenly,
-    //                modifier = Modifier.fillMaxWidth(),
-    //            ) {
-    //                guessState.players.forEach { playerWithResult ->
-    //                    PlayerStatusIcon(
-    //                        image = playerWithResult.player.imageUrl,
-    //                        isCorrect = (playerWithResult.resultStatus == ResultStatus.CORRECT),
-    //                    )
-    //                }
-    //            }
-    //
-    //            guessState.currentSong?.let { song ->
-    //                Box(
-    //                    modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth(),
-    //                    contentAlignment = Alignment.Center,
-    //                ) {
-    //                    SongInfo(songTitle = song.title)
-    //                }
-    //            }
-    //        }
-    //
-    //        Text(
-    //            text =
-    //                if (guessState.players.any { it.resultStatus == ResultStatus.CORRECT }) {
-    //                    stringResource(R.string.you_guessed_song_correctly)
-    //                } else {
-    //                    stringResource(R.string.ups_that_s_not_correct_answer)
-    //                },
-    //            style = MaterialTheme.typography.headlineLarge,
-    //            fontWeight = FontWeight.Bold,
-    //            color = MaterialTheme.colorScheme.primary,
-    //            modifier = Modifier.padding(top = 16.dp),
-    //        )
-    //
-    //        Text(
-    //            text = "Points: ${guessState.players.sumOf { it.points }}",
-    //            style = MaterialTheme.typography.headlineMedium,
-    //            fontWeight = FontWeight.Bold,
-    //            modifier = Modifier.padding(bottom = 32.dp),
-    //        )
-    //
-    //        Button(onClick = { onNavigate(AppRoute.GUESS.withArgs(mapOf("roomId" to roomId))) }) {
-    //            Text(text = "NEXT")
-    //        }
-    //    }
-}
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val playbackState by viewModel.playbackState.collectAsStateWithLifecycle()
 
-@Composable
-fun PlayerStatusIcon(image: String, isCorrect: Boolean) {
-    Box(contentAlignment = Alignment.TopEnd) {
-        AsyncImage(
-            model = image,
-            placeholder = painterResource(R.drawable.userimage),
-            error = painterResource(R.drawable.userimage),
-            contentDescription = "Player Avatar",
-            modifier = Modifier.size(60.dp).clip(CircleShape),
-        )
-        Text(
-            text = if (isCorrect) "✔" else "✖",
-            style = MaterialTheme.typography.bodySmall,
-            color =
-                if (isCorrect) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.error,
-            modifier = Modifier.align(Alignment.TopEnd).padding(4.dp),
-        )
+    LaunchedEffect(null) {
+        viewModel.pause()
+        viewModel.play()
     }
-}
 
-@Composable
-fun SongInfo(songTitle: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
-            Text(
-                text = songTitle,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-            )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                uiState.players.forEach { playerWithResult ->
+                    PlayerGameBadge(
+                        imageUrl = playerWithResult.player.imageUrl,
+                        points = uiState.pointsMap[playerWithResult.player.id] ?: 0,
+                        result = playerWithResult.status,
+                    )
+                }
+            }
         }
+
+        val correctSong = uiState.songs.find { it.status == GuessCorrectness.CORRECT }?.song
+        if (correctSong != null) {
+            ElevatedCard(modifier = Modifier.padding(48.dp).fillMaxWidth().weight(1f)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth(.8f).heightIn(0.dp, 300.dp),
+                    ) {
+                        AsyncImage(
+                            model = correctSong.imageUrl,
+                            contentDescription = "song",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                    Text(
+                        text = correctSong.title,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge,
+                    )
+
+                    Text(
+                        text = correctSong.artist,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
+            }
+        }
+
+        Text(
+            text =
+                if (uiState.lastGuessCorrect) {
+                    stringResource(R.string.you_guessed_song_correctly)
+                } else {
+                    stringResource(R.string.ups_that_s_not_correct_answer)
+                },
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 16.dp),
+        )
+
+        HorizontalDivider()
+
+        AudioPlayerControls(
+            value = playbackState.progress,
+            onValueChange = { viewModel.seek(it) },
+            duration = uiState.songDuration,
+            isPlaying = playbackState.isPlaying,
+            onPlayPause = { isPlaying -> if (isPlaying) viewModel.pause() else viewModel.play() },
+        )
     }
 }
 

@@ -15,4 +15,5 @@ data class GameState(
     val pointsMap: Map<String, Int>,
     val songGuessMap: Map<String, GuessCorrectness>,
     val playerGuessMap: Map<String, GuessCorrectness>,
+    val lastGuessStatus: GuessCorrectness,
 )
