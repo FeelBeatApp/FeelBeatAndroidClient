@@ -45,7 +45,7 @@
     <string name="failed_to_join_room">Couldn\'t join the room</string>
     <string name="max_players_too_small">Can\'t set max players, too much players in room</string>
     <string name="apply">Apply</string>
-    <string name="waiting_for">WAITING FOR %1$s/%2$s</string>
+    <string name="waiting_for">Waiting for %1$s/%2$s</string>
     <string name="exit_room">Exit room</string>
     <string name="are_you_sure">Are you sure you want to leave the room? It may prevent you from finishing the game</string>
     <string name="yes">yes</string>

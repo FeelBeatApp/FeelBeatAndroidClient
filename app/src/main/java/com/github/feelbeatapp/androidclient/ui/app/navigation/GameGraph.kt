@@ -14,9 +14,7 @@ fun NavGraphBuilder.gameGraph(onNavigate: (String) -> Unit) {
 
     composable(route = AppRoute.GUESS.route) { GuessSongScreen() }
 
-    composable(route = AppRoute.GUESS_RESULT.route) {
-        GuessResultScreen(roomId = it.getRoomId()!!, onNavigate = onNavigate)
-    }
+    composable(route = AppRoute.GUESS_RESULT.route) { GuessResultScreen() }
 
     composable(route = AppRoute.GAME_RESULT.route) { GameResultScreen(onNavigate = onNavigate) }
 }

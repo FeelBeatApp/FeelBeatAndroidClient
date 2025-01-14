@@ -1,8 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.app
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -152,18 +151,17 @@ fun UserAccountBottomSheetContent(playerIdentity: PlayerIdentity?, onLogoutClick
             )
         }
         Text(text = playerIdentity?.name ?: "...", style = MaterialTheme.typography.titleMedium)
-        Box(
+        Button(
+            onClick = { onLogoutClick() },
             modifier =
                 Modifier.fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary, MaterialTheme.shapes.medium)
-                    .padding(8.dp),
-            contentAlignment = Alignment.Center,
+                    .background(MaterialTheme.colorScheme.primary, MaterialTheme.shapes.medium),
         ) {
             Text(
                 text = "log out",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.padding(vertical = 4.dp).clickable { onLogoutClick() },
+                modifier = Modifier,
             )
         }
     }

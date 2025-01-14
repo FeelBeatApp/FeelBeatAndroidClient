@@ -28,9 +28,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.serialization.json.Json
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -67,7 +67,6 @@ abstract class AppModule {
         @Singleton
         @Named("API_URL")
         fun provideApiUrl(): String {
-//            return "http://192.168.100.14:3000/api/v1"
             return BuildConfig.API_URL
         }
 
@@ -75,7 +74,6 @@ abstract class AppModule {
         @Singleton
         @Named("SOCKET_URI")
         fun provideSocketUri(): Url {
-//            return Url("ws://192.168.100.14:3000")
             return Url(BuildConfig.SOCKET_URI)
         }
 

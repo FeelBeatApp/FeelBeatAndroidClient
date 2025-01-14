@@ -44,8 +44,8 @@ fun PlayerGameBadge(
         Box(modifier = Modifier.size(size).clip(CircleShape)) {
             AsyncImage(
                 model = imageUrl,
-                error = painterResource(R.drawable.userimage),
-                placeholder = painterResource(R.drawable.userimage),
+                error = painterResource(R.drawable.account),
+                placeholder = painterResource(R.drawable.account),
                 contentDescription = stringResource(R.string.player_image),
                 modifier =
                     Modifier.size(size)
@@ -55,8 +55,9 @@ fun PlayerGameBadge(
 
             val color =
                 when (result) {
-                    GuessCorrectness.CORRECT -> Color.Green.copy(alpha = .7f)
-                    GuessCorrectness.INCORRECT -> Color.Red.copy(alpha = .7f)
+                    GuessCorrectness.CORRECT -> MaterialTheme.colorScheme.primary.copy(alpha = .7f)
+                    GuessCorrectness.INCORRECT ->
+                        MaterialTheme.colorScheme.errorContainer.copy(alpha = .7f)
                     else -> Color.Transparent
                 }
 

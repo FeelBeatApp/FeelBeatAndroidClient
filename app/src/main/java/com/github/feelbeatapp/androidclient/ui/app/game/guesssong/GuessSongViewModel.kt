@@ -9,8 +9,6 @@ import com.github.feelbeatapp.androidclient.game.model.Player
 import com.github.feelbeatapp.androidclient.game.model.Song
 import com.github.feelbeatapp.androidclient.infra.audio.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,16 +16,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 data class GuessSongState(
     val players: List<PlayerState> = listOf(),
     val query: String = "",
     val songs: List<SongState> = listOf(),
+    val blacklisted: List<SongState> = listOf(),
     val songDuration: Long = 0,
     val pointsToWin: Int = 0,
     val cumulatedPoints: Int = 0,
     val pointsMap: Map<String, Int> = mapOf(),
     val lastGuessCorrect: Boolean = false,
+    val pointsPenalty: Int = 0,
 )
 
 data class SongState(val song: Song, val status: GuessCorrectness)
@@ -61,19 +63,14 @@ constructor(
                         )
                     } ?: listOf(),
                 songs =
-                    gameState
-                        ?.songs
-                        ?.map { song ->
-                            SongState(
-                                song,
-                                gameState.songGuessMap[song.id] ?: GuessCorrectness.UNKNOWN,
-                            )
-                        }
-                        ?.filter { song -> song.status != GuessCorrectness.INCORRECT } ?: listOf(),
+                    gameState?.songs?.map { song ->
+                        SongState(song, gameState.songGuessMap[song.id] ?: GuessCorrectness.UNKNOWN)
+                    } ?: listOf(),
                 songDuration = gameState?.audio?.duration?.toMillis() ?: 0,
                 cumulatedPoints = gameState?.pointsMap?.get(gameState.me) ?: 0,
                 pointsMap = gameState?.pointsMap ?: mapOf(),
                 lastGuessCorrect = gameState?.lastGuessStatus == GuessCorrectness.CORRECT,
+                pointsPenalty = gameState?.settings?.incorrectGuessPenalty ?: 0,
             )
         }
     }
@@ -84,6 +81,10 @@ constructor(
             _uiState.value.songs.sortedByDescending {
                 FuzzySearch.ratio(it.song.title.lowercase(), query.lowercase())
             }
+    }
+
+    fun blackList(song: SongState) {
+        _uiState.update { it.copy(blacklisted = it.blacklisted.plus(song)) }
     }
 
     fun updateSearchQuery(query: String) {

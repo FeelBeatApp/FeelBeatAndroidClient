@@ -36,8 +36,8 @@ fun PlayerCard(
         Box(modifier = Modifier.size(size).clip(CircleShape)) {
             AsyncImage(
                 model = player.imageUrl,
-                error = painterResource(R.drawable.userimage),
-                placeholder = painterResource(R.drawable.userimage),
+                error = painterResource(R.drawable.account),
+                placeholder = painterResource(R.drawable.account),
                 contentDescription = stringResource(R.string.player_image),
                 modifier =
                     Modifier.size(size)

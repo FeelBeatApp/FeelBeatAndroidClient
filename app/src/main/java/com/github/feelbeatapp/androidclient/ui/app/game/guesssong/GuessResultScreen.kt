@@ -30,12 +30,10 @@ import com.github.feelbeatapp.androidclient.game.model.GuessCorrectness
 import com.github.feelbeatapp.androidclient.ui.app.game.components.PlayerGameBadge
 import com.github.feelbeatapp.androidclient.ui.app.game.guesssong.components.AudioPlayerControls
 
+const val CARD_WIDTH = .8f
+
 @Composable
-fun GuessResultScreen(
-    roomId: String,
-    onNavigate: (String) -> Unit,
-    viewModel: GuessSongViewModel = hiltViewModel(),
-) {
+fun GuessResultScreen(viewModel: GuessSongViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val playbackState by viewModel.playbackState.collectAsStateWithLifecycle()
 
@@ -61,6 +59,7 @@ fun GuessResultScreen(
                     PlayerGameBadge(
                         imageUrl = playerWithResult.player.imageUrl,
                         points = uiState.pointsMap[playerWithResult.player.id] ?: 0,
+                        size = 40.dp,
                         result = playerWithResult.status,
                     )
                 }
@@ -69,7 +68,9 @@ fun GuessResultScreen(
 
         val correctSong = uiState.songs.find { it.status == GuessCorrectness.CORRECT }?.song
         if (correctSong != null) {
-            ElevatedCard(modifier = Modifier.padding(48.dp).fillMaxWidth().weight(1f)) {
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth().heightIn(0.dp, 500.dp).weight(1f).padding(24.dp)
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(),
@@ -77,7 +78,7 @@ fun GuessResultScreen(
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth(.8f).heightIn(0.dp, 300.dp),
+                        modifier = Modifier.fillMaxWidth(CARD_WIDTH).heightIn(0.dp, 300.dp),
                     ) {
                         AsyncImage(
                             model = correctSong.imageUrl,
@@ -130,5 +131,5 @@ fun GuessResultScreen(
 @Preview
 @Composable
 fun GuessResultScreenPreview() {
-    GuessResultScreen("roomid", {})
+    GuessResultScreen()
 }

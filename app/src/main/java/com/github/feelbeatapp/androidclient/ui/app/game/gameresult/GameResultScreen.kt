@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -78,8 +77,8 @@ fun PlayerScoreItem(player: Player, score: Int) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = player.imageUrl,
-                placeholder = painterResource(R.drawable.userimage),
-                error = painterResource(R.drawable.userimage),
+                placeholder = painterResource(R.drawable.account),
+                error = painterResource(R.drawable.account),
                 contentDescription = stringResource(R.string.player_avatar),
                 modifier = Modifier.size(48.dp).clip(CircleShape),
             )
@@ -88,7 +87,6 @@ fun PlayerScoreItem(player: Player, score: Int) {
                 text = "${player.name}: $score points",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
                 modifier = Modifier.padding(start = 16.dp),
             )
         }

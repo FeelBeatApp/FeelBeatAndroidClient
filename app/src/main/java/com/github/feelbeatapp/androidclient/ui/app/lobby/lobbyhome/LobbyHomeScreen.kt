@@ -59,8 +59,8 @@ fun LobbyHomeScreen(viewModel: LobbyHomeViewModel = hiltViewModel()) {
                 model = lobbyState.playlistImageUrl,
                 contentDescription = stringResource(R.string.playlist_image),
                 contentScale = ContentScale.Fit,
-                placeholder = painterResource(R.drawable.userimage),
-                error = painterResource(R.drawable.userimage),
+                placeholder = painterResource(R.drawable.account),
+                error = painterResource(R.drawable.account),
                 modifier = Modifier.fillMaxSize(),
             )
         }

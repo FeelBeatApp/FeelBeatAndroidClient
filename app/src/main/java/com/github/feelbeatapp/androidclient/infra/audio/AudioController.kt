@@ -2,7 +2,9 @@ package com.github.feelbeatapp.androidclient.infra.audio
 
 import android.content.ComponentName
 import android.content.Context
+import android.net.Uri
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
 import androidx.media3.session.MediaController
@@ -10,10 +12,13 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
+
+const val FEELBEAT_LOGO_URL =
+    "https://github.com/FeelBeatApp/FeelBeatAndroidClient/blob/main/app/src/main/res/drawable/logo.svg"
 
 data class PlaybackState(val isPlaying: Boolean = false, val progress: Long = 0)
 
@@ -89,5 +94,13 @@ class AudioController @Inject constructor(@ApplicationContext ctx: Context) : Li
 
     private fun getMediaItemFromUri(uri: String): MediaItem {
         return MediaItem.fromUri(uri)
+            .buildUpon()
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setArtworkUri(Uri.parse(FEELBEAT_LOGO_URL))
+                    .setTitle("Guess the song")
+                    .build()
+            )
+            .build()
     }
 }

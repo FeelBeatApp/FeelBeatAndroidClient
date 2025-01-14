@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,7 +63,6 @@ fun AudioPlayerControls(
             if (isPlaying) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.pause),
-                    tint = Color.Black,
                     contentDescription = "play/pause",
                 )
             } else {

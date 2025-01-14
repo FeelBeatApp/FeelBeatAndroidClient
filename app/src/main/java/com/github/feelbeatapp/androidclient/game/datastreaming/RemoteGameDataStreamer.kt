@@ -143,6 +143,12 @@ constructor(
                 if (it == null) {
                     return
                 }
+                if (
+                    it.gameState().songGuessMap.getOrDefault(id, GuessCorrectness.UNKNOWN) !=
+                        GuessCorrectness.UNKNOWN
+                ) {
+                    return
+                }
 
                 it.markGuess(id)
 

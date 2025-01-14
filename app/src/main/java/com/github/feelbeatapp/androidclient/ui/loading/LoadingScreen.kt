@@ -1,5 +1,6 @@
 package com.github.feelbeatapp.androidclient.ui.loading
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,34 +22,30 @@ const val SPINNER_HEIGHT_OFFSET = 0.5f
 
 @Composable
 fun LoadingScreen(text: String = "Loading") {
-    FeelBeatTheme {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+    ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.fillMaxHeight(SPINNER_HEIGHT_OFFSET).padding(30.dp),
         ) {
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier.fillMaxHeight(SPINNER_HEIGHT_OFFSET).padding(30.dp),
-            ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    strokeWidth = 8.dp,
-                    modifier = Modifier.width(100.dp).height(100.dp),
-                )
-            }
-
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleLarge,
+            CircularProgressIndicator(
+                strokeWidth = 8.dp,
+                modifier = Modifier.width(100.dp).height(100.dp),
             )
         }
+
+        Text(
+            text = text,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.titleLarge,
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun LoadingScreenPreview() {
-    LoadingScreen()
+    FeelBeatTheme { LoadingScreen() }
 }

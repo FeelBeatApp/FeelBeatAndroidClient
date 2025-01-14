@@ -42,10 +42,7 @@ fun StartGameScreen(
 
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(MaterialTheme.colorScheme.background),
+            Modifier.fillMaxSize().padding(16.dp).background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -56,8 +53,6 @@ fun StartGameScreen(
         if (startGameState.loading) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     strokeWidth = 4.dp,
                     modifier = Modifier.width(50.dp).height(50.dp),
                 )
